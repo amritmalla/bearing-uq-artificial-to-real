@@ -1,9 +1,11 @@
 """Project-wide settings."""
 
+import os
 from pathlib import Path
 
 # Where the extracted Paderborn bearing folders live (one folder per bearing code, e.g. data/raw/KA01/).
-RAW_DATA_DIR = Path("data/raw")
+# Override with the BEARING_RAW_DIR environment variable (e.g. a local disk in Colab).
+RAW_DATA_DIR = Path(os.environ.get("BEARING_RAW_DIR", "data/raw"))
 
 # Where computed feature tables are written.
 FEATURES_DIR = Path("data/features")

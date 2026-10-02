@@ -4,7 +4,7 @@ _Last updated: 2026-10-02_
 
 ## Current phase
 
-Week 1 — data pipeline. Code skeleton written and tested on synthetic signals; real data not yet downloaded.
+Week 1 — data pipeline. Code tested on synthetic signals; ready to run in Google Colab. Real data not yet downloaded.
 
 ## Checklist
 
@@ -14,7 +14,8 @@ Week 1 — data pipeline. Code skeleton written and tested on synthetic signals;
 - [x] `.mat` loader (tested on a synthetic file shaped like the Paderborn format)
 - [x] Windowing, time-domain and envelope-spectrum features
 - [x] Bearing-level split builder
-- [ ] Download Paderborn data for `N15_M07_F10` (needs to run on your computer; ~32 bearings)
+- [x] Download script and Colab notebook (`notebooks/colab_run.ipynb`)
+- [ ] Download Paderborn data for `N15_M07_F10` (run the Colab notebook; 29 bearings, ~4.6 GB)
 - [ ] Verify bearing codes against the dataset fact sheets
 - [ ] Verify loader on real `.mat` files
 - [ ] Build feature table for all bearings
@@ -49,3 +50,4 @@ Week 1 — data pipeline. Code skeleton written and tested on synthetic signals;
 ## Log
 
 - 2026-10-02 — Topic chosen (Option B). Proposal and data-pipeline skeleton created.
+- 2026-10-02 — Project moved to local folder; added download script and Colab notebook.
