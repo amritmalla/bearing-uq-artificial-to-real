@@ -32,9 +32,9 @@ def main() -> None:
     saved += style.save(fig_risk_coverage.draw(in_domain, pred), "fig1_risk_coverage")
     saved += style.save(fig_reliability.draw(in_domain, pred), "fig2_reliability")
     tc = pd.read_csv(f"results/target_calibration_{FEATURES}.csv")
-    saved += style.save(fig_real_calibration.draw(tc), "fig3_real_calibration")
+    saved += style.save(fig_real_calibration.draw(tc), "fig4_real_calibration")
     fig, per_bearing = fig_per_bearing.draw(pred)
-    saved += style.save(fig, "fig4_per_bearing")
+    saved += style.save(fig, "fig3_per_bearing")
     per_bearing.round(4).to_csv("results/per_bearing_real_fault_only.csv", index=False)
     print("\n".join(str(p) for p in saved))
 

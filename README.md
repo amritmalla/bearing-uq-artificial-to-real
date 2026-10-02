@@ -6,7 +6,9 @@ using the Paderborn University bearing dataset.
 - Proposal: [`docs/proposal.md`](docs/proposal.md)
 - Project status and open decisions: [`docs/status.md`](docs/status.md)
 - Figures, tables and draft captions: [`docs/figures.md`](docs/figures.md)
-- Paper drafts: [`docs/paper/`](docs/paper/) (outline, sections, numbers cited)
+- Paper (LaTeX, Overleaf-ready): [`paper/`](paper/) — run `python scripts/build_paper_assets.py` after
+  regenerating results, then upload the `paper/` folder to Overleaf
+- Outline and numbers cited: [`docs/paper/`](docs/paper/)
 
 ## Setup
 
@@ -79,6 +81,7 @@ scripts/run_bootstrap.py    bootstrap 95 % intervals over rotations and test bea
 scripts/run_target_calibration.py  calibrate on 1-2 real bearings per class vs source bearings
 scripts/make_figures.py     paper figures -> results/figures/ (PNG + PDF)
 scripts/make_tables.py      paper tables -> results/tables/ (CSV + Markdown)
+scripts/build_paper_assets.py  LaTeX tables + figure PDFs -> paper/
 notebooks/colab_run.ipynb   run the pipeline in Google Colab
 tests/                      unit tests on synthetic signals
 ```

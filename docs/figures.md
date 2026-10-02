@@ -27,20 +27,20 @@ Models that are close to calibrated on unseen artificial bearings are overconfid
 **Note for the text:** the SVM's in-domain curve dips at 0.75 confidence because 80 of that bin's 131 windows come
 from one held-out artificial bearing (KI01), all misclassified — an illustration of how few bearings each bin rests on.
 
-## Figure 3 — `fig3_real_calibration`
+## Figure 3 — `fig3_per_bearing`
+
+**Draft caption.** Mean confidence and accuracy of each real-damage test bearing, averaged over 105 rotations (raw
+probabilities). Dotted line: confidence equals accuracy. Four bearings (KA15, KA22 outer race; KI16, KI17 inner
+race) are mostly misclassified while the models remain 69–94 % confident — errors that calibration fitted on
+artificial damage cannot detect. Data: `results/per_bearing_real_fault_only.csv`.
+
+## Figure 4 — `fig4_real_calibration`
 
 **Draft caption.** Calibrating on a few labelled real-damage bearings (temperature scaling; confidence threshold
 chosen on the calibration set for 5 % error). (a) Error among automated real-damage cases; (b) share of real-damage
 cases automated. Points: mean over draws; bars: 2.5th–97.5th percentile over draws (50 draws per real-bearing
 setting; artificial values pooled over all 100). Calibrating on real bearings lowers the error from about 0.27
 to 0.10–0.11 but does not reliably reach the target, and the system automates fewer cases.
-
-## Figure 4 — `fig4_per_bearing`
-
-**Draft caption.** Mean confidence and accuracy of each real-damage test bearing, averaged over 105 rotations (raw
-probabilities). Dotted line: confidence equals accuracy. Four bearings (KA15, KA22 outer race; KI16, KI17 inner
-race) are mostly misclassified while the models remain 69–94 % confident — errors that calibration fitted on
-artificial damage cannot detect. Data: `results/per_bearing_real_fault_only.csv`.
 
 ## Table 1 — `table1_main`
 

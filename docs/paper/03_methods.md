@@ -1,5 +1,7 @@
 # 3. Methods
 
+> **Superseded:** the LaTeX version in `paper/sections/` is now the source of truth; edit that instead.
+
 *Draft. Numbers are listed with their sources in `numbers.md`.*
 
 ## 3.1 Dataset

@@ -1,4 +1,4 @@
-"""Figure 4: per-bearing mean confidence vs accuracy on real damage (averaged over rotations)."""
+"""Figure 3: per-bearing mean confidence vs accuracy on real damage (averaged over rotations)."""
 
 import matplotlib.pyplot as plt
 import numpy as np

@@ -5,7 +5,7 @@ _Last updated: 2026-10-02_
 ## Current phase
 
 Week 3 — robustness runs done: 105 calibration-bearing rotations and an in-domain reference.
-Main findings hold across all rotations. Weeks 5–6 — writing. Outline, Methods and Results drafted in `docs/paper/`.
+Main findings hold across all rotations. Weeks 5–6 — writing. Paper moved to LaTeX for Overleaf (`paper/`); Methods and Results written, compiles cleanly.
 Next: Introduction, Related work, Discussion, Abstract.
 
 ## Checklist
@@ -44,6 +44,7 @@ Next: Introduction, Related work, Discussion, Abstract.
 - [x] Outline (`docs/paper/outline.md`)
 - [x] Methods draft (`docs/paper/03_methods.md`)
 - [x] Results draft (`docs/paper/04_results.md`), numbers traced in `docs/paper/numbers.md`
+- [x] LaTeX project for Overleaf (`paper/`): sections, tables generated from results, bibliography
 - [ ] Introduction, Related work, Discussion, Limitations, Conclusion, Abstract
 - [ ] Verify related-work references
 - [ ] Supervisor / co-author review
@@ -124,3 +125,5 @@ Next: Introduction, Related work, Discussion, Abstract.
   - Mixing source and real calibration bearings ("combined") is in between.
 - 2026-10-02 — Figures and tables generated (`scripts/make_figures.py`, `scripts/make_tables.py`). Silent real
   bearings with the main feature set: KA15, KA22 (outer race), KI16, KI17 (inner race), all at 69–94 % mean confidence.
+- 2026-10-02 — Paper moved to LaTeX for Overleaf. Results reordered (thresholds before reliability; ablation before
+  real-bearing calibration) and figures 3/4 renamed so file names match paper numbering.

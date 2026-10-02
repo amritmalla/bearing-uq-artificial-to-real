@@ -51,6 +51,7 @@ def save(fig, name: str) -> list[Path]:
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     paths = [FIG_DIR / f"{name}.{ext}" for ext in ("png", "pdf")]
     for p in paths:
-        fig.savefig(p)
+        # no creation timestamp, so re-running gives byte-identical PDFs
+        fig.savefig(p, metadata={"CreationDate": None} if p.suffix == ".pdf" else None)
     plt.close(fig)
     return paths

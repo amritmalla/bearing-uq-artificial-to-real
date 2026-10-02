@@ -1,5 +1,7 @@
 # 4. Results
 
+> **Superseded:** the LaTeX version in `paper/sections/` is now the source of truth; edit that instead.
+
 *Draft. Main setting: fault-frequency features. Unless stated otherwise, values are bootstrap means with 95 %
 intervals in brackets (Section 3.9), and calibrated results use temperature scaling. Sources for every number are
 in `numbers.md`.*

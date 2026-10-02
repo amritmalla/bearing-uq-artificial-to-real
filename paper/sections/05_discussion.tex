@@ -1,0 +1,20 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\todo{About 900 words. Planned points:}
+\begin{itemize}[nosep]
+  \item Why thresholds fail: for the silent bearings the fault-frequency signature is weak or absent, so the model is
+        confidently wrong; calibration fitted on artificial data cannot see this.
+  \item Calibration on artificial bearings does not transfer: in-domain ECE 0.01--0.09 vs 0.17--0.20 on real damage.
+  \item Conformal prediction: the shift breaks exchangeability; class-conditional conformal did not help here,
+        unlike the class-proportion mismatch case in \citet{gonzalezgarcia2026}.
+  \item Recommendations for practice: calibrate and set thresholds on labelled real bearings; expect lower
+        automation; report results per bearing.
+  \item Feature lesson: absolute-amplitude features describe individual bearings rather than damage.
+\end{itemize}
+
+\subsection{Limitations}
+\label{sec:limitations}
+
+\todo{About 300 words: one operating condition; few bearings per class; one test rig; fixed demodulation band;
+window-level conformal calibration with correlated windows from the same bearing.}

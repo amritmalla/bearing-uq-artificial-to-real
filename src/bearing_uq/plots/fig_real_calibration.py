@@ -1,4 +1,4 @@
-"""Figure 3: effect of calibrating on a few real-damage bearings (temperature scaling)."""
+"""Figure 4: effect of calibrating on a few real-damage bearings (temperature scaling)."""
 
 import matplotlib.pyplot as plt
 import numpy as np
