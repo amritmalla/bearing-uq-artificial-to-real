@@ -5,7 +5,8 @@ _Last updated: 2026-10-02_
 ## Current phase
 
 Week 3 — robustness runs done: 105 calibration-bearing rotations and an in-domain reference.
-Main findings hold across all rotations. Main feature set decided (fault-frequency only). Remaining week 3: bootstrap CIs and target-calibration experiment.
+Main findings hold across all rotations. Week 3 complete: bootstrap confidence intervals and real-damage calibration experiment done.
+Next: week 4 — figures and tables.
 
 ## Checklist
 
@@ -31,8 +32,8 @@ Main findings hold across all rotations. Main feature set decided (fault-frequen
 ### Week 3 — Experiments
 - [x] Artificial → real evaluation repeated over all 105 calibration-bearing choices (`scripts/run_rotations.py`, `summarise_rotations.py`)
 - [x] In-domain reference: leave-one-bearing-out within the source bearings (`scripts/run_in_domain.py`)
-- [ ] Target-calibration experiment (0 / 1 / 2 real bearings per class)
-- [ ] Bootstrap confidence intervals over bearings
+- [x] Target-calibration experiment (1 / 2 real bearings per class vs source calibration; `scripts/run_target_calibration.py`)
+- [x] Bootstrap confidence intervals over bearings (`scripts/save_predictions.py`, `scripts/run_bootstrap.py`)
 
 ### Week 4 — Analysis
 - [ ] Figures and tables
@@ -100,3 +101,17 @@ Main findings hold across all rotations. Main feature set decided (fault-frequen
     for RF (8 % → 29 %) and SVM (19 % → 26 %), falls for XGBoost (35 % → 26 %).
   - Conformal marginal coverage falls further below nominal 90 %: 0.65–0.68 (all features 0.80–0.89).
   - Recall on real damage: healthy 0.82–0.85 (from 0.66), inner race 0.73 (from 0.75–0.80), outer race 0.56–0.57.
+- 2026-10-02 — Bootstrap (fault_only; 2,000 draws resampling the calibration rotation and the test bearings within
+  each class). Mean [95 % interval], temperature scaling:
+  - Accuracy on real damage ≈ 0.69 [0.50–0.86] for all models: wide, because there are only 3–6 real bearings per class.
+  - Automated error at the 5 % target: RF 0.27 [0.10–0.46], SVM 0.24 [0.08–0.45], XGBoost 0.26 [0.09–0.45]
+    — the lower bound is above 5 % for every model.
+  - Conformal marginal coverage (nominal 0.90): 0.65–0.68, upper bound 0.84–0.87 — below nominal for every model.
+- 2026-10-02 — Real-damage calibration (fault_only; 50 draws each for 1 and 2 real bearings per class; all
+  calibration sets scored on the same remaining test bearings). Temperature scaling, mean over models:
+  - Automated error at the 5 % target: source calibration 0.25–0.28; 1 real bearing/class 0.16–0.19;
+    2 real bearings/class 0.10–0.11. The 5 % target is met in 0–1 % of draws with source calibration,
+    36 % with 1 and 51 % with 2 real bearings per class.
+  - The price is less automation: 80–89 % of cases automated with source calibration vs 35–39 % with 2 real bearings.
+  - ECE: 0.19–0.23 (source) → 0.13–0.17 (2 real bearings). Conformal coverage: 0.64–0.67 → 0.84–0.85 (nominal 0.90).
+  - Mixing source and real calibration bearings ("combined") is in between.

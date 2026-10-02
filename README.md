@@ -53,6 +53,9 @@ src/bearing_uq/
   metrics.py           accuracy, ECE, Brier, risk-coverage, automation rate
   experiment.py        main artificial-to-real experiment
   in_domain.py         leave-one-bearing-out reference on source bearings
+  predictions.py       save / load per-rotation test predictions
+  bootstrap.py         hierarchical bootstrap over rotations and bearings
+  target_calibration.py  real-damage calibration experiment
   data/files.py        recording file paths
   data/download.py     download archives, extract one operating condition
   data/loader.py       read vibration signal from .mat
@@ -67,6 +70,9 @@ scripts/run_baseline.py     run the main experiment, write results/
 scripts/run_rotations.py    repeat it for all 105 calibration-bearing choices (--features all|fault_only)
 scripts/summarise_rotations.py  mean/std/min/max tables for the rotations
 scripts/run_in_domain.py    in-domain reference (leave one source bearing out)
+scripts/save_predictions.py per-rotation test predictions for the bootstrap (data/predictions/)
+scripts/run_bootstrap.py    bootstrap 95 % intervals over rotations and test bearings
+scripts/run_target_calibration.py  calibrate on 1-2 real bearings per class vs source bearings
 notebooks/colab_run.ipynb   run the pipeline in Google Colab
 tests/                      unit tests on synthetic signals
 ```
