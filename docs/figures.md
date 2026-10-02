@@ -15,8 +15,8 @@ Files: `results/figures/` (PNG at 300 dpi + PDF), `results/tables/` (CSV + Markd
 **Draft caption.** Error among automatically decided cases as a function of the share of cases automated (most
 confident first), for unseen artificial-damage bearings (leave one bearing out; solid) and real-damage bearings
 (dashed; median and interquartile range over 105 calibration-bearing rotations). Dotted line: 5 % error target.
-On artificial damage, all three models can automate 80–90 % of cases below 5 % error; on real damage, only
-about 15–30 %.
+With the best possible threshold, the models automate 81–91 % of unseen artificial-bearing cases below 5 % error,
+but only 25–30 % of real-damage cases (median over rotations).
 
 ## Figure 2 — `fig2_reliability`
 
@@ -24,8 +24,8 @@ about 15–30 %.
 (pooled over 105 rotations). Bins with fewer than 20 windows are omitted. Dotted line: perfect calibration.
 Models that are close to calibrated on unseen artificial bearings are overconfident on real damage (ECE 0.18–0.25).
 
-**Note for the text:** the SVM's in-domain curve dips at 0.75 confidence; that bin is dominated by a single
-held-out artificial bearing, and it illustrates how few bearings each bin rests on.
+**Note for the text:** the SVM's in-domain curve dips at 0.75 confidence because 80 of that bin's 131 windows come
+from one held-out artificial bearing (KI01), all misclassified — an illustration of how few bearings each bin rests on.
 
 ## Figure 3 — `fig3_real_calibration`
 
