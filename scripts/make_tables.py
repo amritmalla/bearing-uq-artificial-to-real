@@ -11,7 +11,11 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from bearing_uq import config  # noqa: E402
 from bearing_uq.tables import MODEL_LABEL, ci, to_markdown  # noqa: E402
+
+CONDITION_LABEL = {"N15_M07_F10": "1500 rpm, 0.7 Nm, 1000 N (main)", "N15_M01_F10": "1500 rpm, 0.1 Nm, 1000 N",
+                   "N15_M07_F04": "1500 rpm, 0.7 Nm, 400 N", "N09_M07_F10": "900 rpm, 0.7 Nm, 1000 N"}
 
 RES = Path("results")
 OUT = RES / "tables"
@@ -94,6 +98,32 @@ def table_real_calibration() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def table_conditions() -> pd.DataFrame:
+    missed = pd.read_csv(RES / "missed_faults_fault_only_all_conditions.csv").set_index(["condition", "model"])
+    rows = []
+    for cond in CONDITION_LABEL:
+        sfx = config.result_suffix("fault_only", cond)
+        boot = pd.read_csv(RES / f"bootstrap{sfx}.csv").set_index(["model", "calibration", "metric"])
+        ind = pd.read_csv(RES / f"in_domain_summary{sfx}.csv").set_index("model")
+        rot = pd.read_csv(RES / f"rotations_main{sfx}.csv")
+        rot = rot[(rot.domain == "target_real") & (rot.calibration == "temperature") & (rot["auto_rate@5%"] > 0)]
+        exceed = rot.groupby("model")["auto_error@5%"].apply(lambda s: (s > 0.05).mean())
+
+        def b(m, cal, metric):
+            r = boot.loc[(m, cal, metric)]
+            return ci(r["mean"], r.ci_low, r.ci_high)
+
+        for m in MODELS:
+            rows.append({"Condition": CONDITION_LABEL[cond], "Model": MODEL_LABEL[m],
+                         "In-domain accuracy": f"{ind.loc[m, 'accuracy']:.2f}",
+                         "Real accuracy": b(m, "temperature", "accuracy"),
+                         "Error at 5% target": b(m, "temperature", "auto_error@5%"),
+                         "Runs exceeding 5% target": f"{exceed[m]:.0%}",
+                         "Conformal coverage": b(m, "conformal_marginal", "coverage"),
+                         "Missed faults (share of errors)": f"{missed.loc[(cond, m), 'missed_share']:.2f}"})
+    return pd.DataFrame(rows)
+
+
 def main() -> None:
     _write(table_main(), "table1_main",
            "Fault-frequency features; temperature scaling; real-damage values: mean [95 % interval] from 2,000 "
@@ -105,6 +135,10 @@ def main() -> None:
            "Fault-frequency features; temperature scaling; mean [2.5th, 97.5th percentile] over 50 draws per setting. "
            "Artificial-bearing values pooled over the 100 draws. Each draw's settings are scored on the same test bearings. "
            "Draws meeting the target counts only draws that automated at least one case.")
+    _write(table_conditions(), "table4_conditions",
+           "Fault-frequency features; temperature scaling; same bearing splits in every condition. Real-damage values: "
+           "mean [95 % interval] from 2,000 bootstrap draws. Missed faults: share of real-damage errors that call a "
+           "damaged bearing healthy (mean over rotations).")
     for f in sorted(OUT.glob("*.md")):
         print(f"--- {f.name}\n{f.read_text()}")
 

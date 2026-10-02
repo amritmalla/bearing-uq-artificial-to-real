@@ -1,0 +1,16 @@
+| Condition | Model | In-domain accuracy | Real accuracy | Error at 5% target | Runs exceeding 5% target | Conformal coverage | Missed faults (share of errors) |
+|---|---|---|---|---|---|---|---|
+| 1500 rpm, 0.7 Nm, 1000 N (main) | Random Forest | 0.91 | 0.69 [0.52, 0.86] | 0.27 [0.10, 0.46] | 100% | 0.65 [0.43, 0.84] | 0.67 |
+| 1500 rpm, 0.7 Nm, 1000 N (main) | SVM | 0.88 | 0.69 [0.50, 0.86] | 0.24 [0.07, 0.45] | 100% | 0.68 [0.45, 0.87] | 0.62 |
+| 1500 rpm, 0.7 Nm, 1000 N (main) | XGBoost | 0.91 | 0.70 [0.52, 0.85] | 0.26 [0.09, 0.44] | 100% | 0.67 [0.45, 0.85] | 0.68 |
+| 1500 rpm, 0.1 Nm, 1000 N | Random Forest | 0.94 | 0.71 [0.53, 0.87] | 0.27 [0.11, 0.46] | 100% | 0.64 [0.41, 0.84] | 0.77 |
+| 1500 rpm, 0.1 Nm, 1000 N | SVM | 0.81 | 0.71 [0.52, 0.87] | 0.25 [0.08, 0.44] | 100% | 0.68 [0.42, 0.89] | 0.69 |
+| 1500 rpm, 0.1 Nm, 1000 N | XGBoost | 0.94 | 0.71 [0.54, 0.87] | 0.26 [0.09, 0.44] | 100% | 0.67 [0.43, 0.85] | 0.73 |
+| 1500 rpm, 0.7 Nm, 400 N | Random Forest | 0.76 | 0.66 [0.52, 0.82] | 0.17 [0.02, 0.39] | 98% | 0.80 [0.56, 0.96] | 0.26 |
+| 1500 rpm, 0.7 Nm, 400 N | SVM | 0.70 | 0.65 [0.45, 0.81] | 0.21 [0.02, 0.46] | 99% | 0.80 [0.56, 0.95] | 0.20 |
+| 1500 rpm, 0.7 Nm, 400 N | XGBoost | 0.74 | 0.67 [0.52, 0.82] | 0.15 [0.00, 0.36] | 88% | 0.82 [0.59, 0.96] | 0.27 |
+| 900 rpm, 0.7 Nm, 1000 N | Random Forest | 0.69 | 0.61 [0.44, 0.78] | 0.11 [0.01, 0.33] | 79% | 0.85 [0.65, 0.99] | 0.50 |
+| 900 rpm, 0.7 Nm, 1000 N | SVM | 0.57 | 0.61 [0.44, 0.78] | 0.10 [0.01, 0.30] | 68% | 0.86 [0.64, 0.99] | 0.45 |
+| 900 rpm, 0.7 Nm, 1000 N | XGBoost | 0.68 | 0.61 [0.45, 0.77] | 0.12 [0.01, 0.33] | 83% | 0.85 [0.66, 0.97] | 0.48 |
+
+Fault-frequency features; temperature scaling; same bearing splits in every condition. Real-damage values: mean [95 % interval] from 2,000 bootstrap draws. Missed faults: share of real-damage errors that call a damaged bearing healthy (mean over rotations).

@@ -36,7 +36,7 @@ def table_env(label: str, caption: str, colspec: str, header: list[str], rows: l
 
 
 def table1() -> str:
-    df = pd.read_csv(TABLES_IN / "table1_main.csv")
+    df = pd.read_csv(TABLES_IN / "table1_main.csv", dtype=str)
     metrics = [c for c in df.columns if c != "Model"]
     names = {"Conformal coverage (nominal 0.90)": "Conformal coverage (nominal 0.90)",
              "Best possible automation at 5%": "Best possible automation at 5\\% target"}
@@ -49,7 +49,7 @@ def table1() -> str:
 
 
 def table2() -> str:
-    df = pd.read_csv(TABLES_IN / "table2_feature_ablation.csv")
+    df = pd.read_csv(TABLES_IN / "table2_feature_ablation.csv", dtype=str)
     header = [r"\makecell[l]{Features}", "Model", r"\makecell{In-domain\\accuracy}", r"\makecell{In-domain\\ECE}",
               r"\makecell{Real\\accuracy}", r"\makecell{Real\\ECE}", r"\makecell{Error at\\5\% target}",
               r"\makecell{Runs exceeding\\5\% target}", r"\makecell{Conformal\\coverage}"]
@@ -59,7 +59,7 @@ def table2() -> str:
 
 
 def table3() -> str:
-    df = pd.read_csv(TABLES_IN / "table3_real_calibration.csv")
+    df = pd.read_csv(TABLES_IN / "table3_real_calibration.csv", dtype=str)
     header = ["Model", "Calibrated on", r"\makecell{Error at\\5\% target}", r"\makecell{Draws meeting\\5\% target}",
               "Automated", "ECE", r"\makecell{Conformal\\coverage}"]
     caption = ("Calibrating on artificial bearings vs one or two labelled real bearings per class (fault-frequency "
@@ -69,11 +69,22 @@ def table3() -> str:
     return table_env("tab:realcal", caption, "llccccc", header, df.values.tolist(), fit_width=True)
 
 
+def table4() -> str:
+    df = pd.read_csv(TABLES_IN / "table4_conditions.csv", dtype=str)
+    header = ["Condition", "Model", r"\makecell{In-domain\\accuracy}", r"\makecell{Real\\accuracy}",
+              r"\makecell{Error at\\5\% target}", r"\makecell{Runs exceeding\\5\% target}",
+              r"\makecell{Conformal\\coverage}", r"\makecell{Missed faults\\(share of errors)}"]
+    caption = ("All four Paderborn operating conditions (shaft speed, load torque, radial force), with the same bearing "
+               "splits. Fault-frequency features, temperature scaling. Real damage: mean [95\\,\\% interval] from 2,000 "
+               "bootstrap draws. Missed faults: share of real-damage errors that call a damaged bearing healthy.")
+    return table_env("tab:conditions", caption, "llcccccc", header, df.values.tolist(), fit_width=True)
+
+
 def main() -> None:
     (PAPER / "tables").mkdir(parents=True, exist_ok=True)
     (PAPER / "figures").mkdir(parents=True, exist_ok=True)
     for name, build in (("table1_main", table1), ("table2_feature_ablation", table2),
-                        ("table3_real_calibration", table3)):
+                        ("table3_real_calibration", table3), ("table4_conditions", table4)):
         (PAPER / "tables" / f"{name}.tex").write_text(build())
     for pdf in sorted(FIGURES_IN.glob("*.pdf")):
         shutil.copy2(pdf, PAPER / "figures" / pdf.name)
