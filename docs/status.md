@@ -47,7 +47,8 @@ Next: supervisor / co-author review, author details, repository link, target jou
 - [x] LaTeX project for Overleaf (`paper/`): sections, tables generated from results, bibliography
 - [x] Introduction, Related work, Discussion, Limitations, Conclusion, Abstract
 - [x] Verify related-work references (one paper omitted: authors/venue not confirmable)
-- [ ] Fill in author names/affiliations and repository link (red TODO boxes in the PDF)
+- [x] Authors: Yam Malla (corresponding), Bhuwan Karki; no institutional affiliation
+- [ ] Repository link (red TODO box in Methods)
 - [ ] Supervisor / co-author review
 - [ ] arXiv preprint
 - [ ] Journal submission
