@@ -5,8 +5,8 @@ _Last updated: 2026-10-02_
 ## Current phase
 
 Week 3 — robustness runs done: 105 calibration-bearing rotations and an in-domain reference.
-Main findings hold across all rotations. Week 3 complete: bootstrap confidence intervals and real-damage calibration experiment done.
-Next: week 4 — figures and tables.
+Main findings hold across all rotations. Week 4 complete: four figures and three tables generated from saved results (see `docs/figures.md`).
+Next: weeks 5–6 — writing.
 
 ## Checklist
 
@@ -36,7 +36,9 @@ Next: week 4 — figures and tables.
 - [x] Bootstrap confidence intervals over bearings (`scripts/save_predictions.py`, `scripts/run_bootstrap.py`)
 
 ### Week 4 — Analysis
-- [ ] Figures and tables
+- [x] Figures: risk–coverage, reliability, real-bearing calibration, per-bearing confidence vs accuracy
+- [x] Tables: main results with 95 % intervals, feature ablation, real-bearing calibration
+- [x] Draft captions (`docs/figures.md`)
 
 ### Weeks 5–6 — Writing
 - [ ] Draft
@@ -115,3 +117,5 @@ Next: week 4 — figures and tables.
   - The price is less automation: 80–89 % of cases automated with source calibration vs 35–39 % with 2 real bearings.
   - ECE: 0.19–0.23 (source) → 0.13–0.17 (2 real bearings). Conformal coverage: 0.64–0.67 → 0.84–0.85 (nominal 0.90).
   - Mixing source and real calibration bearings ("combined") is in between.
+- 2026-10-02 — Figures and tables generated (`scripts/make_figures.py`, `scripts/make_tables.py`). Silent real
+  bearings with the main feature set: KA15, KA22 (outer race), KI16, KI17 (inner race), all at 70–95 % confidence.

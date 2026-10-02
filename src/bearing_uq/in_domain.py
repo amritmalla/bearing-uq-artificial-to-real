@@ -12,18 +12,28 @@ from bearing_uq import metrics as M
 from bearing_uq.models import fit, make_models
 
 
-def leave_one_bearing_out(df: pd.DataFrame, codes: list[str], seed: int = 0,
-                          features: list[str] = D.FEATURES):
-    """Return (summary per model, per-bearing accuracy) on raw probabilities."""
+def lobo_probabilities(df: pd.DataFrame, codes: list[str], seed: int = 0,
+                       features: list[str] = D.FEATURES):
+    """Leave-one-bearing-out probabilities: (data rows, labels, {model: probs})."""
     data = df[df["bearing"].isin(codes)].reset_index(drop=True)
     X, y = D.design_matrix(data, features), D.targets(data)
-    summary, per_bearing = [], []
+    probs = {}
     for name in make_models(seed):
-        probs = np.zeros((len(data), len(D.LABELS)))
+        p = np.zeros((len(data), len(D.LABELS)))
         for code in codes:
             test = (data["bearing"] == code).to_numpy()
             model = fit(make_models(seed)[name], X[~test], y[~test])
-            probs[test] = model.predict_proba(X[test])
+            p[test] = model.predict_proba(X[test])
+        probs[name] = p
+    return data, y, probs
+
+
+def leave_one_bearing_out(df: pd.DataFrame, codes: list[str], seed: int = 0,
+                          features: list[str] = D.FEATURES):
+    """Return (summary per model, per-bearing accuracy) on raw probabilities."""
+    data, y, all_probs = lobo_probabilities(df, codes, seed, features)
+    summary, per_bearing = [], []
+    for name, probs in all_probs.items():
         correct = probs.argmax(1) == y
         summary.append({"model": name, "accuracy": M.accuracy(probs, y), "macro_f1": M.macro_f1(probs, y),
                         "ece": M.ece(probs, y), "brier": M.brier(probs, y),

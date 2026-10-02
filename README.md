@@ -5,6 +5,7 @@ using the Paderborn University bearing dataset.
 
 - Proposal: [`docs/proposal.md`](docs/proposal.md)
 - Project status and open decisions: [`docs/status.md`](docs/status.md)
+- Figures, tables and draft captions: [`docs/figures.md`](docs/figures.md)
 
 ## Setup
 
@@ -56,6 +57,8 @@ src/bearing_uq/
   predictions.py       save / load per-rotation test predictions
   bootstrap.py         hierarchical bootstrap over rotations and bearings
   target_calibration.py  real-damage calibration experiment
+  tables.py            table formatting
+  plots/               figure style, curve helpers, one module per figure
   data/files.py        recording file paths
   data/download.py     download archives, extract one operating condition
   data/loader.py       read vibration signal from .mat
@@ -73,6 +76,8 @@ scripts/run_in_domain.py    in-domain reference (leave one source bearing out)
 scripts/save_predictions.py per-rotation test predictions for the bootstrap (data/predictions/)
 scripts/run_bootstrap.py    bootstrap 95 % intervals over rotations and test bearings
 scripts/run_target_calibration.py  calibrate on 1-2 real bearings per class vs source bearings
+scripts/make_figures.py     paper figures -> results/figures/ (PNG + PDF)
+scripts/make_tables.py      paper tables -> results/tables/ (CSV + Markdown)
 notebooks/colab_run.ipynb   run the pipeline in Google Colab
 tests/                      unit tests on synthetic signals
 ```

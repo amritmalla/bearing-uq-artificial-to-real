@@ -9,7 +9,7 @@ random_forest,KA06,outer_race,1.0,0.9907447031183965
 random_forest,KA07,outer_race,0.9875,0.9863526023242178
 random_forest,KA08,outer_race,1.0,0.9980592747553291
 random_forest,KA09,outer_race,0.9873417721518988,0.98033017431082
-random_forest,KI01,inner_race,0.6625,0.5966930264666032
+random_forest,KI01,inner_race,0.6625,0.596693026466603
 random_forest,KI03,inner_race,0.775,0.8897705514689911
 random_forest,KI05,inner_race,0.85,0.9010966797143534
 random_forest,KI07,inner_race,0.9746835443037974,0.9664748969007062
