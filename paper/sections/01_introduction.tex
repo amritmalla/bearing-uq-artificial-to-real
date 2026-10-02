@@ -26,7 +26,8 @@ We study these questions with three standard classifiers---Random Forest, suppor
 envelope-spectrum features of the Paderborn vibration signals. Models are trained and calibrated on artificially
 damaged bearings and tested on bearings with real damage, with every bearing assigned to exactly one split. Because
 results depend strongly on which bearings are held out for calibration, we repeat the experiment for all 105
-possible choices and estimate uncertainty with a bootstrap over bearings. We ask:
+possible choices and estimate uncertainty with a bootstrap over bearings. The main analysis uses one operating
+condition; we repeat it at the dataset's three other conditions and with an adaptive demodulation band. We ask:
 \begin{enumerate}[nosep,label=\textbf{RQ\arabic*}]
   \item How much do accuracy and calibration degrade from artificial to real damage?
   \item Do confidence thresholds, post-hoc calibration and conformal prediction fitted on artificial damage still
@@ -44,7 +45,9 @@ Our contributions are:
         bearings.
   \item The identification of ``silent'' real-damage bearings, whose fault signature is indistinguishable from a
         healthy bearing's in the envelope spectrum and which are therefore confidently diagnosed as healthy or as
-        the wrong fault.
+        the wrong fault; two of them are misclassified at every operating condition of the dataset.
+  \item A repetition at four operating conditions, showing that the failure is strongest where the features
+        separate artificial damage best, and that missed faults dominate the errors only at those conditions.
   \item A test of calibrating on one or two labelled real bearings per class, which lowers the error at the 5\,\%
         target to 0.10--0.11 but does not reliably meet it, and makes the system automate fewer cases.
   \item A feature ablation showing that amplitude-based time-domain features describe individual bearings rather

@@ -7,13 +7,17 @@ We use the Paderborn University KAt bearing dataset \citep{lessmeier2016,katdata
 ball bearings of type 6203 on an electromechanical drive test rig. Its distinguishing feature for this study is that
 it contains both \emph{artificially damaged} bearings (damage introduced by electric discharge machining, drilling or
 electric engraving) and bearings with \emph{real damage} that developed during accelerated lifetime tests. We use the
-vibration signal (sampled at 64\,kHz) at a single operating condition, \texttt{N15\_M07\_F10}: 1{,}500\,rpm shaft
-speed, 0.7\,Nm load torque and 1{,}000\,N radial force. Each bearing has 20 recordings of 4\,s.
+vibration signal (sampled at 64\,kHz). The main analysis uses the operating condition \texttt{N15\_M07\_F10}:
+1{,}500\,rpm shaft speed, 0.7\,Nm load torque and 1{,}000\,N radial force. To test whether the findings depend on
+this choice, we repeat the evaluation at the dataset's three other conditions: lower load torque (0.1\,Nm), lower
+radial force (400\,N) and lower speed (900\,rpm), with the other two parameters unchanged
+(Section~\ref{sec:conditions}). Each bearing has 20 recordings of 4\,s per condition.
 
 We consider three classes---healthy, inner-race fault and outer-race fault---and use 29 bearings: 6 healthy, 12 with
 artificial damage (7 outer race, 5 inner race) and 11 with real damage (5 outer race, 6 inner race). Bearings with
 combined inner- and outer-race damage are excluded. Each recording is cut into non-overlapping 1\,s windows
-(64{,}000 samples), giving 2{,}309 windows, or 78--80 per bearing.
+(64{,}000 samples), giving 2{,}309 windows at the main condition (2{,}305--2{,}308 at the others), or 78--80 per
+bearing.
 
 \subsection{Features}
 \label{sec:features}
@@ -28,13 +32,20 @@ $d = 6.75$\,mm, pitch diameter $D = 28.55$\,mm, contact angle $0^\circ$) at shaf
   \qquad
   \mathrm{BPFI} = \frac{n}{2}\left(1 + \frac{d}{D}\right) f_r \approx 123.6\,\mathrm{Hz}.
 \end{equation}
-For each of BPFO and BPFI and their second harmonics, the feature is the largest envelope-spectrum amplitude within
+At 900\,rpm ($f_r = 15$\,Hz) these become 45.8\,Hz and 74.2\,Hz. For each of BPFO and BPFI and their second harmonics, the feature is the largest envelope-spectrum amplitude within
 $\pm 2\,\%$ of the target frequency, divided by the median envelope-spectrum amplitude between 10 and 500\,Hz. These
 four ratios are self-normalised: they compare a peak with the spectrum's own noise floor rather than measuring
 absolute vibration level. All four are log-transformed before modelling.
 
 \paragraph{All features (ablation).} The ablation adds five time-domain statistics of the raw window: root mean
 square, kurtosis, skewness, crest factor and peak-to-peak amplitude (log-transformed except skewness).
+
+\paragraph{Adaptive band (robustness check).} Because a fixed demodulation band might miss impacts that excite
+other resonances, we also select the band per window from the spectral kurtosis \citep{antoni2006}, which is large
+where a signal is dominated by repetitive impacts. Spectral kurtosis is estimated from a short-time Fourier transform
+(256-sample segments), averaged over a 4\,kHz band, and the band with the largest value between 1 and 30\,kHz is used
+for demodulation; the same four fault-frequency features are then computed. This simplified procedure fixes the band
+width rather than searching over widths as the kurtogram does.
 
 \paragraph{Order of decisions.} Our first analysis used all nine features. We adopted the fault-frequency features as
 the main setting after that analysis showed that the amplitude features generalise poorly to unseen bearings of the
@@ -51,7 +62,8 @@ and K004; the \emph{target domain} contains the 11 real-damage bearings and heal
 The healthy bearings were assigned with care. Their median kurtosis differs strongly: 13.6--15.8 for K001, K002,
 K003 and K006, but 4.2--5.1 for K004 and K005, which indicates an impulsive component unrelated to bearing damage. We
 place one low-kurtosis healthy bearing on each side, so that the healthy class itself does not shift between domains.
-This assignment was made after inspecting the feature distributions but before any model was trained.
+This assignment was made after inspecting the feature distributions but before any model was trained, and the same
+split is used for every operating condition.
 
 From the source domain, one bearing per class is held out as the \emph{calibration set}; the remaining source
 bearings form the \emph{training set}. Because results depend strongly on which bearings are held out, we repeat the
@@ -132,7 +144,7 @@ $n$, each combined with a randomly chosen rotation. The classifier is always tra
 training set. We compare three calibration sets, all evaluated on the \emph{same remaining test bearings}:
 \emph{source} (the rotation's held-out source bearings), \emph{target} (only the $n$ target bearings per class) and
 \emph{combined} (both). Calibrators, conformal thresholds and automation thresholds are fitted on each calibration set
-in turn.
+in turn. This experiment is run for the main operating condition only.
 
 \subsection{Implementation}
 

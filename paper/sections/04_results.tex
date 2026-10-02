@@ -1,7 +1,8 @@
 \section{Results}
 \label{sec:results}
 
-Unless stated otherwise, results use the fault-frequency features, calibrated results use temperature scaling, and
+Unless stated otherwise, results are for the main operating condition and the fault-frequency features, calibrated
+results use temperature scaling, and
 values are bootstrap means with 95\,\% intervals in brackets (Section~\ref{sec:bootstrap}).
 
 \input{tables/table1_main}
@@ -122,3 +123,39 @@ across draws is large (Table~\ref{tab:realcal}), as it depends on which real bea
 \end{figure}
 
 \input{tables/table3_real_calibration}
+
+\subsection{Other operating conditions}
+\label{sec:conditions}
+
+Table~\ref{tab:conditions} repeats the evaluation at the three other operating conditions, with the same bearing
+splits. At lower load torque the results are almost identical to the main condition: unseen artificial bearings are
+classified with accuracy 0.81--0.94, real damage with 0.71--0.72, the 5\,\% target is exceeded in every rotation with
+an error of 0.25--0.27, and conformal coverage is 0.64--0.68.
+
+At lower radial force and lower speed, the fault-frequency features separate the classes less well even on artificial
+damage (in-domain accuracy 0.70--0.76 and 0.57--0.69). The models are then less confident, and the failure is milder
+but still present: the error at the 5\,\% target is 0.15--0.21 and 0.10--0.12, the target is exceeded in 88--99\,\% and
+68--83\,\% of rotations, and conformal coverage reaches 0.80--0.86, with intervals that include the nominal 0.90.
+
+KA15 and KA22 are misclassified at every condition (mean accuracy over the three models at most 0.41), and KI16 and
+KI17 at the two 1{,}500\,rpm conditions with 1{,}000\,N radial force and at 900\,rpm. The nature of the errors,
+however, depends on the condition. Where the features are strong, most errors are missed faults (62--80\,\% of
+errors at the main and low-torque conditions). At lower radial force and lower speed, false alarms on healthy bearings
+also occur---healthy bearing K006, for example, is classified as damaged in 92\,\% of its windows at 400\,N---and missed
+faults account for 20--27\,\% and 45--50\,\% of errors.
+
+\input{tables/table4_conditions}
+
+
+\subsection{Adaptive demodulation band}
+\label{sec:adaptive}
+
+Selecting the demodulation band by spectral kurtosis (Section~\ref{sec:features}) did not recover the silent bearings;
+it made every result worse. The spectral-kurtosis maximum lies at 18--23\,kHz (median over windows) for 27 of the 29
+bearings, healthy bearings included, so it reflects impulsive content of the test rig rather than bearing damage. In
+that band the fault peaks of most damaged bearings disappear---the outer-race peak of artificial bearing KA01, for
+example, falls from 41.9 to 1.4 times the noise floor---and only the two bearings whose band lies near 11\,kHz (KI01
+and KI18) keep a clear peak. Accuracy drops to 0.32--0.38 on unseen artificial bearings and to 0.37--0.39 on real
+damage (main condition, temperature scaling). The fixed 2--10\,kHz band is therefore the better choice for these
+signals. The simplified selection cannot rule out that a band chosen in another way would reveal the silent bearings,
+but it gives no evidence for it.

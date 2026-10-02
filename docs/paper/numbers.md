@@ -81,5 +81,27 @@ Conformal marginal singleton rate (fault_only): RF 0.87, SVM 0.83, XGB 0.89.
 Conformal marginal mean set size: all features 1.63 / 1.88 / 1.34; fault-frequency only 0.90 / 0.96 / 0.93.
 In-domain healthy accuracy with all features: 0.00 / 0.00 / 0.28 (`results/in_domain_per_bearing.csv`).
 
+## Other operating conditions (`results/tables/table4_conditions.csv`; fault_only, temperature scaling)
+Same bearing splits in every condition. Real-damage values: bootstrap mean (2,000 draws). Order RF / SVM / XGB.
+| Condition | In-domain acc. | Real acc. | Error at 5 % | Runs > 5 % | Conformal cov. | Missed-fault share |
+|---|---|---|---|---|---|---|
+| N15_M07_F10 (main) | 0.91 / 0.88 / 0.91 | 0.69 / 0.69 / 0.70 | 0.27 / 0.24 / 0.26 | 100 % (all) | 0.65 / 0.68 / 0.67 | 0.67 / 0.62 / 0.68 |
+| N15_M01_F10 (0.1 Nm) | 0.94 / 0.81 / 0.94 | 0.71 / 0.71 / 0.71 | 0.27 / 0.25 / 0.26 | 100 % (all) | 0.64 / 0.68 / 0.67 | 0.77 / 0.69 / 0.73 |
+| N15_M07_F04 (400 N) | 0.76 / 0.70 / 0.74 | 0.66 / 0.65 / 0.67 | 0.17 / 0.21 / 0.15 | 98 / 99 / 88 % | 0.80 / 0.80 / 0.82 | 0.26 / 0.20 / 0.27 |
+| N09_M07_F10 (900 rpm) | 0.69 / 0.57 / 0.68 | 0.61 / 0.61 / 0.61 | 0.11 / 0.10 / 0.12 | 79 / 68 / 83 % | 0.85 / 0.86 / 0.85 | 0.50 / 0.45 / 0.48 |
+
+Silent bearings across conditions (`results/per_bearing_real_fault_only_all_conditions.csv`): KA15 and KA22
+misclassified at all four conditions (mean accuracy over models ≤ 0.41); KI16, KI17 at N15_M07_F10, N15_M01_F10 and
+N09_M07_F10. K006 classified as damaged in 92 % of windows at N15_M07_F04.
+Windows per condition: 2,309 (main), 2,308 (900 rpm), 2,305 (0.1 Nm), 2,307 (400 N).
+Fault frequencies at 900 rpm: BPFO 45.8 Hz, BPFI 74.2 Hz.
+
+## Adaptive band (`fault_only_sk`; main condition)
+- Spectral-kurtosis band centre, median over windows per bearing: 18.0–22.75 kHz for 27 of 29 bearings (healthy
+  included); KI01 10.75 kHz, KI18 11.0 kHz (`data/features/features_N15_M07_F10.csv`, `sk_band_centre_hz`).
+- KA01 bpfo_h1 41.91 (fixed band) → 1.41 (SK band). Only KI01 and KI18 keep a clear peak (bpfi_h1_sk 13.95, 13.84).
+- In-domain accuracy 0.38 / 0.32 / 0.36 (`results/in_domain_summary_fault_only_sk.csv`); real accuracy (temperature,
+  mean over rotations) 0.37 / 0.39 / 0.37 (`results/rotations_summary_main_fault_only_sk.csv`).
+
 ## Software
 scikit-learn 1.7.2, XGBoost 3.2.0, SciPy 1.15.3, NumPy 2.2.6, pandas 2.3.3 (Python 3.10).

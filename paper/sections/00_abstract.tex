@@ -5,12 +5,14 @@ test whether calibrated confidence survives this shift on the Paderborn bearing 
 vector machine and XGBoost classifiers are trained on envelope-spectrum features of artificially damaged bearings,
 calibrated on held-out artificial bearings and tested on bearings with real damage from accelerated lifetime tests.
 Every bearing belongs to one split, the experiment is repeated for all 105 choices of calibration bearings, and
-uncertainty is estimated by a bootstrap over bearings. On unseen artificial bearings the models are close to
-calibrated (expected calibration error 0.01--0.09). On real damage, accuracy falls from 0.88--0.91 to about 0.69,
+uncertainty is estimated by a bootstrap over bearings. At the main operating condition, the models are close to
+calibrated on unseen artificial bearings (expected calibration error 0.01--0.09). On real damage, accuracy falls from 0.88--0.91 to about 0.69,
 and a confidence threshold chosen for 5\,\% error yields 24--27\,\% error, exceeding the target in every rotation.
 Temperature scaling and isotonic regression do not correct this, and split conformal prediction covers 0.65--0.68 of
 cases against a nominal 0.90. The failures concentrate on real-damage bearings whose envelope spectra show no fault
-signature: the models confidently call them healthy, so most errors are missed faults. Calibrating on two labelled
+signature: the models confidently call them healthy, so most errors are missed faults. The same pattern holds at
+lower load torque; at lower radial force and lower speed, where the features are weaker even on artificial damage,
+the models are less confident and the failure is milder but still present in most rotations. Calibrating on two labelled
 real bearings per class lowers the error at the 5\,\% target to 0.10--0.11 but meets it in only about half of the
 draws, while automating fewer cases. Automation thresholds for bearing diagnosis should therefore be set on real
 damage, and results reported per bearing.

@@ -4,9 +4,9 @@ _Last updated: 2026-10-02_
 
 ## Current phase
 
-Week 3 — robustness runs done: 105 calibration-bearing rotations and an in-domain reference.
-Main findings hold across all rotations. Weeks 5–6 — writing. Full first draft complete in `paper/` (13 pages, compiles cleanly).
-Next: supervisor / co-author review, author details, repository link, target journal.
+Full draft in `paper/` (15 pages, compiles cleanly), now including all four operating conditions and an adaptive
+(spectral-kurtosis) demodulation band as robustness checks.
+Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; repository link; target journal.
 
 ## Checklist
 
@@ -55,8 +55,10 @@ Next: supervisor / co-author review, author details, repository link, target jou
 - [x] Pipeline supports all four operating conditions (`--condition`)
 - [x] Adaptive demodulation band from spectral kurtosis (`fault_only_sk` features)
 - [x] Colab notebook computes features for all four conditions, fixed + adaptive band
-- [ ] Run the Colab notebook; copy the four `features_*.csv` into `data/features/`
-- [ ] Experiments on the three other conditions and with the adaptive band; update paper
+- [x] Run the Colab notebook; copy the four `features_*.csv` into `data/features/`
+- [x] Experiments on the three other conditions and with the adaptive band; update paper (Table 4, Sections 4.7–4.8,
+      Discussion, Limitations, Abstract, Introduction, Conclusion)
+- [ ] Abstract is ~285 words; shorten if the target journal limits it to 250
 - [ ] Optional: small 1D-CNN baseline
 - [ ] Supervisor / co-author review
 - [ ] arXiv preprint
@@ -144,3 +146,13 @@ Next: supervisor / co-author review, author details, repository link, target jou
 - 2026-10-02 — Started addressing reviewer weaknesses: multi-condition support, spectral-kurtosis band,
   disclosure of data-driven choices. Paderborn server unreachable from the local shell, so new features come
   from Colab. Previous main feature table backed up as `data/features/features_N15_M07_F10_v1.csv`.
+- 2026-10-02 — Robustness results added to the paper.
+  - Four operating conditions, same splits (Table 4). Low torque replicates the main result (error at 5 % target
+    0.25–0.27, exceeded in every rotation). At 400 N and 900 rpm the features are weaker even in-domain (0.57–0.76),
+    models are less confident and the failure is milder (error 0.10–0.21, exceeded in 68–99 % of rotations).
+  - Missed faults dominate errors only where features are strong (62–77 %); at 400 N and 900 rpm 20–50 %, with false
+    alarms on healthy bearings (K006 92 % misclassified at 400 N). Abstract and conclusion qualified accordingly.
+  - KA15 and KA22 are misclassified at all four conditions; KI16 and KI17 at three.
+  - Spectral-kurtosis band selection picks 18–23 kHz for 27 of 29 bearings, healthy included; fault peaks vanish and
+    accuracy falls to 0.32–0.39. Reported as a negative robustness check.
+  - Fixed table formatting: trailing zeros were dropped in generated LaTeX tables (e.g. 0.2 → 0.20).
