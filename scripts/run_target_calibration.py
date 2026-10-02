@@ -2,7 +2,7 @@
 
 Each draw picks a random source rotation and random real calibration bearings.
 Usage (from the project root):
-    python scripts/run_target_calibration.py [--features fault_only|all] [--draws 50] [--max-seconds N]
+    python scripts/run_target_calibration.py [--features fault_only|all|fault_only_sk] [--condition N15_M07_F10] [--draws 50] [--max-seconds N]
 Resumable: draws already in the results file are skipped. Writes a summary when all draws are done.
 """
 
@@ -34,14 +34,16 @@ def summarise(rows: pd.DataFrame) -> pd.DataFrame:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--features", choices=FEATURE_SETS, default="fault_only")
+    parser.add_argument("--condition", choices=config.CONDITIONS, default=config.OPERATING_CONDITION)
     parser.add_argument("--draws", type=int, default=50)
     parser.add_argument("--max-seconds", type=float, default=float("inf"))
     args = parser.parse_args()
 
     start = time.monotonic()
-    out = Path("results") / f"target_calibration_{args.features}.csv"
+    name = args.features + config.result_suffix("all", args.condition)
+    out = Path("results") / f"target_calibration_{name}.csv"
     done = set() if not out.exists() else set(map(tuple, pd.read_csv(out)[["n_per_class", "seed"]].drop_duplicates().values))
-    df = load_features(config.FEATURES_DIR / f"features_{config.OPERATING_CONDITION}.csv")
+    df = load_features(config.features_path(args.condition))
     rotations = list(splits.calibration_rotations())
 
     for n in N_PER_CLASS:
@@ -58,7 +60,7 @@ def main() -> None:
             print(f"n={n} draw {d + 1}/{args.draws}", flush=True)
 
     summary = summarise(pd.read_csv(out))
-    summary.round(4).to_csv(out.with_name(f"target_calibration_summary_{args.features}.csv"), index=False)
+    summary.round(4).to_csv(out.with_name(f"target_calibration_summary_{name}.csv"), index=False)
     print("all draws done; summary written")
 
 

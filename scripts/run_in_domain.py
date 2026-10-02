@@ -1,7 +1,7 @@
 """In-domain reference: leave-one-bearing-out over the source (artificial + source healthy) bearings.
 
 Usage (from the project root):
-    python scripts/run_in_domain.py [--features all|fault_only]
+    python scripts/run_in_domain.py [--features all|fault_only|fault_only_sk] [--condition N15_M07_F10]
 """
 
 import argparse
@@ -20,10 +20,12 @@ from bearing_uq.in_domain import leave_one_bearing_out  # noqa: E402
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--features", choices=FEATURE_SETS, default="all")
-    feature_set = parser.parse_args().features
-    sfx = "" if feature_set == "all" else f"_{feature_set}"
+    parser.add_argument("--condition", choices=config.CONDITIONS, default=config.OPERATING_CONDITION)
+    args = parser.parse_args()
+    feature_set = args.features
+    sfx = config.result_suffix(feature_set, args.condition)
 
-    df = load_features(config.FEATURES_DIR / f"features_{config.OPERATING_CONDITION}.csv")
+    df = load_features(config.features_path(args.condition))
     summary, per_bearing = leave_one_bearing_out(df, splits.source_bearings(),
                                                  features=FEATURE_SETS[feature_set])
     Path("results").mkdir(exist_ok=True)

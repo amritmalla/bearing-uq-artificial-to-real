@@ -4,7 +4,7 @@ One source bearing per class is held out for calibration: 3 healthy x 5 inner x 
 Progress is saved after each run, so an interrupted job resumes where it stopped.
 
 Usage (from the project root):
-    python scripts/run_rotations.py [--features all|fault_only] [--max-seconds N]
+    python scripts/run_rotations.py [--features all|fault_only|fault_only_sk] [--condition N15_M07_F10] [--max-seconds N]
 With --max-seconds, the script stops cleanly after that time; run it again to continue.
 """
 
@@ -24,8 +24,8 @@ from bearing_uq.experiment import run  # noqa: E402
 OUT = Path("results")
 
 
-def result_files(feature_set: str) -> dict[str, Path]:
-    suffix = "" if feature_set == "all" else f"_{feature_set}"
+def result_files(feature_set: str, condition: str = config.OPERATING_CONDITION) -> dict[str, Path]:
+    suffix = config.result_suffix(feature_set, condition)
     return {name: OUT / f"rotations_{name}{suffix}.csv" for name in ("main", "conformal", "recall")}
 
 
@@ -36,13 +36,14 @@ def _done(files) -> set[str]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--features", choices=FEATURE_SETS, default="all")
+    parser.add_argument("--condition", choices=config.CONDITIONS, default=config.OPERATING_CONDITION)
     parser.add_argument("--max-seconds", type=float, default=float("inf"))
     args = parser.parse_args()
 
     start = time.monotonic()
     OUT.mkdir(exist_ok=True)
-    files = result_files(args.features)
-    df = load_features(config.FEATURES_DIR / f"features_{config.OPERATING_CONDITION}.csv")
+    files = result_files(args.features, args.condition)
+    df = load_features(config.features_path(args.condition))
     done = _done(files)
     rotations = list(splits.calibration_rotations())
     for i, (calib, split) in enumerate(rotations, start=1):

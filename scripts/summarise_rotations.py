@@ -1,13 +1,18 @@
 """Summarise the 105 calibration rotations (mean, std, min, max) into results/rotations_summary_*.csv.
 
 Usage (from the project root, after run_rotations.py):
-    python scripts/summarise_rotations.py [--features all|fault_only]
+    python scripts/summarise_rotations.py [--features all|fault_only|fault_only_sk] [--condition N15_M07_F10]
 """
 
 import argparse
+import sys
 from pathlib import Path
 
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+from bearing_uq import config  # noqa: E402
 
 OUT = Path("results")
 MAIN_COLS = ["accuracy", "macro_f1", "ece", "brier", "aurc",
@@ -17,8 +22,10 @@ MAIN_COLS = ["accuracy", "macro_f1", "ece", "brier", "aurc",
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--features", choices=["all", "fault_only"], default="all")
-    sfx = "" if parser.parse_args().features == "all" else f"_{parser.parse_args().features}"
+    parser.add_argument("--features", choices=["all", "fault_only", "fault_only_sk"], default="all")
+    parser.add_argument("--condition", choices=config.CONDITIONS, default=config.OPERATING_CONDITION)
+    args = parser.parse_args()
+    sfx = config.result_suffix(args.features, args.condition)
     m = pd.read_csv(OUT / f"rotations_main{sfx}.csv")
     c = pd.read_csv(OUT / f"rotations_conformal{sfx}.csv")
     r = pd.read_csv(OUT / f"rotations_recall{sfx}.csv")

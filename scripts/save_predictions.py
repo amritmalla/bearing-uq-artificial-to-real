@@ -1,7 +1,7 @@
 """Save per-rotation test predictions to data/predictions/<features>/ for the bootstrap.
 
 Usage (from the project root):
-    python scripts/save_predictions.py [--features fault_only|all] [--max-seconds N]
+    python scripts/save_predictions.py [--features fault_only|all|fault_only_sk] [--condition N15_M07_F10] [--max-seconds N]
 Resumable: rotations already saved are skipped.
 """
 
@@ -20,12 +20,13 @@ from bearing_uq.predictions import predict_rotation, save  # noqa: E402
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--features", choices=FEATURE_SETS, default="fault_only")
+    parser.add_argument("--condition", choices=config.CONDITIONS, default=config.OPERATING_CONDITION)
     parser.add_argument("--max-seconds", type=float, default=float("inf"))
     args = parser.parse_args()
 
     start = time.monotonic()
-    out = Path("data/predictions") / args.features
-    df = load_features(config.FEATURES_DIR / f"features_{config.OPERATING_CONDITION}.csv")
+    out = Path("data/predictions") / (args.features + config.result_suffix("all", args.condition))
+    df = load_features(config.features_path(args.condition))
     rotations = list(splits.calibration_rotations())
     for i, (calib, split) in enumerate(rotations, start=1):
         path = out / f"{'+'.join(calib)}.npz"

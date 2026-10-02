@@ -13,17 +13,20 @@ FEATURES = ["rms", "kurtosis", "skewness", "crest_factor", "peak_to_peak",
 # Self-normalised envelope-spectrum features (ratio to the spectrum's noise floor).
 FAULT_FEATURES = ["bpfo_h1", "bpfo_h2", "bpfi_h1", "bpfi_h2"]
 
-FEATURE_SETS = {"all": FEATURES, "fault_only": FAULT_FEATURES}
+# Same four features from a spectral-kurtosis-selected demodulation band (per window).
+FAULT_FEATURES_SK = [f"{f}_sk" for f in FAULT_FEATURES]
+
+FEATURE_SETS = {"all": FEATURES, "fault_only": FAULT_FEATURES, "fault_only_sk": FAULT_FEATURES_SK}
 
 # Positive, heavy-tailed features are log-transformed; skewness can be negative.
-LOG_FEATURES = [f for f in FEATURES if f != "skewness"]
+LOG_FEATURES = [f for f in FEATURES if f != "skewness"] + FAULT_FEATURES_SK
 
 LABELS = list(B.CLASSES)  # class index = position in this list
 
 
 def load_features(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path)
-    missing = set(FEATURES + ["bearing", "label"]) - set(df.columns)
+    missing = set(FEATURES + ["bearing", "label"]) - set(df.columns)  # *_sk columns are optional
     if missing:
         raise ValueError(f"Feature table is missing columns: {sorted(missing)}")
     return df

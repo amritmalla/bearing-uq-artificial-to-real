@@ -36,6 +36,11 @@ absolute vibration level. All four are log-transformed before modelling.
 \paragraph{All features (ablation).} The ablation adds five time-domain statistics of the raw window: root mean
 square, kurtosis, skewness, crest factor and peak-to-peak amplitude (log-transformed except skewness).
 
+\paragraph{Order of decisions.} Our first analysis used all nine features. We adopted the fault-frequency features as
+the main setting after that analysis showed that the amplitude features generalise poorly to unseen bearings of the
+\emph{source} domain (Section~\ref{sec:ablation}). Because this choice was made after seeing results, we report both
+settings in full.
+
 \subsection{Bearing-level splits}
 \label{sec:splits}
 
@@ -46,6 +51,7 @@ and K004; the \emph{target domain} contains the 11 real-damage bearings and heal
 The healthy bearings were assigned with care. Their median kurtosis differs strongly: 13.6--15.8 for K001, K002,
 K003 and K006, but 4.2--5.1 for K004 and K005, which indicates an impulsive component unrelated to bearing damage. We
 place one low-kurtosis healthy bearing on each side, so that the healthy class itself does not shift between domains.
+This assignment was made after inspecting the feature distributions but before any model was trained.
 
 From the source domain, one bearing per class is held out as the \emph{calibration set}; the remaining source
 bearings form the \emph{training set}. Because results depend strongly on which bearings are held out, we repeat the

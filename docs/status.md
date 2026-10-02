@@ -49,6 +49,15 @@ Next: supervisor / co-author review, author details, repository link, target jou
 - [x] Verify related-work references (one paper omitted: authors/venue not confirmable)
 - [x] Authors: Yam Malla (corresponding), Bhuwan Karki; no institutional affiliation
 - [ ] Repository link (red TODO box in Methods)
+
+### Reviewer-proofing (weaknesses identified 2026-10-02)
+- [x] Disclose data-driven choices in Methods (healthy split; main feature set)
+- [x] Pipeline supports all four operating conditions (`--condition`)
+- [x] Adaptive demodulation band from spectral kurtosis (`fault_only_sk` features)
+- [x] Colab notebook computes features for all four conditions, fixed + adaptive band
+- [ ] Run the Colab notebook; copy the four `features_*.csv` into `data/features/`
+- [ ] Experiments on the three other conditions and with the adaptive band; update paper
+- [ ] Optional: small 1D-CNN baseline
 - [ ] Supervisor / co-author review
 - [ ] arXiv preprint
 - [ ] Journal submission
@@ -132,3 +141,6 @@ Next: supervisor / co-author review, author details, repository link, target jou
 - 2026-10-02 — First full draft. References verified (added Forest & Fink 2024; Vieira et al. 2026). New finding
   for the Discussion: silent bearings show no fault peak (≈2.2× noise floor, within the healthy range), so 62–68 %
   of real-damage errors are missed faults (72–74 % of automated errors).
+- 2026-10-02 — Started addressing reviewer weaknesses: multi-condition support, spectral-kurtosis band,
+  disclosure of data-driven choices. Paderborn server unreachable from the local shell, so new features come
+  from Colab. Previous main feature table backed up as `data/features/features_N15_M07_F10_v1.csv`.

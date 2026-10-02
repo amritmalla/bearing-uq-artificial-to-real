@@ -20,8 +20,9 @@ pytest
 ## Run in Google Colab
 
 Upload `notebooks/colab_run.ipynb` to Colab and run the cells in order. The notebook is
-self-contained (no other project files needed): it downloads the data to Colab's temporary disk
-and saves the feature table to `MyDrive/load_bearing_research_paper/data/features/` in Google Drive.
+self-contained (no other project files needed). It downloads each bearing once and writes one feature
+table per operating condition (four in total) to `MyDrive/load_bearing_research_paper/data/features/`,
+resuming automatically if the session drops. Copy the four CSV files into `data/features/`.
 
 ## Data
 
