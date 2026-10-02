@@ -59,9 +59,12 @@ Codes must be checked against the dataset's own fact sheets after download.
 
 ## 5. Splits (bearing level — a bearing never appears in two splits)
 
-- **Source (train + calibration):** artificial-damage bearings + half of the healthy bearings.
-  Calibration set = held-out source bearings.
-- **Target (test):** real-damage bearings + the other healthy bearings.
+- **Source (train + calibration):** artificial-damage bearings + healthy K001, K002, K004.
+  Calibration set = held-out source bearings (K002, KA09, KI08).
+- **Target (test):** real-damage bearings + healthy K003, K005, K006.
+- **Why this healthy split:** K001, K002, K003 and K006 have median kurtosis 14–16, K004 and K005 only 4–5
+  (an impulsive component unrelated to bearing damage). Each side gets both kinds so the healthy class
+  does not itself shift between source and target.
 - **Target-calibration experiment:** move 1 or 2 real bearings per class from test into the
   calibration set; evaluate on the remaining real bearings.
 

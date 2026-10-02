@@ -4,7 +4,7 @@ _Last updated: 2026-10-02_
 
 ## Current phase
 
-Week 1 — data pipeline. Real data downloaded and feature table built (2,309 windows, 29 bearings). Healthy-bearing split needs a decision before modelling.
+Week 1 — data pipeline. Real data downloaded and feature table built (2,309 windows, 29 bearings). Healthy-bearing split decided; ready for week 2 (models).
 
 ## Checklist
 
@@ -42,12 +42,14 @@ Week 1 — data pipeline. Real data downloaded and feature table built (2,309 wi
 
 ## Open decisions (need your input)
 
-1. **Healthy-bearing split.** Original proposal (K001–K003 source, K004–K006 target) is unsafe: K001, K002, K003 and K006 have
-   median kurtosis 14–16, K004 and K005 only 4–5. The original split would put only high-kurtosis healthy bearings in training.
-   New proposal: source K001, K002, K004 (calibration K002); target K003, K005, K006.
-2. **Calibration bearings within source.** Proposed: hold out one bearing per class (e.g. KA09, KI08, K003).
-3. **Window length.** Proposed: 1 s (64,000 samples), non-overlapping.
-4. **Faculty supervisor / co-author.** Not yet identified.
+1. **Calibration bearings within source.** Proposed: KA09, KI08 (healthy calibration bearing K002 is decided).
+2. **Window length.** Proposed: 1 s (64,000 samples), non-overlapping.
+3. **Faculty supervisor / co-author.** Not yet identified.
+
+## Decided
+
+- **Healthy-bearing split** (2026-10-02): source K001, K002, K004 (K002 for calibration); target K003, K005, K006.
+  Reason: K004 and K005 have much lower kurtosis than the other healthy bearings, so each side gets one.
 
 ## Log
 

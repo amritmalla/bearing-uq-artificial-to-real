@@ -14,9 +14,12 @@ from bearing_uq import bearings as B
 
 TRAIN, CALIB, TEST = "train", "calib", "test"
 
-DEFAULT_SOURCE_HEALTHY = ("K001", "K002", "K003")
-DEFAULT_TARGET_HEALTHY = ("K004", "K005", "K006")
-DEFAULT_SOURCE_CALIB = ("K003", "KA09", "KI08")
+# Healthy bearings differ: K001, K002, K003 and K006 have median kurtosis 14-16, K004 and K005
+# only 4-5. Each side gets both kinds, so the healthy class does not shift between source and target.
+DEFAULT_SOURCE_HEALTHY = ("K001", "K002", "K004")
+DEFAULT_TARGET_HEALTHY = ("K003", "K005", "K006")
+LOW_KURTOSIS_HEALTHY = ("K004", "K005")
+DEFAULT_SOURCE_CALIB = ("K002", "KA09", "KI08")
 
 
 def artificial_to_real(source_healthy=DEFAULT_SOURCE_HEALTHY,

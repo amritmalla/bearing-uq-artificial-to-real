@@ -21,6 +21,12 @@ def test_no_real_damage_in_training():
     assert all(B.get(c).origin != B.REAL for c in S.codes_in(split, S.TRAIN))
 
 
+def test_low_kurtosis_healthy_bearings_on_both_sides():
+    split = S.artificial_to_real()
+    sides = {split[c] for c in S.LOW_KURTOSIS_HEALTHY}
+    assert S.TEST in sides and (S.TRAIN in sides or S.CALIB in sides)
+
+
 def test_healthy_overlap_rejected():
     with pytest.raises(ValueError):
         S.artificial_to_real(source_healthy=("K001",), target_healthy=("K001",))
