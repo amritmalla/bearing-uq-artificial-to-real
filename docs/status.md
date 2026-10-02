@@ -5,7 +5,7 @@ _Last updated: 2026-10-02_
 ## Current phase
 
 Week 3 — robustness runs done: 105 calibration-bearing rotations and an in-domain reference.
-Main findings hold across all rotations. Fault-frequency-only experiment done; choice of main feature set needs a decision.
+Main findings hold across all rotations. Main feature set decided (fault-frequency only). Remaining week 3: bootstrap CIs and target-calibration experiment.
 
 ## Checklist
 
@@ -45,9 +45,7 @@ Main findings hold across all rotations. Fault-frequency-only experiment done; c
 
 ## Open decisions (need your input)
 
-1. **Main feature set.** Proposed: fault-frequency features only (`fault_only`) as the main setting, with all
-   features reported as an ablation showing that amplitude features overfit to individual bearings (see log).
-2. **Faculty supervisor / co-author.** Not yet identified.
+1. **Faculty supervisor / co-author.** Not yet identified.
 
 ## Decided
 
@@ -57,6 +55,8 @@ Main findings hold across all rotations. Fault-frequency-only experiment done; c
 - **Window length** (2026-10-02): 1 s (64,000 samples), non-overlapping.
 - **Framing** (2026-10-02): keep the artificial→real framing; compare per damaged class; report the healthy class
   separately; lead with the trustworthiness findings.
+- **Main feature set** (2026-10-02): fault-frequency features only (`--features fault_only`). All nine features
+  are reported as an ablation showing that amplitude features overfit to individual bearings.
 
 ## Log
 

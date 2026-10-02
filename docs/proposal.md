@@ -70,11 +70,13 @@ Codes must be checked against the dataset's own fact sheets after download.
 
 ## 6. Features
 
-Computed per window (default 1 s windows):
+Computed per 1 s window.
 
-- Time domain: RMS, kurtosis, crest factor, skewness, peak-to-peak.
-- Envelope spectrum (band-pass + Hilbert): energy at BPFO and BPFI and their first harmonics,
-  normalised by the envelope spectrum's median level.
+- **Main setting:** envelope spectrum (band-pass 2–10 kHz + Hilbert) energy at BPFO and BPFI and their second
+  harmonics, each divided by the envelope spectrum's median level (self-normalised, 4 features).
+- **Ablation:** the four above plus time-domain RMS, kurtosis, crest factor, skewness and peak-to-peak (9 features).
+  These amplitude features differ strongly between individual bearings, including healthy ones, and reduce
+  generalisation to unseen bearings.
 
 Fault frequencies for 6203 at 25 Hz shaft speed: BPFO ≈ 76.4 Hz, BPFI ≈ 123.6 Hz.
 
