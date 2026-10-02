@@ -4,7 +4,7 @@ _Last updated: 2026-10-02_
 
 ## Current phase
 
-Week 1 — data pipeline. Code tested on synthetic signals; ready to run in Google Colab. Real data not yet downloaded.
+Week 1 — data pipeline. Real data downloaded and feature table built (2,309 windows, 29 bearings). Healthy-bearing split needs a decision before modelling.
 
 ## Checklist
 
@@ -15,10 +15,10 @@ Week 1 — data pipeline. Code tested on synthetic signals; ready to run in Goog
 - [x] Windowing, time-domain and envelope-spectrum features
 - [x] Bearing-level split builder
 - [x] Download script and Colab notebook (`notebooks/colab_run.ipynb`)
-- [ ] Download Paderborn data for `N15_M07_F10` (run the Colab notebook; 29 bearings, ~4.6 GB)
+- [x] Download Paderborn data for `N15_M07_F10` (via Colab notebook)
 - [ ] Verify bearing codes against the dataset fact sheets
-- [ ] Verify loader on real `.mat` files
-- [ ] Build feature table for all bearings
+- [x] Verify loader on real `.mat` files
+- [x] Build feature table for all bearings (`data/features/features_N15_M07_F10.csv`)
 
 ### Week 2 — Models and uncertainty
 - [ ] RF, XGBoost, SVM
@@ -42,7 +42,9 @@ Week 1 — data pipeline. Code tested on synthetic signals; ready to run in Goog
 
 ## Open decisions (need your input)
 
-1. **Healthy-bearing split.** Proposed: K001–K003 in source, K004–K006 in target.
+1. **Healthy-bearing split.** Original proposal (K001–K003 source, K004–K006 target) is unsafe: K001, K002, K003 and K006 have
+   median kurtosis 14–16, K004 and K005 only 4–5. The original split would put only high-kurtosis healthy bearings in training.
+   New proposal: source K001, K002, K004 (calibration K002); target K003, K005, K006.
 2. **Calibration bearings within source.** Proposed: hold out one bearing per class (e.g. KA09, KI08, K003).
 3. **Window length.** Proposed: 1 s (64,000 samples), non-overlapping.
 4. **Faculty supervisor / co-author.** Not yet identified.
@@ -52,3 +54,6 @@ Week 1 — data pipeline. Code tested on synthetic signals; ready to run in Goog
 - 2026-10-02 — Topic chosen (Option B). Proposal and data-pipeline skeleton created.
 - 2026-10-02 — Project moved to local folder; added download script and Colab notebook.
 - 2026-10-02 — Colab notebook made self-contained (no requirements.txt or project files needed).
+- 2026-10-02 — First run on real data. Fault-frequency features separate fault types for artificial damage;
+  the signal is weaker and less consistent for real damage (e.g. KA15, KA22, KI17 look close to healthy).
+  Found high kurtosis in 4 of 6 healthy bearings (see open decision 1).
