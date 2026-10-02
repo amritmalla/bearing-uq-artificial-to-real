@@ -46,6 +46,12 @@ src/bearing_uq/
   bearings.py          bearing codes, labels and damage origin
   geometry.py          6203 geometry and fault frequencies
   splits.py            bearing-level train / calib / test splits
+  dataset.py           feature table -> model inputs
+  models.py            Random Forest, SVM, XGBoost
+  calibration.py       temperature scaling, isotonic calibration
+  conformal.py         split conformal prediction (marginal, class-conditional)
+  metrics.py           accuracy, ECE, Brier, risk-coverage, automation rate
+  experiment.py        main artificial-to-real experiment
   data/files.py        recording file paths
   data/download.py     download archives, extract one operating condition
   data/loader.py       read vibration signal from .mat
@@ -56,6 +62,7 @@ src/bearing_uq/
   features/extract.py       all features for one window
 scripts/download_paderborn.py   download and extract the study data
 scripts/build_features.py   build the feature table
+scripts/run_baseline.py     run the main experiment, write results/
 notebooks/colab_run.ipynb   run the pipeline in Google Colab
 tests/                      unit tests on synthetic signals
 ```

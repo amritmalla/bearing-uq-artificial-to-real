@@ -4,7 +4,8 @@ _Last updated: 2026-10-02_
 
 ## Current phase
 
-Week 1 — data pipeline. Real data downloaded and feature table built (2,309 windows, 29 bearings). Healthy-bearing split decided; ready for week 2 (models).
+Week 2 — models and uncertainty done; first artificial→real run complete (single calibration split, preliminary).
+Next: make results robust to the choice of calibration bearings (see log).
 
 ## Checklist
 
@@ -21,13 +22,15 @@ Week 1 — data pipeline. Real data downloaded and feature table built (2,309 wi
 - [x] Build feature table for all bearings (`data/features/features_N15_M07_F10.csv`)
 
 ### Week 2 — Models and uncertainty
-- [ ] RF, XGBoost, SVM
-- [ ] Temperature scaling / isotonic calibration
-- [ ] Split conformal prediction (marginal + class-conditional)
-- [ ] Metrics: ECE, Brier, risk–coverage, AURC, automation rate
+- [x] RF, XGBoost, SVM (`models.py`)
+- [x] Temperature scaling / isotonic calibration (`calibration.py`)
+- [x] Split conformal prediction, marginal + class-conditional (`conformal.py`)
+- [x] Metrics: ECE, Brier, risk–coverage, AURC, automation rate (`metrics.py`)
+- [x] First artificial→real run (`scripts/run_baseline.py` → `results/`)
 
 ### Week 3 — Experiments
-- [ ] Artificial → real evaluation
+- [ ] Artificial → real evaluation repeated over many choices of calibration bearings (mean ± spread)
+- [ ] In-domain reference: leave-one-bearing-out within the artificial (source) bearings
 - [ ] Target-calibration experiment (0 / 1 / 2 real bearings per class)
 - [ ] Bootstrap confidence intervals over bearings
 
@@ -42,14 +45,14 @@ Week 1 — data pipeline. Real data downloaded and feature table built (2,309 wi
 
 ## Open decisions (need your input)
 
-1. **Calibration bearings within source.** Proposed: KA09, KI08 (healthy calibration bearing K002 is decided).
-2. **Window length.** Proposed: 1 s (64,000 samples), non-overlapping.
-3. **Faculty supervisor / co-author.** Not yet identified.
+1. **Faculty supervisor / co-author.** Not yet identified.
 
 ## Decided
 
 - **Healthy-bearing split** (2026-10-02): source K001, K002, K004 (K002 for calibration); target K003, K005, K006.
   Reason: K004 and K005 have much lower kurtosis than the other healthy bearings, so each side gets one.
+- **Calibration bearings** (2026-10-02): K002, KA09, KI08 (one per class, held out from training).
+- **Window length** (2026-10-02): 1 s (64,000 samples), non-overlapping.
 
 ## Log
 
@@ -59,3 +62,13 @@ Week 1 — data pipeline. Real data downloaded and feature table built (2,309 wi
 - 2026-10-02 — First run on real data. Fault-frequency features separate fault types for artificial damage;
   the signal is weaker and less consistent for real damage (e.g. KA15, KA22, KI17 look close to healthy).
   Found high kurtosis in 4 of 6 healthy bearings (see open decision 1).
+- 2026-10-02 — Week 2 modules built and tested (31 tests). First artificial→real run, one calibration split
+  (K002, KA09, KI08). Preliminary findings:
+  - Test accuracy on real damage 0.70–0.74. Most real bearings are classified well; four are systematically
+    wrong: KA15 (→ inner race), KA22 (→ healthy), KI16 (→ outer race), partly KI17.
+  - Models are often confidently wrong on these, e.g. SVM 0.96 mean confidence on KI16 at 1 % accuracy,
+    XGBoost 0.91 on KA15 at 4 %. Thresholds chosen on artificial data to give 5 % error gave 12–17 % error on real damage.
+  - Conformal coverage fell below the nominal 90 % (marginal 0.73–0.88); class-conditional was worse (0.64–0.71).
+  - The "source holdout" reference is unreliable: with one bearing per class it is dominated by K002
+    (healthy), which RF and SVM label as inner race. Calibration fitted on such a small set depends heavily on
+    which bearings are held out, so results must be repeated over many calibration-bearing choices.
