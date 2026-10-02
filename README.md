@@ -15,10 +15,9 @@ pytest
 
 ## Run in Google Colab
 
-1. Upload this folder to Google Drive (e.g. `MyDrive/load_bearing_research_paper`).
-2. Open `notebooks/colab_run.ipynb` in Colab and run the cells in order.
-
-The notebook downloads the data to Colab's temporary disk and saves the feature table to Drive.
+Upload `notebooks/colab_run.ipynb` to Colab and run the cells in order. The notebook is
+self-contained (no other project files needed): it downloads the data to Colab's temporary disk
+and saves the feature table to `MyDrive/load_bearing_research_paper/data/features/` in Google Drive.
 
 ## Data
 

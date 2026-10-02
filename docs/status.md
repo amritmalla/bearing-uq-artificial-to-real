@@ -51,3 +51,4 @@ Week 1 — data pipeline. Code tested on synthetic signals; ready to run in Goog
 
 - 2026-10-02 — Topic chosen (Option B). Proposal and data-pipeline skeleton created.
 - 2026-10-02 — Project moved to local folder; added download script and Colab notebook.
+- 2026-10-02 — Colab notebook made self-contained (no requirements.txt or project files needed).
