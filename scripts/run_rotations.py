@@ -4,10 +4,11 @@ One source bearing per class is held out for calibration: 3 healthy x 5 inner x 
 Progress is saved after each run, so an interrupted job resumes where it stopped.
 
 Usage (from the project root):
-    python scripts/run_rotations.py [max_seconds]
-With max_seconds, the script stops cleanly after that time; run it again to continue.
+    python scripts/run_rotations.py [--features all|fault_only] [--max-seconds N]
+With --max-seconds, the script stops cleanly after that time; run it again to continue.
 """
 
+import argparse
 import sys
 import time
 from pathlib import Path
@@ -17,42 +18,44 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from bearing_uq import config, splits  # noqa: E402
-from bearing_uq.dataset import load_features  # noqa: E402
+from bearing_uq.dataset import FEATURE_SETS, load_features  # noqa: E402
 from bearing_uq.experiment import run  # noqa: E402
 
 OUT = Path("results")
-FILES = {"main": OUT / "rotations_main.csv", "conformal": OUT / "rotations_conformal.csv",
-         "recall": OUT / "rotations_recall.csv"}
 
 
-def _done() -> set[str]:
-    if not FILES["main"].exists():
-        return set()
-    return set(pd.read_csv(FILES["main"])["calib_set"])
+def result_files(feature_set: str) -> dict[str, Path]:
+    suffix = "" if feature_set == "all" else f"_{feature_set}"
+    return {name: OUT / f"rotations_{name}{suffix}.csv" for name in ("main", "conformal", "recall")}
 
 
-def _append(name: str, frame: pd.DataFrame) -> None:
-    path = FILES[name]
-    frame.to_csv(path, mode="a", header=not path.exists(), index=False)
+def _done(files) -> set[str]:
+    return set(pd.read_csv(files["main"])["calib_set"]) if files["main"].exists() else set()
 
 
 def main() -> None:
-    budget = float(sys.argv[1]) if len(sys.argv) > 1 else float("inf")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--features", choices=FEATURE_SETS, default="all")
+    parser.add_argument("--max-seconds", type=float, default=float("inf"))
+    args = parser.parse_args()
+
     start = time.monotonic()
     OUT.mkdir(exist_ok=True)
+    files = result_files(args.features)
     df = load_features(config.FEATURES_DIR / f"features_{config.OPERATING_CONDITION}.csv")
-    done = _done()
+    done = _done(files)
     rotations = list(splits.calibration_rotations())
     for i, (calib, split) in enumerate(rotations, start=1):
         key = "+".join(calib)
         if key in done:
             continue
-        if time.monotonic() - start > budget:
+        if time.monotonic() - start > args.max_seconds:
             print("time budget reached; run again to continue")
             return
-        main_df, conformal_df, recall_df, _ = run(df, split)
-        for name, frame in (("main", main_df), ("conformal", conformal_df), ("recall", recall_df)):
-            _append(name, frame.assign(calib_set=key))
+        frames = run(df, split, features=FEATURE_SETS[args.features])[:3]
+        for name, frame in zip(("main", "conformal", "recall"), frames):
+            path = files[name]
+            frame.assign(calib_set=key).to_csv(path, mode="a", header=not path.exists(), index=False)
         print(f"{i}/{len(rotations)} {key}", flush=True)
     print("all rotations done")
 

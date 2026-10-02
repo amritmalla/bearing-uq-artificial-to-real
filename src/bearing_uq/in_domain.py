@@ -12,10 +12,11 @@ from bearing_uq import metrics as M
 from bearing_uq.models import fit, make_models
 
 
-def leave_one_bearing_out(df: pd.DataFrame, codes: list[str], seed: int = 0):
+def leave_one_bearing_out(df: pd.DataFrame, codes: list[str], seed: int = 0,
+                          features: list[str] = D.FEATURES):
     """Return (summary per model, per-bearing accuracy) on raw probabilities."""
     data = df[df["bearing"].isin(codes)].reset_index(drop=True)
-    X, y = D.design_matrix(data), D.targets(data)
+    X, y = D.design_matrix(data, features), D.targets(data)
     summary, per_bearing = [], []
     for name in make_models(seed):
         probs = np.zeros((len(data), len(D.LABELS)))

@@ -1,9 +1,10 @@
 """Summarise the 105 calibration rotations (mean, std, min, max) into results/rotations_summary_*.csv.
 
 Usage (from the project root, after run_rotations.py):
-    python scripts/summarise_rotations.py
+    python scripts/summarise_rotations.py [--features all|fault_only]
 """
 
+import argparse
 from pathlib import Path
 
 import pandas as pd
@@ -15,9 +16,12 @@ MAIN_COLS = ["accuracy", "macro_f1", "ece", "brier", "aurc",
 
 
 def main() -> None:
-    m = pd.read_csv(OUT / "rotations_main.csv")
-    c = pd.read_csv(OUT / "rotations_conformal.csv")
-    r = pd.read_csv(OUT / "rotations_recall.csv")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--features", choices=["all", "fault_only"], default="all")
+    sfx = "" if parser.parse_args().features == "all" else f"_{parser.parse_args().features}"
+    m = pd.read_csv(OUT / f"rotations_main{sfx}.csv")
+    c = pd.read_csv(OUT / f"rotations_conformal{sfx}.csv")
+    r = pd.read_csv(OUT / f"rotations_recall{sfx}.csv")
     stats = ["mean", "std", "min", "max"]
 
     target = m[m.domain == "target_real"]
@@ -31,10 +35,10 @@ def main() -> None:
     recall_summary = r.groupby("model")[
         ["recall_healthy", "recall_inner_race", "recall_outer_race"]].agg(stats)
 
-    main_summary.round(4).to_csv(OUT / "rotations_summary_main.csv")
-    conformal_summary.round(4).to_csv(OUT / "rotations_summary_conformal.csv")
-    recall_summary.round(4).to_csv(OUT / "rotations_summary_recall.csv")
-    print(f"Summarised {m.calib_set.nunique()} rotations into {OUT}/rotations_summary_*.csv")
+    main_summary.round(4).to_csv(OUT / f"rotations_summary_main{sfx}.csv")
+    conformal_summary.round(4).to_csv(OUT / f"rotations_summary_conformal{sfx}.csv")
+    recall_summary.round(4).to_csv(OUT / f"rotations_summary_recall{sfx}.csv")
+    print(f"Summarised {m.calib_set.nunique()} rotations into {OUT}/rotations_summary_*{sfx}.csv")
 
 
 if __name__ == "__main__":

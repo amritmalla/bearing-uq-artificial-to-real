@@ -5,7 +5,7 @@ _Last updated: 2026-10-02_
 ## Current phase
 
 Week 3 — robustness runs done: 105 calibration-bearing rotations and an in-domain reference.
-Main findings hold across all rotations. Framing of the in-domain comparison needs a decision (open decision 1).
+Main findings hold across all rotations. Fault-frequency-only experiment done; choice of main feature set needs a decision.
 
 ## Checklist
 
@@ -45,14 +45,9 @@ Main findings hold across all rotations. Framing of the in-domain comparison nee
 
 ## Open decisions (need your input)
 
-1. **How to present the in-domain comparison.** Unseen-bearing variation is as large as the artificial→real shift
-   (see 2026-10-02 log). Proposed: keep the artificial→real framing, compare per damaged class (outer race degrades,
-   inner race does not), report the healthy class separately, and lead with the trustworthiness findings, which hold
-   in every rotation.
-2. **Feature set (optional experiment).** Amplitude-based features (RMS, kurtosis, crest factor, peak-to-peak) vary
-   strongly between individual bearings. Proposed: also run with only the self-normalised fault-frequency features
-   and compare.
-3. **Faculty supervisor / co-author.** Not yet identified.
+1. **Main feature set.** Proposed: fault-frequency features only (`fault_only`) as the main setting, with all
+   features reported as an ablation showing that amplitude features overfit to individual bearings (see log).
+2. **Faculty supervisor / co-author.** Not yet identified.
 
 ## Decided
 
@@ -60,6 +55,8 @@ Main findings hold across all rotations. Framing of the in-domain comparison nee
   Reason: K004 and K005 have much lower kurtosis than the other healthy bearings, so each side gets one.
 - **Calibration bearings** (2026-10-02): K002, KA09, KI08 (one per class, held out from training).
 - **Window length** (2026-10-02): 1 s (64,000 samples), non-overlapping.
+- **Framing** (2026-10-02): keep the artificial→real framing; compare per damaged class; report the healthy class
+  separately; lead with the trustworthiness findings.
 
 ## Log
 
@@ -91,3 +88,15 @@ Main findings hold across all rotations. Framing of the in-domain comparison nee
   - In-domain reference (leave one source bearing out): accuracy RF 0.62, SVM 0.49, XGBoost 0.77. Held-out
     healthy bearings are almost always misclassified (only 2 healthy bearings left for training). Per damaged
     class (RF): outer race 0.83 in-domain → 0.58 on real damage; inner race 0.70 in-domain → 0.80 on real damage.
+- 2026-10-02 — Fault-frequency-only experiment (bpfo_h1/h2, bpfi_h1/h2; RMS, kurtosis, crest factor, peak-to-peak,
+  skewness dropped). 105 rotations + in-domain reference:
+  - In-domain accuracy rises to 0.88–0.92 (from 0.49–0.77) and in-domain ECE falls to 0.01–0.09; held-out healthy
+    bearings are now recognised (0.89, from 0–0.28). The amplitude features were overfitting to individual bearings.
+  - On real damage accuracy is unchanged or better: 0.69 for all three models (all features: 0.65–0.69).
+  - The artificial→real gap is now clear: ~0.90 in-domain → ~0.69 on real damage; RF ECE 0.013 → 0.177.
+  - Thresholds chosen on artificial data for 5 % error give 24–27 % error on real damage and exceed 5 % in
+    every rotation for every model.
+  - Ranking quality improves (AURC RF 0.18 → 0.14, SVM 0.21 → 0.14); best possible automation at 5 % error rises
+    for RF (8 % → 29 %) and SVM (19 % → 26 %), falls for XGBoost (35 % → 26 %).
+  - Conformal marginal coverage falls further below nominal 90 %: 0.65–0.68 (all features 0.80–0.89).
+  - Recall on real damage: healthy 0.82–0.85 (from 0.66), inner race 0.73 (from 0.75–0.80), outer race 0.56–0.57.

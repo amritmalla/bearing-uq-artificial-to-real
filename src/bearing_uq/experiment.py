@@ -14,9 +14,9 @@ TARGET_ERRORS = (0.01, 0.05)
 ALPHA = 0.1
 
 
-def _xy(df, split, name):
+def _xy(df, split, name, features):
     part = D.subset(df, split, name)
-    return D.design_matrix(part), D.targets(part)
+    return D.design_matrix(part, features), D.targets(part)
 
 
 def _score(probs, y) -> dict:
@@ -39,10 +39,10 @@ def _automation(p_cal, y_cal, p_test, y_test) -> dict:
     return out
 
 
-def run(df: pd.DataFrame, split: dict[str, str], seed: int = 0):
-    X_tr, y_tr = _xy(df, split, S.TRAIN)
-    X_cal, y_cal = _xy(df, split, S.CALIB)
-    X_te, y_te = _xy(df, split, S.TEST)
+def run(df: pd.DataFrame, split: dict[str, str], seed: int = 0, features: list[str] = D.FEATURES):
+    X_tr, y_tr = _xy(df, split, S.TRAIN, features)
+    X_cal, y_cal = _xy(df, split, S.CALIB, features)
+    X_te, y_te = _xy(df, split, S.TEST, features)
 
     main, conformal, recall = [], [], []
     for name, model in make_models(seed).items():

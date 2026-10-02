@@ -64,7 +64,7 @@ src/bearing_uq/
 scripts/download_paderborn.py   download and extract the study data
 scripts/build_features.py   build the feature table
 scripts/run_baseline.py     run the main experiment, write results/
-scripts/run_rotations.py    repeat it for all 105 calibration-bearing choices
+scripts/run_rotations.py    repeat it for all 105 calibration-bearing choices (--features all|fault_only)
 scripts/summarise_rotations.py  mean/std/min/max tables for the rotations
 scripts/run_in_domain.py    in-domain reference (leave one source bearing out)
 notebooks/colab_run.ipynb   run the pipeline in Google Colab

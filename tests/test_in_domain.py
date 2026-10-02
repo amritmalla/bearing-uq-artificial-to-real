@@ -18,3 +18,10 @@ def test_leave_one_bearing_out_predicts_every_bearing():
     summary, per_bearing = leave_one_bearing_out(df, sorted(df.bearing.unique()))
     assert set(per_bearing.bearing) == set(df.bearing)
     assert (summary.accuracy >= 0).all()
+
+
+def test_design_matrix_respects_feature_subset():
+    df = pd.DataFrame([{f: 2.0 for f in D.FEATURES}])
+    X = D.design_matrix(df, D.FAULT_FEATURES)
+    assert X.shape == (1, len(D.FAULT_FEATURES))
+    np.testing.assert_allclose(X, np.log(2.0))

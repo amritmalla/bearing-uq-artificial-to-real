@@ -10,6 +10,11 @@ from bearing_uq import bearings as B
 FEATURES = ["rms", "kurtosis", "skewness", "crest_factor", "peak_to_peak",
             "bpfo_h1", "bpfo_h2", "bpfi_h1", "bpfi_h2"]
 
+# Self-normalised envelope-spectrum features (ratio to the spectrum's noise floor).
+FAULT_FEATURES = ["bpfo_h1", "bpfo_h2", "bpfi_h1", "bpfi_h2"]
+
+FEATURE_SETS = {"all": FEATURES, "fault_only": FAULT_FEATURES}
+
 # Positive, heavy-tailed features are log-transformed; skewness can be negative.
 LOG_FEATURES = [f for f in FEATURES if f != "skewness"]
 
@@ -24,9 +29,10 @@ def load_features(path: Path) -> pd.DataFrame:
     return df
 
 
-def design_matrix(df: pd.DataFrame) -> np.ndarray:
-    X = df[FEATURES].copy()
-    X[LOG_FEATURES] = np.log(X[LOG_FEATURES].clip(lower=1e-12))
+def design_matrix(df: pd.DataFrame, features: list[str] = FEATURES) -> np.ndarray:
+    X = df[list(features)].copy()
+    logged = [f for f in features if f in LOG_FEATURES]
+    X[logged] = np.log(X[logged].clip(lower=1e-12))
     return X.to_numpy(dtype=float)
 
 
