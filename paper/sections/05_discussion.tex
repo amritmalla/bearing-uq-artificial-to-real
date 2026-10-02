@@ -1,20 +1,80 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\todo{About 900 words. Planned points:}
-\begin{itemize}[nosep]
-  \item Why thresholds fail: for the silent bearings the fault-frequency signature is weak or absent, so the model is
-        confidently wrong; calibration fitted on artificial data cannot see this.
-  \item Calibration on artificial bearings does not transfer: in-domain ECE 0.01--0.09 vs 0.17--0.20 on real damage.
-  \item Conformal prediction: the shift breaks exchangeability; class-conditional conformal did not help here,
-        unlike the class-proportion mismatch case in \citet{gonzalezgarcia2026}.
-  \item Recommendations for practice: calibrate and set thresholds on labelled real bearings; expect lower
-        automation; report results per bearing.
-  \item Feature lesson: absolute-amplitude features describe individual bearings rather than damage.
-\end{itemize}
+\subsection{Why confidence fails on real damage}
+
+The failures are not spread evenly over the real-damage bearings; they concentrate on four of them
+(Section~\ref{sec:silent}). Their envelope spectra explain why. For the outer-race bearings KA15 and KA22, the peak at
+the outer-race fault frequency is only 2.2 times the spectrum's noise floor (median over windows), and for the
+inner-race bearing KI17 the peak at the inner-race frequency is also 2.2. Healthy bearings reach 1.5--2.6 and
+1.6--2.1 on the same two features, whereas every artificially damaged bearing reaches at least 5.2 (outer race) or
+3.8 (inner race). In the features the models see, these damaged bearings look healthy, and the models classify them
+as healthy: 79--85\,\% of windows for KA15 and KA22, 58--70\,\% for KI17. KI16 shows a weak peak at the
+\emph{outer}-race frequency (3.2) alongside a weak inner-race peak (2.8), and its windows are split between the two
+fault classes.
+
+This has two consequences. First, the dominant error is the most dangerous one, a missed fault: 62--68\,\% of all
+errors on real damage declare a damaged bearing healthy, and 72--74\,\% of the errors made automatically at the
+5\,\% target do. Second, the models' confidence is not unreasonable given their inputs---a
+spectrum without a fault peak \emph{is} typical of a healthy bearing in the training data. No post-hoc calibration
+fitted on artificial damage can detect this, because artificial damage always produces a clear peak, and the
+calibration set therefore never contains a damaged bearing that looks healthy. The shift is not a gradual drift of
+the feature distribution that calibration could absorb; it introduces a type of case the source domain lacks.
+
+Why the real damage is ``silent'' in these features is a separate question that our data cannot settle. Plausible
+explanations include that the damage produces weaker or less regular impacts than a sharp artificial defect, or that
+its impacts excite resonances outside the fixed 2--10\,kHz demodulation band. Selecting the band per signal, for
+example by spectral kurtosis, would test the second explanation.
+
+\subsection{Calibration in-domain does not imply calibration after the shift}
+
+On unseen artificial bearings, the models are close to calibrated (ECE 0.01--0.09) and automate 81--91\,\% of cases
+below 5\,\% error. On real damage, the same models are overconfident (ECE 0.17--0.20 after temperature scaling) and
+can automate only 25--30\,\% of cases at that error even with a threshold chosen on the test data. A validation that
+holds out artificial bearings---even one done carefully by bearing---would thus give a misleading picture of how the
+system behaves in service. This mirrors findings on dataset shift in general machine learning \citep{ovadia2019},
+here for a physically meaningful shift in a mechanical system.
+
+\subsection{Conformal prediction under the shift}
+
+The coverage guarantee of split conformal prediction assumes that calibration and test data are exchangeable, and the
+artificial-to-real shift breaks this assumption. Coverage fell to 0.65--0.68 against a nominal 0.90, and the
+prediction sets offered little warning: most contained a single class. Class-conditional conformal prediction did not
+help (0.63--0.64). This differs from \citet{gonzalezgarcia2026}, where class-conditional thresholds partly repaired a
+coverage failure caused by different class proportions between calibration and test recordings. Here the problem is
+not the proportions but the content of a class: the real-damage bearings of a class do not resemble its artificial
+calibration bearings. Weighted conformal prediction \citep{tibshirani2019} could in principle correct for covariate
+shift, but it requires estimating how the test inputs differ from the calibration inputs, and the silent bearings
+differ precisely by looking like another class.
+
+\subsection{Implications for practice}
+
+Our results suggest four recommendations for deploying automated bearing diagnosis.
+\begin{enumerate}[nosep]
+  \item \textbf{Do not set automation thresholds on artificial damage alone.} A threshold that gave 5\,\% error on
+        held-out artificial bearings gave 24--27\,\% error on real damage.
+  \item \textbf{Calibrate on labelled real bearings whenever possible, and expect to automate less.} Two real bearings
+        per class reduced the error at the 5\,\% target from about 0.27 to 0.10--0.11, while the share of automated
+        cases fell from 0.81--0.88 to 0.35--0.38. This is the honest trade-off: a system that knows less should act
+        less.
+  \item \textbf{Report results per bearing.} Averages over windows hid that the failures came from four bearings, and
+        the wide bootstrap intervals show that a different set of test bearings could change the averages
+        considerably.
+  \item \textbf{Prefer self-normalised fault-frequency features to absolute vibration statistics.} Amplitude-based
+        features reflected individual bearings, including healthy ones, and lowered accuracy on unseen artificial
+        bearings from 0.88--0.91 to 0.49--0.77.
+\end{enumerate}
 
 \subsection{Limitations}
 \label{sec:limitations}
 
-\todo{About 300 words: one operating condition; few bearings per class; one test rig; fixed demodulation band;
-window-level conformal calibration with correlated windows from the same bearing.}
+The study has several limitations. It uses one test rig, one bearing type and a single operating condition, so the
+size of the effects may differ under other speeds, loads or machines. The number of bearings is small---11 with real
+damage and 6 healthy---which is why we report bootstrap intervals over bearings; these intervals are wide, and the
+conclusions rest on effects that are consistent across all rotations rather than on precise values. The real damage
+was produced in accelerated lifetime tests on a test rig and may differ from damage that develops in the field.
+Bearings with combined inner- and outer-race damage were excluded. The features use a fixed demodulation band and
+window length, and only three classical classifiers were evaluated; deep networks trained on raw signals might behave
+differently, although the absence of a fault signature in the envelope spectrum suggests the underlying difficulty
+would remain. Finally, conformal calibration is performed on windows, and windows from the same bearing are
+correlated, so even the in-domain exchangeability assumption holds only approximately.

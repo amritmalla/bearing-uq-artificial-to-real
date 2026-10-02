@@ -46,6 +46,21 @@ Source: `results/in_domain_summary_fault_only.csv`, `results/in_domain_per_beari
 | KI16 (inner) | 0.38 / 0.44 / 0.40 | 0.69 / 0.76 / 0.86 |
 | KI17 (inner) | 0.34 / 0.41 / 0.29 | 0.82 / 0.84 / 0.94 |
 
+What the silent bearings are predicted as (share of windows, RF / SVM / XGB; raw, all rotations):
+- KA15: healthy 0.80 / 0.80 / 0.79, inner race 0.17 / 0.16 / 0.18
+- KA22: healthy 0.85 / 0.83 / 0.85
+- KI16: inner 0.38 / 0.44 / 0.40, outer 0.38 / 0.44 / 0.42, healthy 0.24 / 0.12 / 0.18
+- KI17: healthy 0.65 / 0.58 / 0.70, inner 0.34 / 0.41 / 0.29
+
+Median fault-frequency features (feature table):
+- Silent bearings: KA15 bpfo_h1 2.21; KA22 2.16; KI16 bpfi_h1 2.83 (bpfo_h1 3.17); KI17 bpfi_h1 2.20
+- Healthy bearings: bpfo_h1 1.45–2.64, bpfi_h1 1.64–2.12
+- Artificial outer race bpfo_h1 5.24–41.91; artificial inner race bpfi_h1 3.84–15.28
+- Other real outer race bpfo_h1: KA04 16.78, KA16 24.36, KA30 4.42; other real inner bpfi_h1: KI04 8.47, KI14 4.29, KI18 18.46, KI21 3.38
+
+Missed faults (damaged predicted healthy) as share of errors on real damage, temperature scaling, mean over rotations:
+all errors RF 0.67 / SVM 0.62 / XGB 0.68; automated errors at the 5 % target RF 0.74 / SVM 0.72 / XGB 0.74.
+
 Other 10 real-test bearings: accuracy ≥ 0.68 (RF 0.68, SVM 0.70, XGB 0.73 minimum).
 Unseen artificial bearings with accuracy < 0.5 (in-domain): only SVM on KI01 (0.00 at mean confidence 0.76).
 Conformal marginal singleton rate (fault_only): RF 0.87, SVM 0.83, XGB 0.89.

@@ -5,8 +5,8 @@ _Last updated: 2026-10-02_
 ## Current phase
 
 Week 3 — robustness runs done: 105 calibration-bearing rotations and an in-domain reference.
-Main findings hold across all rotations. Weeks 5–6 — writing. Paper moved to LaTeX for Overleaf (`paper/`); Methods and Results written, compiles cleanly.
-Next: Introduction, Related work, Discussion, Abstract.
+Main findings hold across all rotations. Weeks 5–6 — writing. Full first draft complete in `paper/` (13 pages, compiles cleanly).
+Next: supervisor / co-author review, author details, repository link, target journal.
 
 ## Checklist
 
@@ -45,8 +45,9 @@ Next: Introduction, Related work, Discussion, Abstract.
 - [x] Methods draft (`docs/paper/03_methods.md`)
 - [x] Results draft (`docs/paper/04_results.md`), numbers traced in `docs/paper/numbers.md`
 - [x] LaTeX project for Overleaf (`paper/`): sections, tables generated from results, bibliography
-- [ ] Introduction, Related work, Discussion, Limitations, Conclusion, Abstract
-- [ ] Verify related-work references
+- [x] Introduction, Related work, Discussion, Limitations, Conclusion, Abstract
+- [x] Verify related-work references (one paper omitted: authors/venue not confirmable)
+- [ ] Fill in author names/affiliations and repository link (red TODO boxes in the PDF)
 - [ ] Supervisor / co-author review
 - [ ] arXiv preprint
 - [ ] Journal submission
@@ -127,3 +128,6 @@ Next: Introduction, Related work, Discussion, Abstract.
   bearings with the main feature set: KA15, KA22 (outer race), KI16, KI17 (inner race), all at 69–94 % mean confidence.
 - 2026-10-02 — Paper moved to LaTeX for Overleaf. Results reordered (thresholds before reliability; ablation before
   real-bearing calibration) and figures 3/4 renamed so file names match paper numbering.
+- 2026-10-02 — First full draft. References verified (added Forest & Fink 2024; Vieira et al. 2026). New finding
+  for the Discussion: silent bearings show no fault peak (≈2.2× noise floor, within the healthy range), so 62–68 %
+  of real-damage errors are missed faults (72–74 % of automated errors).

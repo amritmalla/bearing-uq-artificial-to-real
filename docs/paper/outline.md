@@ -44,8 +44,9 @@ bearings reduce, but do not remove, the failure.
 - Lessmeier, C. et al. (2016). Paderborn KAt benchmark dataset. PHM Society European Conference. **Dataset citation required by licence.**
 - Smith, W. A., Randall, R. B. (2015). CWRU benchmark study. *Mechanical Systems and Signal Processing* 64, 100–131.
 - González-García, L. et al. (2026). Shapelet-based bearing fault diagnosis under interpretability constraints. *Electronics* 15(14), 3035. — closest prior work.
-- Calibrated Adaptive Teacher for domain-adaptive intelligent fault diagnosis (PMC 11644747) — **authors and venue to verify**.
-- Uncertainty-aware fault diagnosis under calibration (Bayesian DL; 2024) — **authors and venue to verify**.
+- Forest, F., Fink, O. (2024). Calibrated Adaptive Teacher for domain-adaptive intelligent fault diagnosis. *Sensors* 24(23), 7539. — verified.
+- Vieira, J. P. et al. (2026). Towards a more realistic evaluation of ML models for bearing fault diagnosis. *MSSP* 258. — verified (article number not confirmed).
+- Uncertainty-aware fault diagnosis under calibration (IEEE, 2024) — **omitted: authors and venue could not be confirmed**.
 - Guo, C. et al. (2017). On calibration of modern neural networks. ICML.
 - Ovadia, Y. et al. (2019). Can you trust your model's uncertainty? Evaluating predictive uncertainty under dataset shift. NeurIPS.
 - Angelopoulos, A. N., Bates, S. (2023). A gentle introduction to conformal prediction. *Foundations and Trends in ML* 16.
