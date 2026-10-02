@@ -5,8 +5,8 @@ _Last updated: 2026-10-02_
 ## Current phase
 
 Week 3 — robustness runs done: 105 calibration-bearing rotations and an in-domain reference.
-Main findings hold across all rotations. Week 4 complete: four figures and three tables generated from saved results (see `docs/figures.md`).
-Next: weeks 5–6 — writing.
+Main findings hold across all rotations. Weeks 5–6 — writing. Outline, Methods and Results drafted in `docs/paper/`.
+Next: Introduction, Related work, Discussion, Abstract.
 
 ## Checklist
 
@@ -41,7 +41,11 @@ Next: weeks 5–6 — writing.
 - [x] Draft captions (`docs/figures.md`)
 
 ### Weeks 5–6 — Writing
-- [ ] Draft
+- [x] Outline (`docs/paper/outline.md`)
+- [x] Methods draft (`docs/paper/03_methods.md`)
+- [x] Results draft (`docs/paper/04_results.md`), numbers traced in `docs/paper/numbers.md`
+- [ ] Introduction, Related work, Discussion, Limitations, Conclusion, Abstract
+- [ ] Verify related-work references
 - [ ] Supervisor / co-author review
 - [ ] arXiv preprint
 - [ ] Journal submission
@@ -49,6 +53,7 @@ Next: weeks 5–6 — writing.
 ## Open decisions (need your input)
 
 1. **Faculty supervisor / co-author.** Not yet identified.
+2. **Target journal.** Affects length and format (see `docs/proposal.md` §11).
 
 ## Decided
 
@@ -118,4 +123,4 @@ Next: weeks 5–6 — writing.
   - ECE: 0.19–0.23 (source) → 0.13–0.17 (2 real bearings). Conformal coverage: 0.64–0.67 → 0.84–0.85 (nominal 0.90).
   - Mixing source and real calibration bearings ("combined") is in between.
 - 2026-10-02 — Figures and tables generated (`scripts/make_figures.py`, `scripts/make_tables.py`). Silent real
-  bearings with the main feature set: KA15, KA22 (outer race), KI16, KI17 (inner race), all at 70–95 % confidence.
+  bearings with the main feature set: KA15, KA22 (outer race), KI16, KI17 (inner race), all at 69–94 % mean confidence.

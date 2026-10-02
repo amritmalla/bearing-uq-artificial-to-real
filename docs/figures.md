@@ -39,7 +39,7 @@ to 0.10–0.11 but does not reliably reach the target, and the system automates 
 
 **Draft caption.** Mean confidence and accuracy of each real-damage test bearing, averaged over 105 rotations (raw
 probabilities). Dotted line: confidence equals accuracy. Four bearings (KA15, KA22 outer race; KI16, KI17 inner
-race) are mostly misclassified while the models remain 70–95 % confident — errors that calibration fitted on
+race) are mostly misclassified while the models remain 69–94 % confident — errors that calibration fitted on
 artificial damage cannot detect. Data: `results/per_bearing_real_fault_only.csv`.
 
 ## Table 1 — `table1_main`

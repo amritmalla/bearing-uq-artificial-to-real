@@ -6,6 +6,7 @@ using the Paderborn University bearing dataset.
 - Proposal: [`docs/proposal.md`](docs/proposal.md)
 - Project status and open decisions: [`docs/status.md`](docs/status.md)
 - Figures, tables and draft captions: [`docs/figures.md`](docs/figures.md)
+- Paper drafts: [`docs/paper/`](docs/paper/) (outline, sections, numbers cited)
 
 ## Setup
 
