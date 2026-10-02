@@ -52,6 +52,7 @@ src/bearing_uq/
   conformal.py         split conformal prediction (marginal, class-conditional)
   metrics.py           accuracy, ECE, Brier, risk-coverage, automation rate
   experiment.py        main artificial-to-real experiment
+  in_domain.py         leave-one-bearing-out reference on source bearings
   data/files.py        recording file paths
   data/download.py     download archives, extract one operating condition
   data/loader.py       read vibration signal from .mat
@@ -63,6 +64,9 @@ src/bearing_uq/
 scripts/download_paderborn.py   download and extract the study data
 scripts/build_features.py   build the feature table
 scripts/run_baseline.py     run the main experiment, write results/
+scripts/run_rotations.py    repeat it for all 105 calibration-bearing choices
+scripts/summarise_rotations.py  mean/std/min/max tables for the rotations
+scripts/run_in_domain.py    in-domain reference (leave one source bearing out)
 notebooks/colab_run.ipynb   run the pipeline in Google Colab
 tests/                      unit tests on synthetic signals
 ```

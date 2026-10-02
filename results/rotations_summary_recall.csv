@@ -1,0 +1,6 @@
+,recall_healthy,recall_healthy,recall_healthy,recall_healthy,recall_inner_race,recall_inner_race,recall_inner_race,recall_inner_race,recall_outer_race,recall_outer_race,recall_outer_race,recall_outer_race
+,mean,std,min,max,mean,std,min,max,mean,std,min,max
+model,,,,,,,,,,,,
+random_forest,0.6601,0.2308,0.3,0.9917,0.7968,0.1209,0.4749,0.9603,0.5804,0.0911,0.4987,0.9395
+svm,0.659,0.2466,0.2542,1.0,0.7453,0.148,0.4686,0.977,0.518,0.1219,0.1083,0.8539
+xgboost,0.6692,0.1589,0.3292,0.9833,0.7657,0.0974,0.5439,0.9372,0.5851,0.0935,0.4987,0.9521

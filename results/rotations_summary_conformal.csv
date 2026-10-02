@@ -1,0 +1,9 @@
+,,coverage,coverage,coverage,coverage,mean_set_size,mean_set_size,mean_set_size,mean_set_size,singleton_rate,singleton_rate,singleton_rate,singleton_rate,singleton_error,singleton_error,singleton_error,singleton_error
+,,mean,std,min,max,mean,std,min,max,mean,std,min,max,mean,std,min,max
+model,method,,,,,,,,,,,,,,,,
+random_forest,class_conditional,0.6368,0.1326,0.3193,0.9022,1.1292,0.3297,0.5372,2.0717,0.6324,0.1615,0.2574,0.9399,0.2913,0.116,0.0668,0.6326
+random_forest,marginal,0.8522,0.0785,0.6951,0.9839,1.6318,0.4457,0.843,2.5247,0.5208,0.2659,0.0547,0.9462,0.1559,0.0793,0.0,0.3202
+svm,class_conditional,0.6422,0.1372,0.3865,0.9857,1.2808,0.3808,0.5919,2.1821,0.5564,0.1467,0.1785,0.8969,0.3223,0.1176,0.0251,0.5788
+svm,marginal,0.8852,0.0533,0.7525,0.991,1.876,0.273,1.3193,2.3767,0.3445,0.1591,0.1193,0.6906,0.1803,0.1333,0.0083,0.4715
+xgboost,class_conditional,0.6509,0.1095,0.3722,0.9283,1.0329,0.2354,0.6278,1.7004,0.7489,0.1169,0.4538,0.9695,0.2683,0.0921,0.0441,0.4071
+xgboost,marginal,0.7978,0.0727,0.6332,0.9605,1.344,0.2319,0.8422,1.9049,0.7384,0.1327,0.4484,0.9865,0.2284,0.0821,0.0649,0.3324

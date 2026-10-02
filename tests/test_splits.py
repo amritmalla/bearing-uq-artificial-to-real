@@ -38,3 +38,11 @@ def test_target_calibration_moves_one_per_class():
     new_calib = set(S.codes_in(moved, S.CALIB)) - set(S.codes_in(base, S.CALIB))
     assert len(new_calib) == len(B.CLASSES)
     assert all(base[c] == S.TEST for c in new_calib)
+
+
+def test_calibration_rotations_cover_every_combination():
+    rotations = list(S.calibration_rotations())
+    assert len(rotations) == 3 * 5 * 7
+    for calib, split in rotations:
+        assert S.codes_in(split, S.CALIB) == sorted(calib)
+        assert {B.get(c).label for c in calib} == set(B.CLASSES)

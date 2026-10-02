@@ -60,3 +60,20 @@ def with_target_calibration(split: dict[str, str], n_per_class: int,
 
 def codes_in(split: dict[str, str], name: str) -> list[str]:
     return sorted(c for c, s in split.items() if s == name)
+
+
+def calibration_rotations(source_healthy=DEFAULT_SOURCE_HEALTHY,
+                          target_healthy=DEFAULT_TARGET_HEALTHY):
+    """Yield (calibration bearings, split) for every choice of one source bearing per class."""
+    groups = [list(source_healthy)] + [
+        [b.code for b in B.select(label=label, origin=B.ARTIFICIAL)] for label in (B.INNER, B.OUTER)]
+    for healthy in groups[0]:
+        for inner in groups[1]:
+            for outer in groups[2]:
+                calib = (healthy, inner, outer)
+                yield calib, artificial_to_real(source_healthy, target_healthy, calib)
+
+
+def source_bearings(source_healthy=DEFAULT_SOURCE_HEALTHY) -> list[str]:
+    """All bearings available for training in the source domain."""
+    return list(source_healthy) + [b.code for b in B.select(origin=B.ARTIFICIAL)]
