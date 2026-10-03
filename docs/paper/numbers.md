@@ -118,5 +118,10 @@ Fault frequencies at 900 rpm: BPFO 45.8 Hz, BPFI 74.2 Hz.
   combined 0.22; n=2 source 0.45 / target 0.41 / combined 0.35; target met in 7-49 % of draws
   (`target_calibration_summary_cnn.csv`, `target_calibration_cnn.csv`).
 
+- Random-split sanity check (`results/random_split_check.csv`; random 80/20 split of the 15 source bearings'
+  windows, 240 test windows; every bearing in both sets): accuracy RF 0.975 / SVM 0.979 / XGB 0.971 / CNN 0.979;
+  ECE 0.019 / 0.028 / 0.013 / 0.022. By bearing (leave one out): 0.915 / 0.882 / 0.912 / 0.465 -> drops of
+  6.0 / 9.7 / 5.9 / 51.4 percentage points.
+
 ## Software
 scikit-learn 1.7.2, XGBoost 3.2.0, SciPy 1.15.3, NumPy 2.2.6, pandas 2.3.3 (Python 3.10).

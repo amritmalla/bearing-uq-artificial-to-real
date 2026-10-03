@@ -184,3 +184,6 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
   rotations; marginal conformal covers 0.94 only with 2.5-class sets. Only 3 % of errors are missed faults (mostly
   false alarms and fault-type confusions). Real-bearing calibration does not fix it. Interpreted as learning bearing
   identity from 12–14 training bearings (cf. Vieira et al. 2026). Paper: 13 pages, abstract 329 words.
+- 2026-10-03 — CNN random-split sanity check: on a random window split (same bearings in training and test) the CNN
+  reaches 0.98 accuracy, ECE 0.02, like the feature models (0.97–0.98); by bearing it drops to 0.46 (features
+  0.88–0.92). Added to Methods 3.5, Results 4.6, Discussion and Abstract (337 words).

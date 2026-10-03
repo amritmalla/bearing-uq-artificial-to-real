@@ -1,0 +1,9 @@
+model,split,accuracy,ece,n_test_windows
+random_forest,random windows,0.975,0.0195,240.0
+svm,random windows,0.9792,0.0282,240.0
+xgboost,random windows,0.9708,0.0126,240.0
+cnn,random windows,0.9792,0.0224,240.0
+random_forest,by bearing (leave one out),0.9146,0.0132,
+svm,by bearing (leave one out),0.8819,0.0915,
+xgboost,by bearing (leave one out),0.9121,0.0562,
+cnn,by bearing (leave one out),0.4648,0.4479,

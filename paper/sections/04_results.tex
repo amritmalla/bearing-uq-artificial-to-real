@@ -109,7 +109,10 @@ held-out healthy bearing is classified as damaged at a mean confidence of 0.94--
 inner-race bearings are misclassified. The network does learn damage-related patterns---it recognises six of the
 seven artificial outer-race bearings, and the real-damage bearings KI14 and KI18 in 93\,\% and 100\,\% of
 windows---but with 12 to 14 training bearings it also learns the signatures of individual bearings, in line with the
-observation that the number of training bearings limits generalisation \citep{vieira2026}.
+observation that the number of training bearings limits generalisation \citep{vieira2026}. The random-split sanity
+check confirms this. When the test windows come from bearings that are also in the training set, the CNN classifies
+98\,\% of them correctly with an ECE of 0.02, as accurately as the feature-based classifiers (0.97--0.98). Holding
+out whole bearings costs the feature-based classifiers 6--10 percentage points of accuracy, and the CNN 51.
 
 On real damage, the CNN's accuracy is 0.43 [0.16, 0.71]. Because its calibration bearings expose the same problem,
 post-hoc calibration makes it cautious rather than reliable: temperature scaling lowers ECE from 0.44 to 0.19, and the

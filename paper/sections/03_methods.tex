@@ -102,7 +102,9 @@ are the mean softmax output over its 15 non-overlapping segments. These settings
 bearings were left for tuning them without using the calibration or test bearings. One network is trained per
 rotation, on that rotation's training bearings, and one per held-out bearing for the in-domain reference; their
 probabilities then pass through exactly the same calibration, conformal and selective-automation procedures as those
-of the other classifiers.
+of the other classifiers. As a sanity check, the network and the feature-based classifiers are also trained once on a
+random 80/20 split of the source bearings' windows, in which every bearing appears in both the training and the test
+set.
 
 \subsection{Calibration and conformal prediction}
 

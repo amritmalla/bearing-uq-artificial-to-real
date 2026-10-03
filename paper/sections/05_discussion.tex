@@ -34,8 +34,9 @@ The 1D-CNN fails in a different way (Section~\ref{sec:cnnresults}). With the raw
 training bearings, it partly recognises bearings by characteristics unrelated to their damage, so its confidence is
 already misleading on unseen artificial bearings, and on real damage it raises false alarms far more often than it
 misses faults. Unlike the failure of the feature-based models, which appears only after the shift, this problem is
-visible in a validation by bearing; a random split of windows, which places windows of the same bearings in both
-training and test sets, would likely hide it \citep{vieira2026}.
+visible in a validation by bearing. A random split of windows, which places windows of the same bearings in both
+training and test sets, hides it completely: there the CNN is as accurate and as well calibrated as the feature-based
+models (Section~\ref{sec:cnnresults}), in line with what \citet{vieira2026} found across several datasets.
 
 \subsection{Calibration in-domain does not imply calibration after the shift}
 
