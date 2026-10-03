@@ -27,7 +27,8 @@ envelope-spectrum features of the Paderborn vibration signals. Models are traine
 damaged bearings and tested on bearings with real damage, with every bearing assigned to exactly one split. Because
 results depend strongly on which bearings are held out for calibration, we repeat the experiment for all 105
 possible choices and estimate uncertainty with a bootstrap over bearings. The main analysis uses one operating
-condition; we repeat it at the dataset's three other conditions and with an adaptive demodulation band. We ask:
+condition; we repeat it at the dataset's three other conditions and with an adaptive demodulation band, and we add a
+one-dimensional convolutional neural network trained on the raw signal as a deep-learning baseline. We ask:
 \begin{enumerate}[nosep,label=\textbf{RQ\arabic*}]
   \item How much do accuracy and calibration degrade from artificial to real damage?
   \item Do confidence thresholds, post-hoc calibration and conformal prediction fitted on artificial damage still
@@ -52,6 +53,8 @@ Our contributions are:
         target to 0.10--0.11 but does not reliably meet it, and makes the system automate fewer cases.
   \item A feature ablation showing that amplitude-based time-domain features describe individual bearings rather
         than their damage, and hide the artificial-to-real gap behind a poor in-domain reference.
+  \item A 1D-CNN baseline on raw vibration, which fails already on unseen artificial bearings with confident errors,
+        showing that an end-to-end network trained on few bearings is no remedy.
 \end{itemize}
 
 Section~\ref{sec:related} reviews related work, Section~\ref{sec:methods} describes the data and methods,

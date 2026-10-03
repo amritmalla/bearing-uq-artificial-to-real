@@ -103,5 +103,20 @@ Fault frequencies at 900 rpm: BPFO 45.8 Hz, BPFI 74.2 Hz.
 - In-domain accuracy 0.38 / 0.32 / 0.36 (`results/in_domain_summary_fault_only_sk.csv`); real accuracy (temperature,
   mean over rotations) 0.37 / 0.39 / 0.37 (`results/rotations_summary_main_fault_only_sk.csv`).
 
+## 1D-CNN baseline (main condition; raw vibration; `results/*_cnn.csv`)
+- In-domain (leave one source bearing out, raw): accuracy 0.465, ECE 0.448 (`in_domain_summary_cnn.csv`).
+  Held-out healthy K001/K002/K004 accuracy 0.00 at mean confidence 0.96/1.00/0.94; artificial inner race: only KI01
+  recognised (KI03, KI05, KI07, KI08 accuracy 0.00); artificial outer race: all except KA03 (0.00) at >= 0.98.
+- Real damage, bootstrap (temperature): accuracy 0.43 [0.16, 0.71]; ECE raw 0.44 -> temperature 0.19 [0.04, 0.40];
+  error at 5 % target 0.38 [0.00, 1.00]; automated 0.13 [0.00, 0.80]; best possible automation 0.10 [0.00, 0.38];
+  marginal conformal coverage 0.94 [0.62, 1.00], mean set size 2.48; class-conditional coverage 0.54
+  (`bootstrap_cnn.csv`). 5 % target exceeded in 86 % of rotations (`rotations_summary_main_cnn.csv`).
+- Missed faults: 3.2 % of errors (2.2 % of automated errors) (`missed_faults_cnn.csv`).
+- Per real bearing (raw, mean over rotations; `per_bearing_real_cnn.csv`): KA22 0.02, KI16 0.27, KI17 0.11, KA15 0.48,
+  KI14 0.93, KI18 1.00.
+- Real-bearing calibration (temperature, error at 5 % target, mean over draws): n=1 source 0.24 / target 0.48 /
+  combined 0.22; n=2 source 0.45 / target 0.41 / combined 0.35; target met in 7-49 % of draws
+  (`target_calibration_summary_cnn.csv`, `target_calibration_cnn.csv`).
+
 ## Software
 scikit-learn 1.7.2, XGBoost 3.2.0, SciPy 1.15.3, NumPy 2.2.6, pandas 2.3.3 (Python 3.10).

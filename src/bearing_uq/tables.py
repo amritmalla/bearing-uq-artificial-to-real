@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-MODEL_LABEL = {"random_forest": "Random Forest", "svm": "SVM", "xgboost": "XGBoost"}
+MODEL_LABEL = {"random_forest": "Random Forest", "svm": "SVM", "xgboost": "XGBoost", "cnn": "1D-CNN"}
 
 
 def ci(mean: float, low: float, high: float, digits: int = 2) -> str:

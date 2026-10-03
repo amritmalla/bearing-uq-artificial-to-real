@@ -100,6 +100,28 @@ larger (1.3--1.9 classes on average, against 0.9--1.0 with fault-frequency featu
 
 \input{tables/table2_feature_ablation}
 
+\subsection{1D-CNN baseline}
+\label{sec:cnnresults}
+
+The 1D-CNN trained on raw vibration does not generalise to unseen bearings even within the source domain
+(Table~\ref{tab:main}). Its leave-one-bearing-out accuracy is 0.46, and its errors are confident (ECE 0.45): every
+held-out healthy bearing is classified as damaged at a mean confidence of 0.94--1.00, and four of the five artificial
+inner-race bearings are misclassified. The network does learn damage-related patterns---it recognises six of the
+seven artificial outer-race bearings, and the real-damage bearings KI14 and KI18 in 93\,\% and 100\,\% of
+windows---but with 12 to 14 training bearings it also learns the signatures of individual bearings, in line with the
+observation that the number of training bearings limits generalisation \citep{vieira2026}.
+
+On real damage, the CNN's accuracy is 0.43 [0.16, 0.71]. Because its calibration bearings expose the same problem,
+post-hoc calibration makes it cautious rather than reliable: temperature scaling lowers ECE from 0.44 to 0.19, and the
+threshold for a 5\,\% error target automates only 13\,\% of cases, yet these still have an error of 0.38 and the
+target is exceeded in 86\,\% of rotations. Even the best possible threshold automates only 10\,\% of cases.
+Marginal conformal prediction reaches a coverage of 0.94, but only by returning 2.5 of the three classes on average;
+class-conditional coverage is 0.54. Calibrating on one or two labelled real bearings per class did not help reliably
+(error at the 5\,\% target 0.22--0.48 across calibration sets; target met in at most 49\,\% of draws). The CNN's
+errors are also of a different kind: only 3\,\% of them are missed faults, the rest being false alarms on healthy
+bearings and confusions between fault types. Of the four silent bearings, KA22, KI16 and KI17 remain misclassified
+(accuracy 0.02, 0.27 and 0.11), while KA15 is recognised in 48\,\% of windows.
+
 \subsection{Calibrating on labelled real bearings}
 
 Table~\ref{tab:realcal} and Fig.~\ref{fig:realcal} compare calibration sets on identical test bearings. With source

@@ -2,7 +2,7 @@
 \label{sec:conclusion}
 
 Bearing fault classifiers developed on artificial damage can look trustworthy where they are tested and still fail
-where they are used. On the Paderborn dataset, three standard classifiers were close to calibrated on unseen
+where they are used. On the Paderborn dataset, three standard feature-based classifiers were close to calibrated on unseen
 artificially damaged bearings, yet on real damage their confidence thresholds, post-hoc calibration and conformal
 guarantees all failed. At the main operating condition, a threshold chosen for 5\,\% error gave 24--27\,\% error, in
 every one of 105 calibration choices, and conformal coverage fell to 0.65--0.68 against a nominal 0.90. The failures
@@ -10,7 +10,8 @@ concentrate on real-damage bearings whose envelope spectra show no fault signatu
 healthy, so most errors are missed faults. The same held at lower load torque. At lower radial force and lower speed
 the features were weaker, the models less confident and the failure milder, but the target was still exceeded in
 most rotations. Calibrating on one or two labelled real bearings per class reduced the error substantially but did
-not reliably reach the target, and the system automated correspondingly fewer cases.
+not reliably reach the target, and the system automated correspondingly fewer cases. A 1D-CNN trained on the raw
+signal was no remedy: with few training bearings, it was confidently wrong already on unseen artificial bearings.
 
 For practice, the lesson is that automation thresholds must be set on data that resemble the damage the system will
 meet, that results should be reported per bearing, and that self-normalised fault-frequency features transfer between

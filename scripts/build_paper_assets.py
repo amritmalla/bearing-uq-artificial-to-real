@@ -42,11 +42,12 @@ def table1() -> str:
     names = {"Conformal coverage (nominal 0.90)": "Conformal coverage (nominal 0.90)",
              "Best possible automation at 5%": "Best possible automation at 5% target"}
     rows = [[names.get(m, m)] + list(df[m]) for m in metrics]
-    caption = ("Main results (fault-frequency features, temperature scaling). In-domain: leave one source bearing "
-               "out, raw probabilities. Real damage: mean [95\\,\\% interval] from 2,000 bootstrap draws over "
-               "calibration rotations and test bearings.")
+    caption = ("Main results (temperature scaling). Random Forest, SVM and XGBoost use the fault-frequency features; "
+               "the 1D-CNN uses the raw vibration signal. In-domain: leave one source bearing out, raw probabilities. "
+               "Real damage: mean [95\\,\\% interval] from 2,000 bootstrap draws over calibration rotations and "
+               "test bearings.")
     header = ["Metric"] + [r"\textbf{" + m + "}" for m in df["Model"]]
-    return table_env("tab:main", caption, "lccc", header, rows)
+    return table_env("tab:main", caption, "l" + "c" * len(df), header, rows)
 
 
 def table2() -> str:

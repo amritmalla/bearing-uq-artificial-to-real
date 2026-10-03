@@ -29,8 +29,12 @@ def _write(df: pd.DataFrame, name: str, note: str) -> None:
 
 
 def table_main() -> pd.DataFrame:
-    boot = pd.read_csv(RES / "bootstrap_fault_only.csv").set_index(["model", "calibration", "metric"])
-    ind = pd.read_csv(RES / "in_domain_summary_fault_only.csv").set_index("model")
+    """Feature-based models (fault-frequency features) and the 1D-CNN (raw vibration), main condition."""
+    sources = {m: "fault_only" for m in MODELS} | {"cnn": "cnn"}
+    boot = pd.concat([pd.read_csv(RES / f"bootstrap_{s}.csv") for s in set(sources.values())]
+                     ).set_index(["model", "calibration", "metric"])
+    ind = pd.concat([pd.read_csv(RES / f"in_domain_summary_{s}.csv") for s in set(sources.values())]
+                    ).set_index("model")
 
     def b(model, cal, metric):
         r = boot.loc[(model, cal, metric)]
@@ -46,7 +50,7 @@ def table_main() -> pd.DataFrame:
              "Automated at 5% target": b(m, "temperature", "auto_rate@5%"),
              "Best possible automation at 5%": b(m, "temperature", "oracle_auto_rate@5%"),
              "Conformal coverage (nominal 0.90)": b(m, "conformal_marginal", "coverage")}
-            for m in MODELS]
+            for m in sources]
     return pd.DataFrame(rows)
 
 

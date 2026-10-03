@@ -1,0 +1,16 @@
+model,bearing,label,accuracy,mean_confidence
+cnn,K001,healthy,0.0,0.9601962742362499
+cnn,K002,healthy,0.0,0.9967408568575001
+cnn,K004,healthy,0.0,0.9373167153762498
+cnn,KA01,outer_race,1.0,0.9999998963150001
+cnn,KA03,outer_race,0.0,0.99967383198
+cnn,KA05,outer_race,1.0,0.8947093821101266
+cnn,KA06,outer_race,0.975,0.75932952289875
+cnn,KA07,outer_race,1.0,0.9410760563449999
+cnn,KA08,outer_race,1.0,0.8922138780367088
+cnn,KA09,outer_race,1.0,0.9962730937037972
+cnn,KI01,inner_race,1.0,0.85567723868875
+cnn,KI03,inner_race,0.0,0.9986298406174999
+cnn,KI05,inner_race,0.0,0.9921114868262499
+cnn,KI07,inner_race,0.0,0.786960491049367
+cnn,KI08,inner_race,0.0,0.6728807460487178

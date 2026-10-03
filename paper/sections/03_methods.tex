@@ -87,6 +87,23 @@ We compare three classifiers widely used in condition monitoring, all implemente
 \end{itemize}
 All models use a fixed random seed (0) and are fitted on the training set only.
 
+\subsection{1D-CNN baseline}
+\label{sec:cnn}
+
+To test whether an end-to-end deep network avoids the problems of hand-crafted features, we add a one-dimensional
+convolutional neural network (1D-CNN) trained on the raw vibration signal, following the wide-first-kernel design of
+WDCNN \citep{zhang2017}. Its input is a 4{,}096-sample segment (64\,ms), standardised to zero mean and unit variance,
+which removes the absolute vibration level. A first convolution with 16 filters of length 64 and stride 16 is
+followed by four convolutions with kernel length 3 (32, 64, 64 and 64 filters), each with batch normalisation, ReLU
+activation and max-pooling by a factor of 2, and by a fully connected layer of 100 units. The network is trained for
+20 epochs on random segments of the training windows (eight per window and epoch), with Adam (learning rate
+$10^{-3}$, weight decay $10^{-4}$, batch size 256) and class-balanced cross-entropy. A window's class probabilities
+are the mean softmax output over its 15 non-overlapping segments. These settings were fixed in advance, because no
+bearings were left for tuning them without using the calibration or test bearings. One network is trained per
+rotation, on that rotation's training bearings, and one per held-out bearing for the in-domain reference; their
+probabilities then pass through exactly the same calibration, conformal and selective-automation procedures as those
+of the other classifiers.
+
 \subsection{Calibration and conformal prediction}
 
 Post-hoc calibrators are fitted on the calibration set's predicted probabilities:
@@ -150,6 +167,7 @@ in turn. This experiment is run for the main operating condition only.
 
 \subsection{Implementation}
 
-The pipeline is implemented in Python using NumPy, SciPy, pandas, scikit-learn 1.7.2 and XGBoost 3.2.0. Code,
+The pipeline is implemented in Python using NumPy, SciPy, pandas, scikit-learn 1.7.2 and XGBoost 3.2.0; the 1D-CNN
+is implemented in PyTorch and was trained on a GPU in Google Colab. Code,
 configuration and all result tables are available at \todo{repository link}; every figure and table can be regenerated
 from the feature table with the scripts listed in the repository README.

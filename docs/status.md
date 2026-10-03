@@ -59,8 +59,8 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
 - [x] Experiments on the three other conditions and with the adaptive band; update paper (Table 4, Sections 4.7–4.8,
       Discussion, Limitations, Abstract, Introduction, Conclusion)
 - [x] 1D-CNN baseline code and Colab notebook (`notebooks/colab_cnn.ipynb`)
-- [ ] Run `colab_cnn.ipynb` (GPU); unzip `cnn_results.zip` into `data/`
-- [ ] CNN analysis (`scripts/run_cnn_analysis.py`, then summarise/bootstrap/error_breakdown) and paper update
+- [x] Run `colab_cnn.ipynb` (GPU); results in `data/cnn/`
+- [x] CNN analysis and paper update (Table 1 column, Sections 3.5 and 4.6, Discussion, Abstract, Introduction, Conclusion)
 - [x] Paper reformatted for IJPHM (two columns, APA references, CC BY 3.0 licence note)
 - [x] Add Hassannejad et al. (2025, IJPHM; Paderborn artificial vs real) to Related Work
 - [x] Draft AI-use, author-contribution, data/code-availability and funding statements (`paper/sections/07_declarations.tex`)
@@ -178,3 +178,9 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
   Forest's own probabilities through this path reproduces its results). Related Work: Hassannejad et al. (2025)
   report 83–96 % within damage type with random splits — not comparable with artificial→real transfer.
   Declarations section drafted; author input needed.
+- 2026-10-03 — 1D-CNN results. Fails already in-domain: leave-one-bearing-out accuracy 0.46, ECE 0.45 (all held-out
+  healthy bearings called damaged at 0.94–1.00 confidence; 4 of 5 artificial inner-race bearings wrong). Real damage:
+  accuracy 0.43; temperature-scaled 5 % threshold automates 13 % with error 0.38, target exceeded in 86 % of
+  rotations; marginal conformal covers 0.94 only with 2.5-class sets. Only 3 % of errors are missed faults (mostly
+  false alarms and fault-type confusions). Real-bearing calibration does not fix it. Interpreted as learning bearing
+  identity from 12–14 training bearings (cf. Vieira et al. 2026). Paper: 13 pages, abstract 329 words.

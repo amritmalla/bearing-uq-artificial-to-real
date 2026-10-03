@@ -1,0 +1,5 @@
+,,coverage,coverage,coverage,coverage,mean_set_size,mean_set_size,mean_set_size,mean_set_size,singleton_rate,singleton_rate,singleton_rate,singleton_rate,singleton_error,singleton_error,singleton_error,singleton_error
+,,mean,std,min,max,mean,std,min,max,mean,std,min,max,mean,std,min,max
+model,method,,,,,,,,,,,,,,,,
+cnn,class_conditional,0.5449,0.1721,0.2475,0.9749,1.555,0.3957,0.7892,2.5892,0.4531,0.2408,0.052,0.9283,0.4571,0.2048,0.0,0.7925
+cnn,marginal,0.9355,0.0962,0.5668,1.0,2.4659,0.4255,1.2081,2.9839,0.1651,0.1581,0.0,0.7919,0.2217,0.2286,0.0,1.0

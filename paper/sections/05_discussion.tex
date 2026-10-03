@@ -30,9 +30,16 @@ that its impacts excite resonances outside the fixed 2--10\,kHz band. Our spectr
 support the second explanation (Section~\ref{sec:adaptive}): the band it selected was dominated by impulsive content
 present in healthy bearings as well, and the silent bearings stayed indistinguishable from healthy ones.
 
+The 1D-CNN fails in a different way (Section~\ref{sec:cnnresults}). With the raw signal as input and only 12 to 14
+training bearings, it partly recognises bearings by characteristics unrelated to their damage, so its confidence is
+already misleading on unseen artificial bearings, and on real damage it raises false alarms far more often than it
+misses faults. Unlike the failure of the feature-based models, which appears only after the shift, this problem is
+visible in a validation by bearing; a random split of windows, which places windows of the same bearings in both
+training and test sets, would likely hide it \citep{vieira2026}.
+
 \subsection{Calibration in-domain does not imply calibration after the shift}
 
-On unseen artificial bearings, the models are close to calibrated (ECE 0.01--0.09) and automate 81--91\,\% of cases
+On unseen artificial bearings, the feature-based models are close to calibrated (ECE 0.01--0.09) and automate 81--91\,\% of cases
 below 5\,\% error. On real damage, the same models are overconfident (ECE 0.17--0.20 after temperature scaling) and
 can automate only 25--30\,\% of cases at that error even with a threshold chosen on the test data. A validation that
 holds out artificial bearings---even one done carefully by bearing---would thus give a misleading picture of how the
@@ -71,9 +78,10 @@ Our results suggest four recommendations for deploying automated bearing diagnos
   \item \textbf{Report results per bearing.} Averages over windows hid that the failures came from four bearings, and
         the wide bootstrap intervals show that a different set of test bearings could change the averages
         considerably.
-  \item \textbf{Prefer self-normalised fault-frequency features to absolute vibration statistics.} Amplitude-based
-        features reflected individual bearings, including healthy ones, and lowered accuracy on unseen artificial
-        bearings from 0.88--0.91 to 0.49--0.77.
+  \item \textbf{Prefer self-normalised fault-frequency features to absolute vibration statistics and to networks
+        trained on few bearings.} Amplitude-based features reflected individual bearings, including healthy ones,
+        and lowered accuracy on unseen artificial bearings from 0.88--0.91 to 0.49--0.77; the 1D-CNN reached only
+        0.46.
 \end{enumerate}
 
 \subsection{Limitations}
@@ -87,7 +95,6 @@ conclusions rest on effects that are consistent across all rotations rather than
 was produced in accelerated lifetime tests on a test rig and may differ from damage that develops in the field.
 Bearings with combined inner- and outer-race damage were excluded. The features use a fixed demodulation band and
 window length; our adaptive alternative selected a band of fixed width by spectral kurtosis and did not search over
-widths as the kurtogram does. Only three classical classifiers were evaluated; deep networks trained on raw signals might behave
-differently, although the absence of a fault signature in the envelope spectrum suggests the underlying difficulty
-would remain. Finally, conformal calibration is performed on windows, and windows from the same bearing are
+widths as the kurtogram does. The deep-learning baseline is a single architecture trained from scratch with fixed settings; pre-training on
+other data, stronger data augmentation or domain adaptation might generalise better across bearings. Finally, conformal calibration is performed on windows, and windows from the same bearing are
 correlated, so even the in-domain exchangeability assumption holds only approximately.

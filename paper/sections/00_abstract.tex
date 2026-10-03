@@ -14,6 +14,8 @@ signature: the models confidently call them healthy, so most errors are missed f
 lower load torque; at lower radial force and lower speed, where the features are weaker even on artificial damage,
 the models are less confident and the failure is milder but still present in most rotations. Calibrating on two labelled
 real bearings per class lowers the error at the 5\,\% target to 0.10--0.11 but meets it in only about half of the
-draws, while automating fewer cases. Automation thresholds for bearing diagnosis should therefore be set on real
+draws, while automating fewer cases. A one-dimensional convolutional network trained on the raw vibration signal does not
+solve the problem: it fails already on unseen artificial bearings (accuracy 0.46), with confident errors, and
+exceeds the error target on real damage in most rotations. Automation thresholds for bearing diagnosis should therefore be set on real
 damage, and results reported per bearing.
 \end{abstract}
