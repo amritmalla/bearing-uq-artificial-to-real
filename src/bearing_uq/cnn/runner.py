@@ -3,6 +3,8 @@
 lobo.csv              - each source bearing predicted by a CNN trained on the other 14 source bearings
 rotations/<key>.csv   - for each of the 105 rotations, a CNN trained on that rotation's training bearings
                         predicts every bearing it was not trained on (calibration and all target bearings)
+random_split.csv      - sanity check: a CNN trained on a random 80 % of the source bearings' windows predicts the
+                        other 20 % (the same bearings appear in training and test)
 Columns: bearing, recording, window, p_healthy, p_inner_race, p_outer_race.
 """
 
@@ -13,7 +15,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from bearing_uq.cnn.protocol import LABELS, SOURCE, rotations
+from bearing_uq.cnn.protocol import LABELS, SOURCE, random_window_split, rotations
 from bearing_uq.cnn.train import predict_windows, train_model
 
 PROB_COLS = [f"p_{label}" for label in LABELS]
@@ -79,3 +81,22 @@ def run_rotations(data, out_dir, seed=0):
         model = _fit(data, train, seed)
         _save(_predict(model, data, [c for c in all_codes if c not in train]), path)
         print(f"rotation {i}/{len(rots)} {key} ({time.time() - t0:.0f} s)", flush=True)
+
+
+def run_random_split(data, out_dir, seed=0):
+    """Sanity check with a random window split of the source bearings (not a bearing-level split)."""
+    path = Path(out_dir) / "random_split.csv"
+    if path.exists():
+        print("random split: already done")
+        return
+    source = data.meta[data.meta["bearing"].isin(SOURCE)]
+    is_test = random_window_split(source, seed=seed)
+    train_idx = torch.as_tensor(source.index[~is_test].to_numpy(), device=data.x.device)
+    test_rows = source.index[is_test].to_numpy()
+    t0 = time.time()
+    model = train_model(data.x[train_idx], data.y[train_idx], seed=seed)
+    probs = predict_windows(model, data.x[torch.as_tensor(test_rows, device=data.x.device)])
+    keys = data.meta.loc[test_rows, ["bearing", "recording", "window"]].reset_index(drop=True)
+    _save(pd.concat([keys, pd.DataFrame(probs, columns=PROB_COLS)], axis=1), path)
+    acc = (probs.argmax(1) == data.y[torch.as_tensor(test_rows, device=data.x.device)].cpu().numpy()).mean()
+    print(f"random split: test accuracy {acc:.3f} on {len(test_rows)} windows ({time.time() - t0:.0f} s)")

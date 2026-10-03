@@ -6,6 +6,7 @@ tests/test_cnn_protocol.py checks that both give the same splits and rotations.
 
 from itertools import product
 
+import numpy as np
 import pandas as pd
 
 HEALTHY, INNER, OUTER = "healthy", "inner_race", "outer_race"
@@ -43,3 +44,20 @@ def rotations():
     for calib in product(SOURCE_HEALTHY, ARTIFICIAL_INNER, ARTIFICIAL_OUTER):
         train = sorted(set(SOURCE) - set(calib))
         yield "+".join(calib), list(calib), train
+
+
+def random_window_split(meta, test_fraction=0.2, seed=0):
+    """Sanity check only: a random split of windows in which every bearing appears in both training and test.
+
+    For each bearing (sorted by code), its windows (sorted by recording and window) are shuffled and the first
+    test_fraction are marked as test. Returns a boolean array aligned with meta (True = test). Depends only on the
+    window keys, so the project gives the same split for the feature table as Colab does for the raw windows.
+    """
+    rng = np.random.default_rng(seed)
+    is_test = np.zeros(len(meta), dtype=bool)
+    for code in sorted(meta["bearing"].unique()):
+        rows = meta.index[meta["bearing"] == code]
+        rows = meta.loc[rows].sort_values(["recording", "window"]).index.to_numpy()
+        n_test = int(round(test_fraction * len(rows)))
+        is_test[meta.index.get_indexer(rng.permutation(rows)[:n_test])] = True
+    return is_test

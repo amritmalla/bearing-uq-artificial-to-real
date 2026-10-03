@@ -23,7 +23,8 @@ What it does, for the main operating condition (1500 rpm, 0.7 Nm, 1000 N):
    (`data/raw_windows_N15_M07_F10/`, ~0.6 GB). Skipped for bearings already cached.
 2. Trains a WDCNN (Zhang et al., 2017) on raw vibration with the project's bearing-level splits:
    15 leave-one-bearing-out models (in-domain reference) and one model per calibration rotation (105).
-3. Saves window probabilities to Drive (`data/cnn/`). Every model's output is saved as soon as it finishes, so if
+3. As a sanity check, trains one model on a random split of windows (the same bearings in training and test).
+4. Saves window probabilities to Drive (`data/cnn/`). Every model's output is saved as soon as it finishes, so if
    the session drops, run all cells again and it continues where it stopped.
 
 At the end, download `cnn_results.zip` from Drive (`load_bearing_research_paper/data/`) and unzip it into the
@@ -81,6 +82,7 @@ del x"""
 
 LOBO = "run_lobo(data, OUT_DIR)"
 ROTATIONS = "run_rotations(data, OUT_DIR)"
+RANDOM_SPLIT = "run_random_split(data, OUT_DIR)"
 
 FINISH = """done = len(list((OUT_DIR / "rotations").glob("*.csv")))
 print(f"{done}/105 rotations, lobo.csv present: {(OUT_DIR / 'lobo.csv').exists()}")
@@ -117,7 +119,11 @@ def main() -> None:
         md("## 9. Load the windows onto the GPU"), code(LOAD),
         md("## 10. In-domain reference: leave one source bearing out (15 models)"), code(LOBO),
         md("## 11. Artificial → real: one model per calibration rotation (105 models)"), code(ROTATIONS),
-        md("## 12. Package the results"), code(FINISH),
+        md("## 12. Sanity check: random window split (1 model)\n\nTrains on a random 80 % of the source bearings' "
+           "windows and tests on the other 20 %, so the same bearings appear in training and test. High accuracy "
+           "here shows the network works; the bearing-level results show how much of that is bearing identity."),
+        code(RANDOM_SPLIT),
+        md("## 13. Package the results"), code(FINISH),
     ]
     nb = {"cells": cells, "metadata": {"accelerator": "GPU", "colab": {"provenance": []},
                                        "kernelspec": {"display_name": "Python 3", "name": "python3"}},
