@@ -1,21 +1,18 @@
-\documentclass[11pt,a4paper]{article}
+% Manuscript for the International Journal of Prognostics and Health Management (IJPHM).
+% Layout: ijphm.cls (two columns, US Letter, APA citations via apacite).
+\documentclass[2026]{ijphm}
 
 % ---------------------------------------------------------------------------
 % Packages
 % ---------------------------------------------------------------------------
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}  % always present on Overleaf
-\usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{makecell}
-\usepackage[font=small,labelfont=bf]{caption}
-\usepackage[round,authoryear]{natbib}
 \usepackage{xcolor}
 \usepackage{enumitem}
-\usepackage[section]{placeins}  % keep figures and tables inside their own section
+\usepackage{microtype}
 \usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
 
 \graphicspath{{figures/}}
@@ -27,18 +24,22 @@
 % Front matter
 % ---------------------------------------------------------------------------
 \title{Confident but Wrong: Calibration and Selective Automation of Bearing Fault Diagnosis Under Artificial-to-Real Damage Shift}
-\author{%
-  Yam Malla\thanks{Corresponding author. Email: \href{mailto:yammalla09@gmail.com}{yammalla09@gmail.com}}
-  \and
-  Bhuwan Karki\thanks{Email: \href{mailto:bhuwan.karki7@gmail.com}{bhuwan.karki7@gmail.com}}%
+
+\author{Yam Malla\authorNumber{1} and Bhuwan Karki\authorNumber{1}}
+
+\address{%
+  \affiliation{1}{Independent Researcher}{%
+    \email{yammalla09@gmail.com} (corresponding author)\\
+    \email{bhuwan.karki7@gmail.com}}%
 }
-\date{}
+
+\setlength{\emergencystretch}{1.5em}  % fewer overfull lines in narrow columns
 
 \begin{document}
 
+\input{sections/00_abstract}   % collected by the abstract environment, printed by \maketitle
 \maketitle
-
-\input{sections/00_abstract}
+\licenseFootnote{Yam Malla et al.}
 
 \input{sections/01_introduction}
 \input{sections/02_related_work}
@@ -47,7 +48,7 @@
 \input{sections/05_discussion}
 \input{sections/06_conclusion}
 
-\bibliographystyle{plainnat}
-\bibliography{references}
+\bibliographystyle{apacite}
+\PHMbibliography{references}
 
 \end{document}

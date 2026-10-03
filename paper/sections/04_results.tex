@@ -25,7 +25,7 @@ Fig.~\ref{fig:riskcoverage} shows the error among automatically decided cases as
 unseen artificial bearings, the best possible threshold keeps error below 5\,\% while automating 81--91\,\% of cases.
 On real damage, the same 5\,\% is reached at only 25--30\,\% of cases (median over rotations).
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{fig1_risk_coverage}
   \caption{Error among automatically decided cases as a function of the share of cases automated (most confident
@@ -34,7 +34,7 @@ On real damage, the same 5\,\% is reached at only 25--30\,\% of cases (median ov
     models automate 81--91\,\% of unseen artificial-bearing cases below 5\,\% error, but only 25--30\,\% of
     real-damage cases.}
   \label{fig:riskcoverage}
-\end{figure}
+\end{figure*}
 
 In deployment the threshold must be chosen without real-damage labels. A threshold chosen on the calibration set for
 a 5\,\% error target automates 82--87\,\% of real-damage cases, with an error of 0.24--0.27 among them
@@ -48,7 +48,7 @@ calibration on artificial bearings does not correct this reliably. Temperature s
 the SVM (0.19 $\to$ 0.17) and XGBoost (0.25 $\to$ 0.20) but raises it slightly for Random Forest (0.18 $\to$ 0.19);
 isotonic regression makes it worse for all three (0.23--0.24).
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{fig2_reliability}
   \caption{Reliability diagrams (raw probabilities) for unseen artificial bearings (leave one bearing out) and for
@@ -57,7 +57,7 @@ isotonic regression makes it worse for all three (0.23--0.24).
     (ECE 0.18--0.25). The SVM's in-domain dip at 0.75 confidence comes from one held-out artificial bearing (KI01),
     which contributes 80 of that bin's 131 windows, all misclassified.}
   \label{fig:reliability}
-\end{figure}
+\end{figure*}
 
 \subsection{Conformal prediction under-covers}
 
@@ -77,14 +77,14 @@ Confidently misclassified bearings are rare among unseen artificial bearings---n
 one for the SVM (KI01, accuracy 0.00 at mean confidence 0.76)---so calibration fitted on artificial damage has little
 chance to anticipate them.
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{fig3_per_bearing}
   \caption{Mean confidence and accuracy of each real-damage test bearing, averaged over 105 rotations (raw
     probabilities). Dotted line: confidence equals accuracy. Four bearings (KA15, KA22: outer race; KI16, KI17: inner
     race) are mostly misclassified while the models remain 69--94\,\% confident on average.}
   \label{fig:perbearing}
-\end{figure}
+\end{figure*}
 
 \subsection{Feature ablation}
 \label{sec:ablation}
@@ -112,7 +112,7 @@ bearing per class) and 0.35--0.38 (two). Calibration error improves moderately (
 two bearings per class), and conformal coverage rises from 0.64--0.67 to 0.84--0.85, still below nominal. Variation
 across draws is large (Table~\ref{tab:realcal}), as it depends on which real bearings are available for calibration.
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{fig4_real_calibration}
   \caption{Calibrating on a few labelled real-damage bearings (temperature scaling; confidence threshold chosen on
@@ -120,7 +120,7 @@ across draws is large (Table~\ref{tab:realcal}), as it depends on which real bea
     automated. Points: mean over draws; bars: 2.5th--97.5th percentile over draws (50 draws per real-bearing setting;
     artificial values pooled over all 100).}
   \label{fig:realcal}
-\end{figure}
+\end{figure*}
 
 \input{tables/table3_real_calibration}
 

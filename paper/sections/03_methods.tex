@@ -28,11 +28,13 @@ magnitude of the analytic signal (Hilbert transform) with its mean removed, and 
 Fourier transform. The characteristic fault frequencies of the 6203 bearing ($n = 8$ balls, ball diameter
 $d = 6.75$\,mm, pitch diameter $D = 28.55$\,mm, contact angle $0^\circ$) at shaft frequency $f_r = 25$\,Hz are
 \begin{equation}
-  \mathrm{BPFO} = \frac{n}{2}\left(1 - \frac{d}{D}\right) f_r \approx 76.4\,\mathrm{Hz},
-  \qquad
-  \mathrm{BPFI} = \frac{n}{2}\left(1 + \frac{d}{D}\right) f_r \approx 123.6\,\mathrm{Hz}.
+  \begin{aligned}
+    \mathrm{BPFO} &= \frac{n}{2}\left(1 - \frac{d}{D}\right) f_r \approx 76.4\,\mathrm{Hz},\\
+    \mathrm{BPFI} &= \frac{n}{2}\left(1 + \frac{d}{D}\right) f_r \approx 123.6\,\mathrm{Hz}.
+  \end{aligned}
 \end{equation}
-At 900\,rpm ($f_r = 15$\,Hz) these become 45.8\,Hz and 74.2\,Hz. For each of BPFO and BPFI and their second harmonics, the feature is the largest envelope-spectrum amplitude within
+At 900\,rpm ($f_r = 15$\,Hz) these become 45.8\,Hz and 74.2\,Hz.
+For each of BPFO and BPFI and their second harmonics, the feature is the largest envelope-spectrum amplitude within
 $\pm 2\,\%$ of the target frequency, divided by the median envelope-spectrum amplitude between 10 and 500\,Hz. These
 four ratios are self-normalised: they compare a peak with the spectrum's own noise floor rather than measuring
 absolute vibration level. All four are log-transformed before modelling.

@@ -58,8 +58,10 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
 - [x] Run the Colab notebook; copy the four `features_*.csv` into `data/features/`
 - [x] Experiments on the three other conditions and with the adaptive band; update paper (Table 4, Sections 4.7–4.8,
       Discussion, Limitations, Abstract, Introduction, Conclusion)
-- [ ] Abstract is ~285 words; shorten if the target journal limits it to 250
 - [ ] Optional: small 1D-CNN baseline
+- [x] Paper reformatted for IJPHM (two columns, APA references, CC BY 3.0 licence note)
+- [ ] Add Hassannejad et al. (2025, IJPHM; Paderborn artificial vs real) to Related Work
+- [ ] AI-use, author-contribution and data/code-availability statements
 - [ ] Supervisor / co-author review
 - [ ] arXiv preprint
 - [ ] Journal submission
@@ -67,9 +69,14 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
 ## Open decisions (need your input)
 
 1. **Faculty supervisor / co-author.** Not yet identified.
-2. **Target journal.** Affects length and format (see `docs/proposal.md` §11).
+2. **Affiliation line.** IJPHM's template expects one; currently "Independent Researcher" for both authors —
+   add city/country if wanted.
 
 ## Decided
+
+- **Target journal** (2026-10-03): International Journal of Prognostics and Health Management (IJPHM) —
+  diamond open access (no fees), Scopus Q2 (SJR 0.374), PHM Society journal; first decision in ~8–12 weeks.
+  Paper reformatted to its layout (`paper/ijphm.cls`).
 
 - **Healthy-bearing split** (2026-10-02): source K001, K002, K004 (K002 for calibration); target K003, K005, K006.
   Reason: K004 and K005 have much lower kurtosis than the other healthy bearings, so each side gets one.
@@ -156,3 +163,8 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
   - Spectral-kurtosis band selection picks 18–23 kHz for 27 of 29 bearings, healthy included; fault peaks vanish and
     accuracy falls to 0.32–0.39. Reported as a negative robustness check.
   - Fixed table formatting: trailing zeros were dropped in generated LaTeX tables (e.g. 0.2 → 0.20).
+- 2026-10-03 — Target journal IJPHM. Official LaTeX template could not be downloaded, so `paper/ijphm.cls` was
+  adapted from the PHM-derived ERTS class to match the official Word template (US Letter, 0.75/1.0 in margins,
+  two columns 0.25 in apart, Times 10 pt, small-caps header, ISSN footer, CC BY 3.0 US note, apacite APA style;
+  table captions below tables). Paper is 12 pages. Fixed a table bug: the "Best possible automation" row of
+  Table 1 was broken by a double-escaped % sign.
