@@ -64,7 +64,8 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
 - [x] Paper reformatted for IJPHM (two columns, APA references, CC BY 3.0 licence note)
 - [x] Add Hassannejad et al. (2025, IJPHM; Paderborn artificial vs real) to Related Work
 - [x] Draft AI-use, author-contribution, data/code-availability and funding statements (`paper/sections/07_declarations.tex`)
-- [ ] Authors: fill in CRediT roles, repository link; confirm funding statement (red TODO boxes)
+- [x] Author contributions (equal, except software and formal analysis: Yam Malla) and funding (none) filled in
+- [ ] Repository link (red TODO boxes in Methods and Data availability)
 - [ ] Authors: read and check every detail of the paper before submission (planned by Amrit)
 - [ ] Supervisor / co-author review
 - [ ] arXiv preprint
