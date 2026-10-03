@@ -19,7 +19,12 @@ Faults for laboratory experiments are usually made artificially, because natural
 Paderborn dataset \citep{lessmeier2016} was designed to expose the resulting gap: it contains bearings with damage
 introduced by drilling, electric discharge machining and electric engraving, and bearings whose damage developed in
 accelerated lifetime tests. Its authors reported that training on artificial and on real damage leads to different
-classification accuracies. Much of the later work on domain shift in fault diagnosis concerns changing operating
+classification accuracies. \citet{hassannejad2025} trained physics-informed convolutional networks on the
+Paderborn vibration signals separately for each damage type and reached 83--90\,\% test accuracy on artificial and
+96\,\% on real damage. Their recordings were split at random into training, validation and test sets within each
+damage type, so the results describe neither transfer from artificial to real damage nor, since the split is not
+described as being by bearing, generalisation to unseen bearings; the much lower accuracies we report on real damage
+(Section~\ref{sec:results}) answer a different question. Much of the later work on domain shift in fault diagnosis concerns changing operating
 conditions---speed, load or radial force---and aims to recover accuracy through domain adaptation. These studies
 measure success by accuracy; whether a model's confidence remains trustworthy after the shift has received far less
 attention.

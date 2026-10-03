@@ -58,10 +58,13 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
 - [x] Run the Colab notebook; copy the four `features_*.csv` into `data/features/`
 - [x] Experiments on the three other conditions and with the adaptive band; update paper (Table 4, Sections 4.7–4.8,
       Discussion, Limitations, Abstract, Introduction, Conclusion)
-- [ ] Optional: small 1D-CNN baseline
+- [x] 1D-CNN baseline code and Colab notebook (`notebooks/colab_cnn.ipynb`)
+- [ ] Run `colab_cnn.ipynb` (GPU); unzip `cnn_results.zip` into `data/`
+- [ ] CNN analysis (`scripts/run_cnn_analysis.py`, then summarise/bootstrap/error_breakdown) and paper update
 - [x] Paper reformatted for IJPHM (two columns, APA references, CC BY 3.0 licence note)
-- [ ] Add Hassannejad et al. (2025, IJPHM; Paderborn artificial vs real) to Related Work
-- [ ] AI-use, author-contribution and data/code-availability statements
+- [x] Add Hassannejad et al. (2025, IJPHM; Paderborn artificial vs real) to Related Work
+- [x] Draft AI-use, author-contribution, data/code-availability and funding statements (`paper/sections/07_declarations.tex`)
+- [ ] Authors: fill in CRediT roles, repository link; confirm AI-use and funding statements (red TODO boxes)
 - [ ] Supervisor / co-author review
 - [ ] arXiv preprint
 - [ ] Journal submission
@@ -168,3 +171,10 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
   two columns 0.25 in apart, Times 10 pt, small-caps header, ISSN footer, CC BY 3.0 US note, apacite APA style;
   table captions below tables). Paper is 12 pages. Fixed a table bug: the "Best possible automation" row of
   Table 1 was broken by a double-escaped % sign.
+- 2026-10-03 — 1D-CNN baseline prepared: WDCNN-style network (wide first kernel, 4,096-sample segments, per-segment
+  standardisation, 20 epochs, fixed settings) trained in Colab on raw vibration with the same bearing splits
+  (15 leave-one-bearing-out + 105 rotation models). Saved probabilities go through the existing calibration,
+  conformal, bootstrap and real-bearing calibration code via `PrecomputedModel` (verified: feeding the Random
+  Forest's own probabilities through this path reproduces its results). Related Work: Hassannejad et al. (2025)
+  report 83–96 % within damage type with random splits — not comparable with artificial→real transfer.
+  Declarations section drafted; author input needed.
