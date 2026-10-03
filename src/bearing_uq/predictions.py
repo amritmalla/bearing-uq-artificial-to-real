@@ -21,12 +21,13 @@ ALPHA = 0.1
 CONFORMAL_METHODS = ("marginal", "class_conditional")
 
 
-def predict_rotation(df: pd.DataFrame, split: dict[str, str], features, seed: int = 0) -> dict:
+def predict_rotation(df: pd.DataFrame, split: dict[str, str], features, seed: int = 0,
+                     models: dict | None = None) -> dict:
     parts = {n: D.subset(df, split, n) for n in (S.TRAIN, S.CALIB, S.TEST)}
     X = {n: D.design_matrix(p, features) for n, p in parts.items()}
     y = {n: D.targets(p) for n, p in parts.items()}
 
-    models = make_models(seed)
+    models = models or make_models(seed)
     n_test, k = len(y[S.TEST]), len(D.LABELS)
     probs = np.zeros((len(models), len(CALIBRATORS), n_test, k), dtype=np.float64)
     thresholds = np.zeros((len(models), len(CALIBRATORS), len(TARGETS)))

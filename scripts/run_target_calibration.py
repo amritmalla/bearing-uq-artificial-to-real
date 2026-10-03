@@ -11,24 +11,13 @@ import sys
 import time
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from bearing_uq import config, splits  # noqa: E402
 from bearing_uq.dataset import FEATURE_SETS, load_features  # noqa: E402
-from bearing_uq.target_calibration import run_draw  # noqa: E402
-
-N_PER_CLASS = (1, 2)
-METRICS = ["accuracy", "ece", "auto_rate@5%", "auto_error@5%", "coverage", "mean_set_size"]
-
-
-def summarise(rows: pd.DataFrame) -> pd.DataFrame:
-    long = rows.melt(id_vars=["n_per_class", "model", "calibration_set", "calibration"],
-                     value_vars=[m for m in METRICS if m in rows], var_name="metric").dropna(subset=["value"])
-    g = long.groupby(["n_per_class", "model", "calibration_set", "calibration", "metric"])["value"]
-    return pd.DataFrame({"mean": g.mean(), "p2.5": g.quantile(0.025), "p97.5": g.quantile(0.975)}).reset_index()
+from bearing_uq.target_calibration import N_PER_CLASS, draw_rotation, run_draw, summarise  # noqa: E402
 
 
 def main() -> None:
@@ -54,7 +43,7 @@ def main() -> None:
             if time.monotonic() - start > args.max_seconds:
                 print("time budget reached; run again to continue")
                 return
-            calib, split = rotations[np.random.default_rng(seed).integers(len(rotations))]
+            calib, split = draw_rotation(rotations, seed)
             frame = run_draw(df, calib, split, n, seed, FEATURE_SETS[args.features])
             frame.to_csv(out, mode="a", header=not out.exists(), index=False)
             print(f"n={n} draw {d + 1}/{args.draws}", flush=True)

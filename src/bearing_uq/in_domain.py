@@ -31,7 +31,11 @@ def lobo_probabilities(df: pd.DataFrame, codes: list[str], seed: int = 0,
 def leave_one_bearing_out(df: pd.DataFrame, codes: list[str], seed: int = 0,
                           features: list[str] = D.FEATURES):
     """Return (summary per model, per-bearing accuracy) on raw probabilities."""
-    data, y, all_probs = lobo_probabilities(df, codes, seed, features)
+    return summarise(*lobo_probabilities(df, codes, seed, features))
+
+
+def summarise(data: pd.DataFrame, y: np.ndarray, all_probs: dict):
+    """Summary per model and per-bearing accuracy from leave-one-bearing-out probabilities."""
     summary, per_bearing = [], []
     for name, probs in all_probs.items():
         correct = probs.argmax(1) == y

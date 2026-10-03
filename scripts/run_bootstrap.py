@@ -16,7 +16,7 @@ from bearing_uq.predictions import load_all  # noqa: E402
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--features", choices=["fault_only", "all", "fault_only_sk"], default="fault_only")
+    parser.add_argument("--features", choices=["fault_only", "all", "fault_only_sk", "cnn"], default="fault_only")
     parser.add_argument("--condition", choices=config.CONDITIONS, default=config.OPERATING_CONDITION)
     parser.add_argument("--draws", type=int, default=2000)
     args = parser.parse_args()

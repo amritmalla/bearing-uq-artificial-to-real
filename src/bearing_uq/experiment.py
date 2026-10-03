@@ -39,13 +39,15 @@ def _automation(p_cal, y_cal, p_test, y_test) -> dict:
     return out
 
 
-def run(df: pd.DataFrame, split: dict[str, str], seed: int = 0, features: list[str] = D.FEATURES):
+def run(df: pd.DataFrame, split: dict[str, str], seed: int = 0, features: list[str] = D.FEATURES,
+        models: dict | None = None):
+    """models: name -> unfitted classifier; defaults to make_models(seed)."""
     X_tr, y_tr = _xy(df, split, S.TRAIN, features)
     X_cal, y_cal = _xy(df, split, S.CALIB, features)
     X_te, y_te = _xy(df, split, S.TEST, features)
 
     main, conformal, recall = [], [], []
-    for name, model in make_models(seed).items():
+    for name, model in (models or make_models(seed)).items():
         fit(model, X_tr, y_tr)
         p_cal_raw, p_te_raw = model.predict_proba(X_cal), model.predict_proba(X_te)
 

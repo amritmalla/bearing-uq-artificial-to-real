@@ -21,6 +21,26 @@ from bearing_uq.models import fit, make_models
 
 TARGET_ERROR = 0.05
 ALPHA = 0.1
+N_PER_CLASS = (1, 2)
+METRICS = ["accuracy", "ece", "auto_rate@5%", "auto_error@5%", "coverage", "mean_set_size"]
+
+
+def draw_seeds(n_draws: int):
+    """(n_per_class, seed) for every draw; the seed fixes both the rotation and the real bearings."""
+    return [(n, 1000 * n + d) for n in N_PER_CLASS for d in range(n_draws)]
+
+
+def draw_rotation(rotations: list, seed: int):
+    """The (calibration bearings, split) used by a draw."""
+    return rotations[np.random.default_rng(seed).integers(len(rotations))]
+
+
+def summarise(rows: pd.DataFrame) -> pd.DataFrame:
+    """Mean and 2.5th-97.5th percentile over draws."""
+    long = rows.melt(id_vars=["n_per_class", "model", "calibration_set", "calibration"],
+                     value_vars=[m for m in METRICS if m in rows], var_name="metric").dropna(subset=["value"])
+    g = long.groupby(["n_per_class", "model", "calibration_set", "calibration", "metric"])["value"]
+    return pd.DataFrame({"mean": g.mean(), "p2.5": g.quantile(0.025), "p97.5": g.quantile(0.975)}).reset_index()
 
 
 def choose_real_calibration(split: dict[str, str], n_per_class: int, rng) -> list[str]:
@@ -52,7 +72,7 @@ def _evaluate(p_cal_raw, y_cal, p_te_raw, y_te) -> list[dict]:
 
 
 def run_draw(df: pd.DataFrame, calib: tuple, split: dict[str, str], n_per_class: int,
-             seed: int, features) -> pd.DataFrame:
+             seed: int, features, models: dict | None = None) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     real = choose_real_calibration(split, n_per_class, rng)
     source = S.codes_in(split, S.CALIB)
@@ -67,7 +87,7 @@ def run_draw(df: pd.DataFrame, calib: tuple, split: dict[str, str], n_per_class:
     cal_sets = {"source": xy(source), "target": xy(real), "combined": xy(source + real)}
 
     rows = []
-    for model_name, model in make_models().items():
+    for model_name, model in (models or make_models()).items():
         fit(model, X_tr, y_tr)
         p_te = model.predict_proba(X_te)
         for set_name, (X_c, y_c) in cal_sets.items():

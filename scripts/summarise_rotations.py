@@ -22,7 +22,7 @@ MAIN_COLS = ["accuracy", "macro_f1", "ece", "brier", "aurc",
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--features", choices=["all", "fault_only", "fault_only_sk"], default="all")
+    parser.add_argument("--features", choices=["all", "fault_only", "fault_only_sk", "cnn"], default="all")
     parser.add_argument("--condition", choices=config.CONDITIONS, default=config.OPERATING_CONDITION)
     args = parser.parse_args()
     sfx = config.result_suffix(args.features, args.condition)
