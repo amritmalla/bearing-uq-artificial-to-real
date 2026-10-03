@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+type: software
+title: "Code for: Calibration, Conformal Prediction and Selective Automation for Bearing Fault Diagnosis: From Artificial to Real Damage"
+authors:
+  - given-names: Yam
+    family-names: Malla
+    email: yammalla09@gmail.com
+  - given-names: Bhuwan
+    family-names: Karki
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/amritmalla/bearing-uq-artificial-to-real"
+abstract: >-
+  Code and results for a study of whether calibrated confidence in bearing fault diagnosis survives the shift
+  from artificially made faults to real damage on the Paderborn bearing dataset: Random Forest, SVM and XGBoost
+  on envelope-spectrum features and a 1D-CNN on raw vibration, with bearing-level splits, temperature scaling,
+  isotonic regression, split conformal prediction and selective automation.
+keywords:
+  - bearing fault diagnosis
+  - calibration
+  - conformal prediction
+  - selective classification
+  - domain shift
+  - Paderborn bearing dataset

@@ -5,3 +5,5 @@ scikit-learn>=1.4
 xgboost>=2.0
 matplotlib>=3.8
 pytest>=8.0
+# Optional, only for the 1D-CNN (trained in Colab, where it is preinstalled):
+# torch>=2.0

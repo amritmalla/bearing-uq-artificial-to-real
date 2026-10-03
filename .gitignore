@@ -14,3 +14,13 @@ paper/*.fdb_latexmk
 paper/*.synctex.gz
 paper/main.pdf
 paper/*.zip
+
+resources/
+# Compiled drafts in paper/ (figures in paper/figures/ stay tracked)
+paper/*.pdf
+
+# Internal working docs stay local; only the table of cited numbers is published
+/docs/*
+!/docs/paper/
+/docs/paper/*
+!/docs/paper/numbers.md

@@ -103,13 +103,13 @@ def table_real_calibration() -> pd.DataFrame:
 
 
 def table_conditions() -> pd.DataFrame:
-    missed = pd.read_csv(RES / "missed_faults_fault_only_all_conditions.csv").set_index(["condition", "model"])
     rows = []
     for cond in CONDITION_LABEL:
         sfx = config.result_suffix("fault_only", cond)
         boot = pd.read_csv(RES / f"bootstrap{sfx}.csv").set_index(["model", "calibration", "metric"])
         ind = pd.read_csv(RES / f"in_domain_summary{sfx}.csv").set_index("model")
         rot = pd.read_csv(RES / f"rotations_main{sfx}.csv")
+        missed = pd.read_csv(RES / f"missed_faults{sfx}.csv").set_index("model")  # from error_breakdown.py
         rot = rot[(rot.domain == "target_real") & (rot.calibration == "temperature") & (rot["auto_rate@5%"] > 0)]
         exceed = rot.groupby("model")["auto_error@5%"].apply(lambda s: (s > 0.05).mean())
 
@@ -124,7 +124,7 @@ def table_conditions() -> pd.DataFrame:
                          "Error at 5% target": b(m, "temperature", "auto_error@5%"),
                          "Runs exceeding 5% target": f"{exceed[m]:.0%}",
                          "Conformal coverage": b(m, "conformal_marginal", "coverage"),
-                         "Missed faults (share of errors)": f"{missed.loc[(cond, m), 'missed_share']:.2f}"})
+                         "Missed faults (share of errors)": f"{missed.loc[m, 'missed_share']:.2f}"})
     return pd.DataFrame(rows)
 
 

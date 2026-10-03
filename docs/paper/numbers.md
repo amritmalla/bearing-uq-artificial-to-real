@@ -58,7 +58,7 @@ Median fault-frequency features (feature table):
 - Artificial outer race bpfo_h1 5.24–41.91; artificial inner race bpfi_h1 3.84–15.28
 - Other real outer race bpfo_h1: KA04 16.78, KA16 24.36, KA30 4.42; other real inner bpfi_h1: KI04 8.47, KI14 4.29, KI18 18.46, KI21 3.38
 
-Missed faults (damaged predicted healthy) as share of errors on real damage, temperature scaling, mean over rotations:
+Missed faults (damaged predicted healthy) as share of errors on real damage, temperature scaling, mean over rotations (`results/missed_faults_fault_only.csv`):
 all errors RF 0.67 / SVM 0.62 / XGB 0.68; automated errors at the 5 % target RF 0.74 / SVM 0.72 / XGB 0.74.
 
 Other 10 real-test bearings: accuracy ≥ 0.68 (RF 0.68, SVM 0.70, XGB 0.73 minimum).
@@ -90,7 +90,7 @@ Same bearing splits in every condition. Real-damage values: bootstrap mean (2,00
 | N15_M07_F04 (400 N) | 0.76 / 0.70 / 0.74 | 0.66 / 0.65 / 0.67 | 0.17 / 0.21 / 0.15 | 98 / 99 / 88 % | 0.80 / 0.80 / 0.82 | 0.26 / 0.20 / 0.27 |
 | N09_M07_F10 (900 rpm) | 0.69 / 0.57 / 0.68 | 0.61 / 0.61 / 0.61 | 0.11 / 0.10 / 0.12 | 79 / 68 / 83 % | 0.85 / 0.86 / 0.85 | 0.50 / 0.45 / 0.48 |
 
-Silent bearings across conditions (`results/per_bearing_real_fault_only_all_conditions.csv`): KA15 and KA22
+Silent bearings across conditions (`results/per_bearing_real_fault_only*.csv`, one file per condition, from `scripts/error_breakdown.py`): KA15 and KA22
 misclassified at all four conditions (mean accuracy over models ≤ 0.41); KI16, KI17 at N15_M07_F10, N15_M01_F10 and
 N09_M07_F10. K006 classified as damaged in 92 % of windows at N15_M07_F04.
 Windows per condition: 2,309 (main), 2,308 (900 rpm), 2,305 (0.1 Nm), 2,307 (400 N).

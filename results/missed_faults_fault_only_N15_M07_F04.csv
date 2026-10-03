@@ -1,0 +1,4 @@
+model,missed_share,missed_share_automated
+random_forest,0.2561,0.1
+svm,0.1999,0.0719
+xgboost,0.268,0.1372

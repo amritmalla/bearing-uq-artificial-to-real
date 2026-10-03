@@ -1,14 +1,13 @@
-# Bearing Fault Diagnosis Under Artificial-to-Real Damage Shift
+# Calibration, Conformal Prediction and Selective Automation for Bearing Fault Diagnosis: From Artificial to Real Damage
 
-Research code for a study of calibration and selective automation in bearing fault diagnosis,
-using the Paderborn University bearing dataset.
+Code and results for a study of whether calibrated confidence in bearing fault diagnosis survives the shift from
+artificially made faults to real damage, on the Paderborn University bearing dataset. Random Forest, SVM and
+XGBoost on envelope-spectrum features, and a 1D-CNN on raw vibration, are trained and calibrated on artificially
+damaged bearings and tested on bearings with real damage, with bearing-level splits, 105 calibration-bearing
+rotations and bootstrap intervals over bearings.
 
-- Proposal: [`docs/proposal.md`](docs/proposal.md)
-- Project status and open decisions: [`docs/status.md`](docs/status.md)
-- Figures, tables and draft captions: [`docs/figures.md`](docs/figures.md)
-- Paper (LaTeX, Overleaf-ready): [`paper/`](paper/) — run `python scripts/build_paper_assets.py` after
-  regenerating results, then upload the `paper/` folder to Overleaf
-- Outline and numbers cited: [`docs/paper/`](docs/paper/)
+- Paper (LaTeX, IJPHM format): [`paper/`](paper/)
+- Every number cited in the paper and the result file it comes from: [`docs/paper/numbers.md`](docs/paper/numbers.md)
 
 ## Setup
 
@@ -17,41 +16,74 @@ pip install -r requirements.txt
 pytest
 ```
 
-## Run in Google Colab
-
-Upload `notebooks/colab_run.ipynb` to Colab and run the cells in order. The notebook is
-self-contained (no other project files needed). It downloads each bearing once and writes one feature
-table per operating condition (four in total) to `MyDrive/load_bearing_research_paper/data/features/`,
-resuming automatically if the session drops. Copy the four CSV files into `data/features/`.
+The 1D-CNN is trained in Google Colab (PyTorch is preinstalled there); its tests are skipped when PyTorch is not
+installed locally.
 
 ## Data
 
-The download script fetches the study bearings and keeps only the `N15_M07_F10` recordings:
+The Paderborn bearing data are **not included** in this repository. They are available from the
+[KAt-DataCenter](https://mb.uni-paderborn.de/kat/forschung/bearing-datacenter/data-sets-and-download) of Paderborn
+University under the CC BY-NC 4.0 licence; cite Lessmeier et al. (2016) and the KAt-DataCenter. The notebooks below
+download them automatically. The derived results in `results/` are provided for reproducibility under the same
+non-commercial terms.
+
+## Reproducing the paper
+
+All commands run from the project root. Scripts with `--max-seconds` stop cleanly after that time and resume where
+they stopped when run again.
+
+**1. Feature tables** (`data/features/features_<condition>.csv`, all four operating conditions). Either run
+`notebooks/colab_run.ipynb` in Colab (self-contained; downloads the data, writes the tables to Google Drive) and
+copy the four CSV files into `data/features/`, or locally:
 
 ```bash
-BEARING_RAW_DIR=data/raw python scripts/download_paderborn.py
+BEARING_RAW_DIR=data/raw python scripts/download_paderborn.py     # needs unrar
+python scripts/build_features.py --condition N15_M07_F10          # repeat for each condition
 ```
 
-It needs `unrar`. Alternatively, download the Paderborn bearing data manually from the
-[KAt-DataCenter](https://mb.uni-paderborn.de/kat/forschung/bearing-datacenter/data-sets-and-download)
-and extract one folder per bearing into `data/raw/`, e.g. `data/raw/KA01/N15_M07_F10_KA01_1.mat`.
-The data is licensed CC BY-NC 4.0; cite Lessmeier et al. (2016) and the KAt-DataCenter.
-
-Then build the feature table:
+**2. Feature-based models.** Main setting `fault_only`; `all` is the feature ablation, `fault_only_sk` the adaptive
+(spectral-kurtosis) band. Add `--condition <condition>` for the other operating conditions.
 
 ```bash
-python scripts/build_features.py
+python scripts/run_rotations.py --features fault_only             # 105 calibration rotations
+python scripts/summarise_rotations.py --features fault_only
+python scripts/run_in_domain.py --features fault_only             # leave-one-bearing-out reference
+python scripts/save_predictions.py --features fault_only          # per-rotation predictions
+python scripts/run_bootstrap.py --features fault_only             # 95 % intervals over bearings
+python scripts/run_target_calibration.py --features fault_only    # calibrating on labelled real bearings
+python scripts/error_breakdown.py --predictions fault_only         # missed faults, per-bearing accuracy
 ```
+
+**3. 1D-CNN.** Run `notebooks/colab_cnn.ipynb` in Colab on a GPU runtime and unzip `cnn_results.zip` into `data/`
+(giving `data/cnn/lobo.csv`, `data/cnn/rotations/` and `data/cnn/random_split.csv`). Then:
+
+```bash
+python scripts/run_cnn_analysis.py              # same calibration, conformal and selective-automation analysis
+python scripts/summarise_rotations.py --features cnn
+python scripts/run_bootstrap.py --features cnn
+python scripts/error_breakdown.py --predictions cnn
+python scripts/random_split_check.py            # sanity check: random window split vs split by bearing
+```
+
+**4. Figures, tables and paper assets.**
+
+```bash
+python scripts/make_figures.py                  # results/figures/
+python scripts/make_tables.py                   # results/tables/
+python scripts/build_paper_assets.py            # LaTeX tables and figure PDFs -> paper/
+```
+
+Upload the `paper/` folder to Overleaf (main file `paper/main.tex`, class `paper/ijphm.cls`).
 
 ## Layout
 
 ```
 src/bearing_uq/
-  config.py            settings (paths, sampling rate, operating condition, windows)
+  config.py            settings (paths, sampling rate, operating conditions, windows)
   bearings.py          bearing codes, labels and damage origin
   geometry.py          6203 geometry and fault frequencies
-  splits.py            bearing-level train / calib / test splits
-  dataset.py           feature table -> model inputs
+  splits.py            bearing-level train / calib / test splits and the 105 rotations
+  dataset.py           feature table -> model inputs; feature sets
   models.py            Random Forest, SVM, XGBoost
   calibration.py       temperature scaling, isotonic calibration
   conformal.py         split conformal prediction (marginal, class-conditional)
@@ -60,29 +92,25 @@ src/bearing_uq/
   in_domain.py         leave-one-bearing-out reference on source bearings
   predictions.py       save / load per-rotation test predictions
   bootstrap.py         hierarchical bootstrap over rotations and bearings
-  target_calibration.py  real-damage calibration experiment
+  target_calibration.py  calibrating on labelled real bearings
+  precomputed.py       serves saved probabilities (the CNN's) through the scikit-learn interface
+  errors.py            missed-fault shares
   tables.py            table formatting
   plots/               figure style, curve helpers, one module per figure
-  data/files.py        recording file paths
-  data/download.py     download archives, extract one operating condition
-  data/loader.py       read vibration signal from .mat
-  data/windows.py      fixed-length windowing
-  features/time_domain.py   RMS, kurtosis, crest factor, ...
-  features/envelope.py      envelope spectrum
-  features/fault_bands.py   energy at BPFO / BPFI harmonics
-  features/extract.py       all features for one window
-scripts/download_paderborn.py   download and extract the study data
-scripts/build_features.py   build the feature table
-scripts/run_baseline.py     run the main experiment, write results/
-scripts/run_rotations.py    repeat it for all 105 calibration-bearing choices (--features all|fault_only)
-scripts/summarise_rotations.py  mean/std/min/max tables for the rotations
-scripts/run_in_domain.py    in-domain reference (leave one source bearing out)
-scripts/save_predictions.py per-rotation test predictions for the bootstrap (data/predictions/)
-scripts/run_bootstrap.py    bootstrap 95 % intervals over rotations and test bearings
-scripts/run_target_calibration.py  calibrate on 1-2 real bearings per class vs source bearings
-scripts/make_figures.py     paper figures -> results/figures/ (PNG + PDF)
-scripts/make_tables.py      paper tables -> results/tables/ (CSV + Markdown)
-scripts/build_paper_assets.py  LaTeX tables + figure PDFs -> paper/
-notebooks/colab_run.ipynb   run the pipeline in Google Colab
-tests/                      unit tests on synthetic signals
+  data/                file paths, download, .mat loader, windowing
+  features/            time-domain, envelope spectrum, fault-band and spectral-kurtosis features
+  cnn/                 1D-CNN (WDCNN-style): splits, data cache, model, training, experiment runner
+scripts/                one script per step (see "Reproducing the paper")
+  build_cnn_notebook.py  rebuilds notebooks/colab_cnn.ipynb from src/bearing_uq/cnn/
+  run_baseline.py        single calibration split (first exploratory run)
+notebooks/colab_run.ipynb   feature tables for all four operating conditions (Colab)
+notebooks/colab_cnn.ipynb   1D-CNN training (Colab, GPU)
+results/                    result tables (CSV), figures and paper tables
+paper/                      LaTeX manuscript (IJPHM format)
+docs/paper/numbers.md       every number cited in the paper, with its source file
+tests/                      unit tests on synthetic data
 ```
+
+## Licence
+
+Code: MIT licence (see [`LICENSE`](LICENSE)). Data: Paderborn KAt-DataCenter, CC BY-NC 4.0 (not included).
