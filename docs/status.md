@@ -64,7 +64,8 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
 - [x] Paper reformatted for IJPHM (two columns, APA references, CC BY 3.0 licence note)
 - [x] Add Hassannejad et al. (2025, IJPHM; Paderborn artificial vs real) to Related Work
 - [x] Draft AI-use, author-contribution, data/code-availability and funding statements (`paper/sections/07_declarations.tex`)
-- [ ] Authors: fill in CRediT roles, repository link; confirm AI-use and funding statements (red TODO boxes)
+- [ ] Authors: fill in CRediT roles, repository link; confirm funding statement (red TODO boxes)
+- [ ] Authors: read and check every detail of the paper before submission (planned by Amrit)
 - [ ] Supervisor / co-author review
 - [ ] arXiv preprint
 - [ ] Journal submission
@@ -187,3 +188,5 @@ Next: decide on the optional 1D-CNN baseline; supervisor / co-author review; rep
 - 2026-10-03 — CNN random-split sanity check: on a random window split (same bearings in training and test) the CNN
   reaches 0.98 accuracy, ECE 0.02, like the feature models (0.97–0.98); by bearing it drops to 0.46 (features
   0.88–0.92). Added to Methods 3.5, Results 4.6, Discussion and Abstract (337 words).
+- 2026-10-03 — AI-use declaration set to the authors' chosen wording (authors chose the question and design;
+  Claude assisted with implementing the analysis code and with drafting and editing the text).
