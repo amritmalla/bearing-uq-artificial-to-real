@@ -166,6 +166,6 @@ Fault frequencies at 900 rpm: BPFO 45.8 Hz, BPFI 74.2 Hz.
 
 ## Software
 scikit-learn 1.7.2, XGBoost 3.2.0, SciPy 1.15.3, NumPy 2.2.6, pandas 2.3.3 (Python 3.10). 1D-CNN: PyTorch
-2.11.0+cu130 in Google Colab (base CNN 2026-10-03, AdaBN 2026-10-06; given by Amrit).
+2.11.0+cu130 in Google Colab (base CNN 2026-10-03, AdaBN 2026-10-06).
 AdaBN and kurtogram analyses (2026-10-06) run with the same library versions under Python 3.13; one
 in-domain value differs from a Python 3.10 run in the last floating-point digit.

@@ -3,21 +3,14 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .venv/
-# LaTeX build products
-paper/*.aux
-paper/*.bbl
-paper/*.blg
-paper/*.log
-paper/*.out
-paper/*.fls
-paper/*.fdb_latexmk
-paper/*.synctex.gz
-paper/main.pdf
-paper/*.zip
-
 resources/
-# Compiled drafts in paper/ (figures in paper/figures/ stay tracked)
-paper/*.pdf
+
+# Kept locally, not published: the manuscript (LaTeX sources, figures, builds) and helper scripts
+/paper/
+/scripts/build_paper_assets.py
+/scripts/run_baseline.py
+/scripts/build_cnn_notebook.py
+/scripts/build_kurtogram_notebook.py
 
 # Internal working docs stay local; only the table of cited numbers is published
 /docs/*

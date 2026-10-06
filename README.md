@@ -6,7 +6,6 @@ XGBoost on envelope-spectrum features, and a 1D-CNN on raw vibration (also with 
 trained and calibrated on artificially damaged bearings and tested on bearings with real damage, with bearing-level
 splits, 105 calibration-bearing rotations and bootstrap intervals over bearings.
 
-- Paper (LaTeX, IJPHM format): [`paper/`](paper/)
 - Every number cited in the paper and the result file it comes from: [`docs/paper/numbers.md`](docs/paper/numbers.md)
 
 ## Setup
@@ -73,15 +72,12 @@ python scripts/run_cnn_analysis.py --variant adabn   # the same with AdaBN; then
                                                      # with --features / --predictions cnn_adabn
 ```
 
-**4. Figures, tables and paper assets.**
+**4. Figures and tables.**
 
 ```bash
 python scripts/make_figures.py                  # results/figures/
 python scripts/make_tables.py                   # results/tables/
-python scripts/build_paper_assets.py            # LaTeX tables and figure PDFs -> paper/
 ```
-
-Upload the `paper/` folder to Overleaf (main file `paper/main.tex`, class `paper/ijphm.cls`).
 
 ## Layout
 
@@ -109,14 +105,10 @@ src/bearing_uq/
   features/            time-domain, envelope spectrum, fault-band, spectral-kurtosis and fast-kurtogram features
   cnn/                 1D-CNN (WDCNN-style): splits, data cache, model, training, experiment runner, AdaBN
 scripts/                one script per step (see "Reproducing the paper")
-  build_cnn_notebook.py  rebuilds notebooks/colab_cnn.ipynb from src/bearing_uq/cnn/
-  build_kurtogram_notebook.py  rebuilds notebooks/colab_kurtogram.ipynb
-  run_baseline.py        single calibration split (first exploratory run)
 notebooks/colab_run.ipynb   feature tables for all four operating conditions (Colab)
 notebooks/colab_cnn.ipynb   1D-CNN training and AdaBN (Colab, GPU)
 notebooks/colab_kurtogram.ipynb  fast-kurtogram band features (Colab)
-results/                    result tables (CSV), figures and paper tables
-paper/                      LaTeX manuscript (IJPHM format)
+results/                    result files (CSV), the paper's tables (results/tables/) and figures
 docs/paper/numbers.md       every number cited in the paper, with its source file
 tests/                      unit tests on synthetic data
 ```
