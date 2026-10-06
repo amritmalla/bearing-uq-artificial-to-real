@@ -1,6 +1,7 @@
 """Analyse the 1D-CNN's saved probabilities (from notebooks/colab_cnn.ipynb) like the other models.
 
-Expects data/cnn/lobo.csv and data/cnn/rotations/<rotation>.csv. Writes, with the suffix _cnn:
+--variant base (default) expects data/cnn/lobo.csv and data/cnn/rotations/<rotation>.csv and writes, with the
+suffix _cnn:
   results/in_domain_summary_cnn.csv, results/in_domain_per_bearing_cnn.csv   (leave one bearing out)
   results/rotations_{main,conformal,recall}_cnn.csv                          (105 rotations)
   data/predictions/cnn/<rotation>.npz                                         (for run_bootstrap.py --features cnn)
@@ -8,8 +9,11 @@ Expects data/cnn/lobo.csv and data/cnn/rotations/<rotation>.csv. Writes, with th
 Then run:  summarise_rotations.py --features cnn,  run_bootstrap.py --features cnn,
            error_breakdown.py --predictions cnn
 
+--variant adabn does the same for the CNN with AdaBN (data/cnn/adabn/rotations/), with the suffix _cnn_adabn and
+without the in-domain reference (AdaBN adapts to the target bearings only).
+
 Usage (from the project root):
-    python scripts/run_cnn_analysis.py [--draws 50] [--max-seconds N]
+    python scripts/run_cnn_analysis.py [--variant base|adabn] [--draws 50] [--max-seconds N]
 Resumable: finished rotations and draws are skipped.
 """
 
@@ -30,10 +34,10 @@ from bearing_uq.precomputed import KEY_FEATURES, PrecomputedModel, probabilities
 from bearing_uq.predictions import predict_rotation, save  # noqa: E402
 from bearing_uq.target_calibration import draw_rotation, draw_seeds, run_draw, summarise  # noqa: E402
 
-CNN = Path("data/cnn")
 RES = Path("results")
-PRED = Path("data/predictions/cnn")
-NAME = "cnn"
+VARIANTS = {"base": (Path("data/cnn"), "cnn"), "adabn": (Path("data/cnn/adabn"), "cnn_adabn")}
+CNN, NAME = VARIANTS["base"]
+PRED = Path("data/predictions") / NAME
 
 
 class Budget:
@@ -107,12 +111,17 @@ def real_calibration(df: pd.DataFrame, draws: int, budget: Budget) -> bool:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--variant", choices=VARIANTS, default="base")
     parser.add_argument("--draws", type=int, default=50)
     parser.add_argument("--max-seconds", type=float, default=float("inf"))
     args = parser.parse_args()
+    global CNN, NAME, PRED
+    CNN, NAME = VARIANTS[args.variant]
+    PRED = Path("data/predictions") / NAME
     budget = Budget(args.max_seconds)
     df = with_row_key(D.load_features(config.features_path()))
-    in_domain(df)
+    if args.variant == "base":
+        in_domain(df)
     if rotations(df, budget):
         real_calibration(df, args.draws, budget)
 

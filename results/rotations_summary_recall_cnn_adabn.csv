@@ -1,0 +1,4 @@
+,recall_healthy,recall_healthy,recall_healthy,recall_healthy,recall_inner_race,recall_inner_race,recall_inner_race,recall_inner_race,recall_outer_race,recall_outer_race,recall_outer_race,recall_outer_race
+,mean,std,min,max,mean,std,min,max,mean,std,min,max
+model,,,,,,,,,,,,
+cnn_adabn,0.7408,0.1247,0.3375,1.0,0.3569,0.0787,0.1674,0.5272,0.5816,0.1123,0.3426,0.7884

@@ -16,17 +16,21 @@ FAULT_FEATURES = ["bpfo_h1", "bpfo_h2", "bpfi_h1", "bpfi_h2"]
 # Same four features from a spectral-kurtosis-selected demodulation band (per window).
 FAULT_FEATURES_SK = [f"{f}_sk" for f in FAULT_FEATURES]
 
-FEATURE_SETS = {"all": FEATURES, "fault_only": FAULT_FEATURES, "fault_only_sk": FAULT_FEATURES_SK}
+# Same four features from the fast-kurtogram band (per window; main condition only, see colab_kurtogram.ipynb).
+FAULT_FEATURES_FK = [f"{f}_fk" for f in FAULT_FEATURES]
+
+FEATURE_SETS = {"all": FEATURES, "fault_only": FAULT_FEATURES, "fault_only_sk": FAULT_FEATURES_SK,
+                "fault_only_fk": FAULT_FEATURES_FK}
 
 # Positive, heavy-tailed features are log-transformed; skewness can be negative.
-LOG_FEATURES = [f for f in FEATURES if f != "skewness"] + FAULT_FEATURES_SK
+LOG_FEATURES = [f for f in FEATURES if f != "skewness"] + FAULT_FEATURES_SK + FAULT_FEATURES_FK
 
 LABELS = list(B.CLASSES)  # class index = position in this list
 
 
 def load_features(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path)
-    missing = set(FEATURES + ["bearing", "label"]) - set(df.columns)  # *_sk columns are optional
+    missing = set(FEATURES + ["bearing", "label"]) - set(df.columns)  # *_sk and *_fk columns are optional
     if missing:
         raise ValueError(f"Feature table is missing columns: {sorted(missing)}")
     return df

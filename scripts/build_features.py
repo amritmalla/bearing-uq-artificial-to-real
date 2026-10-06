@@ -4,7 +4,8 @@ Usage (from the project root, after downloading the data into data/raw/):
     python scripts/build_features.py [--condition N15_M07_F10]
 
 Writes data/features/features_<condition>.csv with time-domain features, fixed-band
-fault features and spectral-kurtosis-band fault features (suffix _sk).
+fault features, spectral-kurtosis-band fault features (suffix _sk) and fast-kurtogram-band fault
+features (suffix _fk).
 """
 
 import argparse
@@ -35,7 +36,8 @@ def bearing_rows(bearing: B.Bearing, condition: str) -> list[dict]:
         for win_no, x in enumerate(segment(signal, window, config.WINDOW_OVERLAP)):
             rows.append({"bearing": bearing.code, "label": bearing.label,
                          "origin": bearing.origin, "recording": rec_no, "window": win_no,
-                         **window_features(x, fault_freqs=fault_freqs, adaptive=True)})
+                         **window_features(x, fault_freqs=fault_freqs, adaptive=True,
+                                         kurtogram=True)})
     return rows
 
 

@@ -1,7 +1,7 @@
 """In-domain reference: leave-one-bearing-out over the source (artificial + source healthy) bearings.
 
 Usage (from the project root):
-    python scripts/run_in_domain.py [--features all|fault_only|fault_only_sk] [--condition N15_M07_F10]
+    python scripts/run_in_domain.py [--features all|fault_only|fault_only_sk|fault_only_fk] [--condition N15_M07_F10]
 """
 
 import argparse

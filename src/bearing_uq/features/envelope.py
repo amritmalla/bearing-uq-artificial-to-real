@@ -3,8 +3,8 @@
 import numpy as np
 from scipy.signal import butter, hilbert, sosfiltfilt
 
-# Default demodulation band (Hz). A fixed band keeps the pipeline simple;
-# a kurtogram-selected band is a possible later refinement.
+# Default demodulation band (Hz). Adaptive alternatives: spectral_kurtosis.py (fixed-width band) and
+# kurtogram.py (fast kurtogram).
 DEFAULT_BAND = (2_000.0, 10_000.0)
 
 

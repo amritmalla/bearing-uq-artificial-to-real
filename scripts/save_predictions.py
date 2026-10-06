@@ -1,7 +1,7 @@
 """Save per-rotation test predictions to data/predictions/<features>/ for the bootstrap.
 
 Usage (from the project root):
-    python scripts/save_predictions.py [--features fault_only|all|fault_only_sk] [--condition N15_M07_F10] [--max-seconds N]
+    python scripts/save_predictions.py [--features fault_only|all|fault_only_sk|fault_only_fk] [--condition N15_M07_F10] [--max-seconds N]
 Resumable: rotations already saved are skipped.
 """
 

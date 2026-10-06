@@ -24,11 +24,16 @@ What it does, for the main operating condition (1500 rpm, 0.7 Nm, 1000 N):
 2. Trains a WDCNN (Zhang et al., 2017) on raw vibration with the project's bearing-level splits:
    15 leave-one-bearing-out models (in-domain reference) and one model per calibration rotation (105).
 3. As a sanity check, trains one model on a random split of windows (the same bearings in training and test).
-4. Saves window probabilities to Drive (`data/cnn/`). Every model's output is saved as soon as it finishes, so if
-   the session drops, run all cells again and it continues where it stopped.
+4. AdaBN (domain adaptation): for each rotation, trains the model again and re-estimates its batch-norm statistics
+   on unlabelled windows of real-damage and target healthy bearings — for each target bearing, on the *other* target
+   bearings only.
+5. Saves window probabilities to Drive (`data/cnn/`). Every model's output is saved as soon as it finishes, so if
+   the session drops, run all cells again and it continues where it stopped. Steps already done in an earlier run
+   (files present in Drive) are skipped.
 
-At the end, download `cnn_results.zip` from Drive (`load_bearing_research_paper/data/`) and unzip it into the
-project's `data/` folder, so that `data/cnn/lobo.csv` and `data/cnn/rotations/` exist.
+At the end, download `cnn_results.zip` and `adabn_results.zip` from Drive (`load_bearing_research_paper/data/`) and
+unzip them into the project's `data/` folder, so that `data/cnn/lobo.csv`, `data/cnn/rotations/` and
+`data/cnn/adabn/rotations/` exist.
 
 Data licence: CC BY-NC 4.0 — cite Lessmeier et al. (2016) and the Paderborn KAt-DataCenter."""
 
@@ -83,12 +88,30 @@ del x"""
 LOBO = "run_lobo(data, OUT_DIR)"
 ROTATIONS = "run_rotations(data, OUT_DIR)"
 RANDOM_SPLIT = "run_random_split(data, OUT_DIR)"
+ADABN = "run_adabn(data, OUT_DIR)"
+
+ADABN_CHECK = """# The unadapted predictions should repeat the first run (same seed and settings); a small difference is possible
+# on a different GPU or PyTorch version.
+keys = ["bearing", "recording", "window"]
+diffs = []
+for f in sorted((OUT_DIR / "adabn" / "source_bn" / "rotations").glob("*.csv")):
+    old = OUT_DIR / "rotations" / f.name
+    if old.exists():
+        m = pd.read_csv(f).merge(pd.read_csv(old), on=keys, suffixes=("", "_old"))
+        diffs.append(max((m[c] - m[c + "_old"]).abs().max() for c in PROB_COLS))
+print(f"{len(diffs)} rotations compared; largest probability difference from the first run: {max(diffs):.2e}"
+      if diffs else "no earlier rotation files to compare")"""
 
 FINISH = """done = len(list((OUT_DIR / "rotations").glob("*.csv")))
 print(f"{done}/105 rotations, lobo.csv present: {(OUT_DIR / 'lobo.csv').exists()}")
 if done == 105:
     shutil.make_archive(str(DRIVE_DATA / "cnn_results"), "zip", root_dir=DRIVE_DATA, base_dir="cnn")
-    print("wrote", DRIVE_DATA / "cnn_results.zip")"""
+    print("wrote", DRIVE_DATA / "cnn_results.zip")
+done = len(list((OUT_DIR / "adabn" / "rotations").glob("*.csv")))
+print(f"AdaBN: {done}/105 rotations")
+if done == 105:
+    shutil.make_archive(str(DRIVE_DATA / "adabn_results"), "zip", root_dir=DRIVE_DATA, base_dir="cnn/adabn")
+    print("wrote", DRIVE_DATA / "adabn_results.zip")"""
 
 
 def module_cell(name: str) -> str:
@@ -115,15 +138,23 @@ def main() -> None:
         md("## 5. Model: WDCNN"), code(module_cell("model")),
         md("## 6. Training and prediction"), code(module_cell("train")),
         md("## 7. Experiment runner"), code(module_cell("runner")),
-        md("## 8. Download and cache the windows (20–40 min, once)"), code(DOWNLOAD),
-        md("## 9. Load the windows onto the GPU"), code(LOAD),
-        md("## 10. In-domain reference: leave one source bearing out (15 models)"), code(LOBO),
-        md("## 11. Artificial → real: one model per calibration rotation (105 models)"), code(ROTATIONS),
-        md("## 12. Sanity check: random window split (1 model)\n\nTrains on a random 80 % of the source bearings' "
+        md("## 8. AdaBN (domain adaptation by batch-norm statistics)"), code(module_cell("adabn")),
+        md("## 9. Download and cache the windows (20–40 min, once)"), code(DOWNLOAD),
+        md("## 10. Load the windows onto the GPU"), code(LOAD),
+        md("## 11. In-domain reference: leave one source bearing out (15 models)"), code(LOBO),
+        md("## 12. Artificial → real: one model per calibration rotation (105 models)"), code(ROTATIONS),
+        md("## 13. Sanity check: random window split (1 model)\n\nTrains on a random 80 % of the source bearings' "
            "windows and tests on the other 20 %, so the same bearings appear in training and test. High accuracy "
            "here shows the network works; the bearing-level results show how much of that is bearing identity."),
         code(RANDOM_SPLIT),
-        md("## 13. Package the results"), code(FINISH),
+        md("## 14. AdaBN: one model per rotation, adapted per target bearing (105 models)\n\nEach rotation's "
+           "model is trained again with the same seed and settings as in step 12. For each target bearing, a copy "
+           "of the model gets batch-norm statistics re-estimated on the unlabelled windows of the *other* target "
+           "bearings, so no test bearing is used to adapt its own prediction. Calibration bearings keep the "
+           "source statistics. About as long as step 12."),
+        code(ADABN),
+        md("## 15. Check: the unadapted models repeat the first run"), code(ADABN_CHECK),
+        md("## 16. Package the results"), code(FINISH),
     ]
     nb = {"cells": cells, "metadata": {"accelerator": "GPU", "colab": {"provenance": []},
                                        "kernelspec": {"display_name": "Python 3", "name": "python3"}},

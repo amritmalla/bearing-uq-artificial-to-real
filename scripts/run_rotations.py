@@ -4,7 +4,7 @@ One source bearing per class is held out for calibration: 3 healthy x 5 inner x 
 Progress is saved after each run, so an interrupted job resumes where it stopped.
 
 Usage (from the project root):
-    python scripts/run_rotations.py [--features all|fault_only|fault_only_sk] [--condition N15_M07_F10] [--max-seconds N]
+    python scripts/run_rotations.py [--features all|fault_only|fault_only_sk|fault_only_fk] [--condition N15_M07_F10] [--max-seconds N]
 With --max-seconds, the script stops cleanly after that time; run it again to continue.
 """
 

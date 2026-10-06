@@ -5,7 +5,7 @@ Splits:
   calib  - held-out bearings used to fit calibration / conformal thresholds
   test   - target bearings (real damage) used for evaluation
 
-Default choices are the proposals in docs/status.md and still need confirmation.
+Fixed choices; see the paper, Section 3.3.
 """
 
 import random

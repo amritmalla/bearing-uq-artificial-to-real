@@ -1,9 +1,11 @@
-numpy>=1.26
-scipy>=1.11
-pandas>=2.0
-scikit-learn>=1.4
-xgboost>=2.0
-matplotlib>=3.8
+# Versions used for the results in the paper (Python 3.10). Newer scikit-learn / XGBoost
+# releases run the code but change some numbers in the last digits or slightly more.
+numpy==2.2.6
+scipy==1.15.3
+pandas==2.3.3
+scikit-learn==1.7.2
+xgboost==3.2.0
+matplotlib==3.10.9
 pytest>=8.0
 # Optional, only for the 1D-CNN (trained in Colab, where it is preinstalled):
 # torch>=2.0

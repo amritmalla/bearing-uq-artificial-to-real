@@ -1,7 +1,8 @@
 """Bootstrap 95 % intervals from the saved predictions.
 
 Usage (from the project root, after save_predictions.py):
-    python scripts/run_bootstrap.py [--features fault_only|all|fault_only_sk] [--condition N15_M07_F10] [--draws 2000]
+    python scripts/run_bootstrap.py [--features fault_only|all|fault_only_sk|fault_only_fk|cnn|cnn_adabn]
+                                    [--condition N15_M07_F10] [--draws 2000]
 """
 
 import argparse
@@ -16,7 +17,8 @@ from bearing_uq.predictions import load_all  # noqa: E402
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--features", choices=["fault_only", "all", "fault_only_sk", "cnn"], default="fault_only")
+    parser.add_argument("--features", default="fault_only",
+                        choices=["fault_only", "all", "fault_only_sk", "fault_only_fk", "cnn", "cnn_adabn"])
     parser.add_argument("--condition", choices=config.CONDITIONS, default=config.OPERATING_CONDITION)
     parser.add_argument("--draws", type=int, default=2000)
     args = parser.parse_args()

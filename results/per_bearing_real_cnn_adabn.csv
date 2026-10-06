@@ -1,0 +1,15 @@
+model,bearing,label,accuracy,mean_confidence
+cnn_adabn,K003,healthy,0.9846,0.9459
+cnn_adabn,K005,healthy,0.483,0.7697
+cnn_adabn,K006,healthy,0.7548,0.8678
+cnn_adabn,KA04,outer_race,0.5693,0.8114
+cnn_adabn,KA15,outer_race,0.9028,0.806
+cnn_adabn,KA16,outer_race,0.4115,0.8164
+cnn_adabn,KA22,outer_race,0.0674,0.8128
+cnn_adabn,KA30,outer_race,0.9636,0.8695
+cnn_adabn,KI04,inner_race,0.0,0.9667
+cnn_adabn,KI14,inner_race,0.918,0.8304
+cnn_adabn,KI16,inner_race,0.0632,0.9259
+cnn_adabn,KI17,inner_race,0.0,0.9589
+cnn_adabn,KI18,inner_race,0.9999,0.993
+cnn_adabn,KI21,inner_race,0.1533,0.9029

@@ -2,9 +2,9 @@
 
 Code and results for a study of whether calibrated confidence in bearing fault diagnosis survives the shift from
 artificially made faults to real damage, on the Paderborn University bearing dataset. Random Forest, SVM and
-XGBoost on envelope-spectrum features, and a 1D-CNN on raw vibration, are trained and calibrated on artificially
-damaged bearings and tested on bearings with real damage, with bearing-level splits, 105 calibration-bearing
-rotations and bootstrap intervals over bearings.
+XGBoost on envelope-spectrum features, and a 1D-CNN on raw vibration (also with AdaBN domain adaptation), are
+trained and calibrated on artificially damaged bearings and tested on bearings with real damage, with bearing-level
+splits, 105 calibration-bearing rotations and bootstrap intervals over bearings.
 
 - Paper (LaTeX, IJPHM format): [`paper/`](paper/)
 - Every number cited in the paper and the result file it comes from: [`docs/paper/numbers.md`](docs/paper/numbers.md)
@@ -41,8 +41,13 @@ BEARING_RAW_DIR=data/raw python scripts/download_paderborn.py     # needs unrar
 python scripts/build_features.py --condition N15_M07_F10          # repeat for each condition
 ```
 
-**2. Feature-based models.** Main setting `fault_only`; `all` is the feature ablation, `fault_only_sk` the adaptive
-(spectral-kurtosis) band. Add `--condition <condition>` for the other operating conditions.
+**2. Feature-based models.** Main setting `fault_only`; `all` is the feature ablation, `fault_only_fk` the adaptive
+(fast-kurtogram) band and `fault_only_sk` an earlier fixed-width spectral-kurtosis band. Add
+`--condition <condition>` for the other operating conditions.
+
+The kurtogram features (main condition only) come from `notebooks/colab_kurtogram.ipynb` (Colab, CPU); copy
+`kurtogram_N15_M07_F10.csv` into `data/features/` and run `python scripts/add_kurtogram_features.py`. The local
+pipeline (`build_features.py`) computes them directly.
 
 ```bash
 python scripts/run_rotations.py --features fault_only             # 105 calibration rotations
@@ -55,7 +60,8 @@ python scripts/error_breakdown.py --predictions fault_only         # missed faul
 ```
 
 **3. 1D-CNN.** Run `notebooks/colab_cnn.ipynb` in Colab on a GPU runtime and unzip `cnn_results.zip` into `data/`
-(giving `data/cnn/lobo.csv`, `data/cnn/rotations/` and `data/cnn/random_split.csv`). Then:
+(giving `data/cnn/lobo.csv`, `data/cnn/rotations/`, `data/cnn/random_split.csv` and, for AdaBN,
+`data/cnn/adabn/rotations/`). Then:
 
 ```bash
 python scripts/run_cnn_analysis.py              # same calibration, conformal and selective-automation analysis
@@ -63,6 +69,8 @@ python scripts/summarise_rotations.py --features cnn
 python scripts/run_bootstrap.py --features cnn
 python scripts/error_breakdown.py --predictions cnn
 python scripts/random_split_check.py            # sanity check: random window split vs split by bearing
+python scripts/run_cnn_analysis.py --variant adabn   # the same with AdaBN; then the three scripts above
+                                                     # with --features / --predictions cnn_adabn
 ```
 
 **4. Figures, tables and paper assets.**
@@ -98,13 +106,15 @@ src/bearing_uq/
   tables.py            table formatting
   plots/               figure style, curve helpers, one module per figure
   data/                file paths, download, .mat loader, windowing
-  features/            time-domain, envelope spectrum, fault-band and spectral-kurtosis features
-  cnn/                 1D-CNN (WDCNN-style): splits, data cache, model, training, experiment runner
+  features/            time-domain, envelope spectrum, fault-band, spectral-kurtosis and fast-kurtogram features
+  cnn/                 1D-CNN (WDCNN-style): splits, data cache, model, training, experiment runner, AdaBN
 scripts/                one script per step (see "Reproducing the paper")
   build_cnn_notebook.py  rebuilds notebooks/colab_cnn.ipynb from src/bearing_uq/cnn/
+  build_kurtogram_notebook.py  rebuilds notebooks/colab_kurtogram.ipynb
   run_baseline.py        single calibration split (first exploratory run)
 notebooks/colab_run.ipynb   feature tables for all four operating conditions (Colab)
-notebooks/colab_cnn.ipynb   1D-CNN training (Colab, GPU)
+notebooks/colab_cnn.ipynb   1D-CNN training and AdaBN (Colab, GPU)
+notebooks/colab_kurtogram.ipynb  fast-kurtogram band features (Colab)
 results/                    result tables (CSV), figures and paper tables
 paper/                      LaTeX manuscript (IJPHM format)
 docs/paper/numbers.md       every number cited in the paper, with its source file

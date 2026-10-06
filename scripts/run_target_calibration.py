@@ -2,7 +2,7 @@
 
 Each draw picks a random source rotation and random real calibration bearings.
 Usage (from the project root):
-    python scripts/run_target_calibration.py [--features fault_only|all|fault_only_sk] [--condition N15_M07_F10] [--draws 50] [--max-seconds N]
+    python scripts/run_target_calibration.py [--features fault_only|all|fault_only_sk|fault_only_fk] [--condition N15_M07_F10] [--draws 50] [--max-seconds N]
 Resumable: draws already in the results file are skipped. Writes a summary when all draws are done.
 """
 

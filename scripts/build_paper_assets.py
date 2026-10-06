@@ -43,11 +43,15 @@ def table1() -> str:
              "Best possible automation at 5%": "Best possible automation at 5% target"}
     rows = [[names.get(m, m)] + list(df[m]) for m in metrics]
     caption = ("Main results (temperature scaling). Random Forest, SVM and XGBoost use the fault-frequency features; "
-               "the 1D-CNN uses the raw vibration signal. In-domain: leave one source bearing out, raw probabilities. "
+               "the 1D-CNN uses the raw vibration signal; 1D-CNN + AdaBN is the same network with batch-normalisation "
+               "statistics re-estimated on unlabelled target bearings (no in-domain reference). In-domain: leave one "
+               "source bearing out, raw probabilities. "
                "Real damage: mean [95\\,\\% interval] from 2,000 bootstrap draws over calibration rotations and "
-               "test bearings.")
+               "test bearings. Best possible automation: threshold chosen on the test data (a reference, not "
+               "achievable in deployment). Conformal coverage: marginal split conformal prediction on uncalibrated "
+               "probabilities.")
     header = ["Metric"] + [r"\textbf{" + m + "}" for m in df["Model"]]
-    return table_env("tab:main", caption, "l" + "c" * len(df), header, rows)
+    return table_env("tab:main", caption, "l" + "c" * len(df), header, rows, fit_width=True)
 
 
 def table2() -> str:
@@ -56,7 +60,8 @@ def table2() -> str:
               r"\makecell{Real\\accuracy}", r"\makecell{Real\\ECE}", r"\makecell{Error at\\5\% target}",
               r"\makecell{Runs exceeding\\5\% target}", r"\makecell{Conformal\\coverage}"]
     caption = ("Feature ablation: all nine features vs fault-frequency features only. Means over 105 calibration "
-               "rotations; temperature scaling; marginal split conformal prediction, nominal coverage 0.90.")
+               "rotations; temperature scaling; marginal split conformal prediction (uncalibrated probabilities), nominal "
+               "coverage 0.90. Runs exceeding the target: share of the rotations that automated at least one case.")
     return table_env("tab:ablation", caption, "llccccccc", header, df.values.tolist(), fit_width=True)
 
 
@@ -67,7 +72,7 @@ def table3() -> str:
     caption = ("Calibrating on artificial bearings vs one or two labelled real bearings per class (fault-frequency "
                "features, temperature scaling). Mean [2.5th, 97.5th percentile] over 50 draws per setting; "
                "artificial-bearing values pooled over all 100 draws. Within each draw, all settings are scored on "
-               "the same test bearings. Draws meeting the target counts only draws that automated at least one case.")
+               "the same test bearings. Draws meeting the target count only draws that automated at least one case.")
     return table_env("tab:realcal", caption, "llccccc", header, df.values.tolist(), fit_width=True)
 
 
@@ -78,7 +83,9 @@ def table4() -> str:
               r"\makecell{Conformal\\coverage}", r"\makecell{Missed faults\\(share of errors)}"]
     caption = ("All four Paderborn operating conditions (shaft speed, load torque, radial force), with the same bearing "
                "splits. Fault-frequency features, temperature scaling. Real damage: mean [95\\,\\% interval] from 2,000 "
-               "bootstrap draws. Missed faults: share of real-damage errors that call a damaged bearing healthy.")
+               "bootstrap draws. Runs exceeding the target (share of the rotations that automated at least one case) and "
+               "missed faults (share of real-damage errors that call a damaged bearing healthy): means over 105 "
+               "rotations.")
     return table_env("tab:conditions", caption, "llcccccc", header, df.values.tolist(), fit_width=True)
 
 

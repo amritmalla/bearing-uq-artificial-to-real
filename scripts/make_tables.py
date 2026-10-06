@@ -29,20 +29,24 @@ def _write(df: pd.DataFrame, name: str, note: str) -> None:
 
 
 def table_main() -> pd.DataFrame:
-    """Feature-based models (fault-frequency features) and the 1D-CNN (raw vibration), main condition."""
-    sources = {m: "fault_only" for m in MODELS} | {"cnn": "cnn"}
+    """Feature-based models (fault-frequency features) and the 1D-CNN (raw vibration, without and with AdaBN), main
+    condition. AdaBN adapts only to the target bearings, so it has no in-domain reference."""
+    sources = {m: "fault_only" for m in MODELS} | {"cnn": "cnn", "cnn_adabn": "cnn_adabn"}
     boot = pd.concat([pd.read_csv(RES / f"bootstrap_{s}.csv") for s in set(sources.values())]
                      ).set_index(["model", "calibration", "metric"])
-    ind = pd.concat([pd.read_csv(RES / f"in_domain_summary_{s}.csv") for s in set(sources.values())]
-                    ).set_index("model")
+    ind = pd.concat([pd.read_csv(RES / f"in_domain_summary_{s}.csv") for s in set(sources.values())
+                     if (RES / f"in_domain_summary_{s}.csv").exists()]).set_index("model")
+
+    def i(model, metric):
+        return f"{ind.loc[model, metric]:.2f}" if model in ind.index else "--"
 
     def b(model, cal, metric):
         r = boot.loc[(model, cal, metric)]
         return ci(r["mean"], r.ci_low, r.ci_high)
 
     rows = [{"Model": MODEL_LABEL[m],
-             "In-domain accuracy": f"{ind.loc[m, 'accuracy']:.2f}",
-             "In-domain ECE": f"{ind.loc[m, 'ece']:.2f}",
+             "In-domain accuracy": i(m, "accuracy"),
+             "In-domain ECE": i(m, "ece"),
              "Real accuracy": b(m, "temperature", "accuracy"),
              "Real ECE": b(m, "temperature", "ece"),
              "AURC": b(m, "temperature", "aurc"),
