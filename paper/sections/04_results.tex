@@ -3,7 +3,8 @@
 
 Unless stated otherwise, results are for the main operating condition and the fault-frequency features, calibrated
 results use temperature scaling, and
-values are bootstrap means with 95\,\% intervals in brackets (Section~\ref{sec:bootstrap}).
+values are bootstrap means with 95\,\% intervals in brackets (Section~\ref{sec:bootstrap}); values given as medians or
+means over rotations are labelled as such.
 
 \input{tables/table1_main}
 
@@ -11,7 +12,7 @@ values are bootstrap means with 95\,\% intervals in brackets (Section~\ref{sec:b
 
 On unseen artificial bearings, all three classifiers generalise well: leave-one-bearing-out accuracy is 0.91
 (Random Forest), 0.88 (SVM) and 0.91 (XGBoost), and their probabilities are close to calibrated (ECE 0.01, 0.09 and
-0.06; Table~\ref{tab:main}). On real damage, accuracy falls to about 0.69--0.70 for every model (e.g.\ Random Forest
+0.06; Table~\ref{tab:main}). On real damage, accuracy falls to 0.69--0.70 for every model (e.g.\ Random Forest
 0.69 [0.52, 0.86]), and ECE rises to 0.17--0.20 after temperature scaling. The wide intervals reflect how strongly
 individual real bearings differ (Section~\ref{sec:silent}).
 
@@ -22,16 +23,18 @@ in-domain), is the hardest on real ones.
 \subsection{Confidence thresholds chosen on artificial damage do not transfer}
 
 Fig.~\ref{fig:riskcoverage} shows the error among automatically decided cases as more cases are automated. On
-unseen artificial bearings, the best possible threshold keeps error below 5\,\% while automating 81--91\,\% of cases.
-On real damage, the same 5\,\% is reached at only 25--30\,\% of cases (median over rotations).
+unseen artificial bearings, the best possible threshold keeps the error at or below 5\,\% while automating 81--91\,\% of cases.
+On real damage, the best possible threshold keeps the error at or below 5\,\% for only 25--30\,\% of cases (median over
+rotations, uncalibrated probabilities; the bootstrap means after temperature scaling in Table~\ref{tab:main} are
+0.30--0.32).
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{fig1_risk_coverage}
   \caption{Error among automatically decided cases as a function of the share of cases automated (most confident
     first), for unseen artificial bearings (leave one bearing out; solid) and real damage (dashed; median and
-    interquartile range over 105 rotations). Dotted line: 5\,\% error target. With the best possible threshold, the
-    models automate 81--91\,\% of unseen artificial-bearing cases below 5\,\% error, but only 25--30\,\% of
+    interquartile range over 105 rotations; uncalibrated probabilities). Dotted line: 5\,\% error target. With the best possible threshold, the
+    models automate 81--91\,\% of unseen artificial-bearing cases at or below 5\,\% error, but only 25--30\,\% of
     real-damage cases.}
   \label{fig:riskcoverage}
 \end{figure*}
@@ -40,13 +43,14 @@ In deployment the threshold must be chosen without real-damage labels. A thresho
 a 5\,\% error target automates 82--87\,\% of real-damage cases, with an error of 0.24--0.27 among them
 (Table~\ref{tab:main}). The lower ends of the 95\,\% intervals (0.07--0.10) are still above the target, and the
 target is exceeded in all 105 rotations for every model. A stricter 1\,\% target does not solve the problem: about
-half of the cases are still automated (0.48--0.53), with an error of 0.13--0.15.
+half of the cases are still automated (0.48--0.53), with an error of 0.13--0.15 (means over rotations).
 
 The reliability diagrams in Fig.~\ref{fig:reliability} show why: on real damage, observed accuracy falls below the
 predicted confidence across almost the whole range---the models become systematically overconfident. Post-hoc
 calibration on artificial bearings does not correct this reliably. Temperature scaling lowers ECE on real damage for
 the SVM (0.19 $\to$ 0.17) and XGBoost (0.25 $\to$ 0.20) but raises it slightly for Random Forest (0.18 $\to$ 0.19);
-isotonic regression makes it worse for all three (0.23--0.24).
+isotonic regression gives 0.23--0.24 for all three, worse than temperature scaling for every model and worse than
+no calibration for Random Forest and the SVM.
 
 \begin{figure*}[t]
   \centering
@@ -62,9 +66,9 @@ isotonic regression makes it worse for all three (0.23--0.24).
 \subsection{Conformal prediction under-covers}
 
 Split conformal prediction with a nominal coverage of 0.90 reaches 0.65--0.68 on real damage (Table~\ref{tab:main}),
-and even the upper ends of the intervals (0.84--0.87) stay below nominal. Mean prediction-set sizes are only
-0.90--0.96 classes: 83--89\,\% of sets contain a single class, and 25--27\,\% of those single-class sets are wrong.
-Class-conditional (Mondrian) conformal prediction is no better (coverage 0.63--0.64).
+and even the upper ends of the intervals (0.84--0.87) stay below nominal. Mean prediction-set sizes are below
+one (0.90--0.96 classes, means over rotations), so some sets are empty: 83--89\,\% of sets contain a single class, and 25--27\,\% of those single-class sets are wrong.
+Class-conditional (Mondrian) conformal prediction is no better (coverage 0.63--0.64, means over rotations).
 
 \subsection{Silent bearings}
 \label{sec:silent}
@@ -73,14 +77,14 @@ Fig.~\ref{fig:perbearing} shows that the failures concentrate on a few bearings.
 KA22, are almost never recognised (accuracy 0.02--0.07), and two inner-race bearings, KI16 and KI17, are recognised in
 only 29--44\,\% of windows. The models remain confident on all four: mean confidence is 0.69--0.94, and 0.83--0.93
 for the two outer-race bearings. The remaining ten test bearings are recognised in at least 68\,\% of windows.
-Confidently misclassified bearings are rare among unseen artificial bearings---none for Random Forest and XGBoost,
+Confidently misclassified bearings are rare among unseen source bearings---none for Random Forest and XGBoost,
 one for the SVM (KI01, accuracy 0.00 at mean confidence 0.76)---so calibration fitted on artificial damage has little
 chance to anticipate them.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{fig3_per_bearing}
-  \caption{Mean confidence and accuracy of each real-damage test bearing, averaged over 105 rotations (raw
+  \caption{Mean confidence and accuracy of each test bearing (11 with real damage, 3 healthy), averaged over 105 rotations (raw
     probabilities). Dotted line: confidence equals accuracy. Four bearings (KA15, KA22: outer race; KI16, KI17: inner
     race) are mostly misclassified while the models remain 69--94\,\% confident on average.}
   \label{fig:perbearing}
@@ -93,9 +97,11 @@ Adding the five amplitude-based time-domain features (Table~\ref{tab:ablation}) 
 0.88--0.91 to 0.49--0.77, while accuracy on real damage barely changes (0.65--0.69 vs 0.69). The amplitude features
 describe individual bearings rather than damage: unseen healthy bearings in particular are rarely recognised with
 them (in-domain healthy accuracy 0.00--0.28), in line with the kurtosis differences between healthy bearings noted in
-Section~\ref{sec:splits}. With all features, the artificial-to-real gap is therefore hidden by a poor in-domain
-reference, but the trustworthiness failure remains: the 5\,\% target is exceeded in 59--92\,\% of rotations, with
-errors of 0.12--0.17. Conformal coverage is higher with all features (0.80--0.89), because the prediction sets are
+Section~\ref{sec:splits}. With all features, the in-domain reference is itself poor: for Random Forest and the SVM,
+accuracy on real damage is even higher than on unseen artificial bearings (0.69 vs 0.62 and 0.65 vs 0.49), which
+hides the artificial-to-real gap. The trustworthiness failure remains: the 5\,\% target is exceeded in
+59--92\,\% of the rotations that automate any case, with errors of 0.12--0.17 (means over rotations, as in
+Table~\ref{tab:ablation}). Conformal coverage is higher with all features (0.80--0.89), because the prediction sets are
 larger (1.3--1.9 classes on average, against 0.9--1.0 with fault-frequency features only).
 
 \input{tables/table2_feature_ablation}
@@ -112,12 +118,13 @@ windows---but with 12 to 14 training bearings it also learns the signatures of i
 observation that the number of training bearings limits generalisation \citep{vieira2026}. The random-split sanity
 check confirms this. When the test windows come from bearings that are also in the training set, the CNN classifies
 98\,\% of them correctly with an ECE of 0.02, as accurately as the feature-based classifiers (0.97--0.98). Holding
-out whole bearings costs the feature-based classifiers 6--10 percentage points of accuracy, and the CNN 51.
+out whole bearings costs the feature-based classifiers 6--10 percentage points of accuracy, and the CNN 51 points.
 
 On real damage, the CNN's accuracy is 0.43 [0.16, 0.71]. Because its calibration bearings expose the same problem,
 post-hoc calibration makes it cautious rather than reliable: temperature scaling lowers ECE from 0.44 to 0.19, and the
-threshold for a 5\,\% error target automates only 13\,\% of cases, yet these still have an error of 0.38 and the
-target is exceeded in 86\,\% of rotations. Even the best possible threshold automates only 10\,\% of cases.
+threshold for a 5\,\% error target automates only 13\,\% of cases, yet these still have an error of 0.38. In 55 of the
+105 rotations the threshold automates no case at all; in the other 50 the target is exceeded in 43. Even the best
+possible threshold automates only 10\,\% of cases.
 Marginal conformal prediction reaches a coverage of 0.94, but only by returning 2.5 of the three classes on average;
 class-conditional coverage is 0.54. Calibrating on one or two labelled real bearings per class did not help reliably
 (error at the 5\,\% target 0.22--0.48 across calibration sets; target met in at most 49\,\% of draws). The CNN's
@@ -125,12 +132,25 @@ errors are also of a different kind: only 3\,\% of them are missed faults, the r
 bearings and confusions between fault types. Of the four silent bearings, KA22, KI16 and KI17 remain misclassified
 (accuracy 0.02, 0.27 and 0.11), while KA15 is recognised in 48\,\% of windows.
 
+With AdaBN, the network's accuracy on real damage rises from 0.43 to 0.51 [0.24, 0.77], but its confidence does not
+become more trustworthy (Table~\ref{tab:main}). The calibration error after temperature scaling is practically
+unchanged (0.20 against 0.19), and the error at the 5\,\% target is 0.42. Because the calibration bearings, and with
+them the thresholds, are the same as without adaptation, the threshold again automates no case in 55 rotations; in
+all of the other 50 it now exceeds the target. Marginal conformal coverage is 0.89, again with large sets (2.3 classes
+on average). The gain comes from outer-race and healthy bearings: KA15 and KA30, for example, are recognised in
+90\,\% and 96\,\% of windows instead of 48\,\% and 59\,\%. Real inner-race damage, by contrast, is now almost always
+called outer-race damage, and more confidently than before: KI04, KI16 and KI17 are classified correctly in 0--6\,\%
+of windows at a mean confidence of 0.93--0.97.
+
 \subsection{Calibrating on labelled real bearings}
 
 Table~\ref{tab:realcal} and Fig.~\ref{fig:realcal} compare calibration sets on identical test bearings. With source
 (artificial) calibration, the error at the 5\,\% target is 0.26--0.28 and the target is met in at most 1\,\% of draws.
 Calibrating on one real bearing per class lowers the error to 0.16--0.19 and meets the target in 29--42\,\% of draws;
-two real bearings per class lower it to 0.10--0.11 and meet it in 49--52\,\% of draws.
+two real bearings per class lower it to 0.10--0.11 and meet it in 49--52\,\% of draws. Combining the artificial and
+the real calibration bearings lies in between: the error at the 5\,\% target is 0.18--0.19 with one and 0.13--0.14
+with two real bearings per class, with 0.58--0.62 and 0.44--0.46 of cases automated, and the target is met in at most
+33\,\% of draws.
 
 The improvement comes mainly from caution: the share of cases automated falls from 0.81--0.88 to 0.51--0.52 (one
 bearing per class) and 0.35--0.38 (two). Calibration error improves moderately (ECE 0.19--0.22 $\to$ 0.13--0.17 with
@@ -154,17 +174,18 @@ across draws is large (Table~\ref{tab:realcal}), as it depends on which real bea
 
 Table~\ref{tab:conditions} repeats the evaluation at the three other operating conditions, with the same bearing
 splits. At lower load torque the results are almost identical to the main condition: unseen artificial bearings are
-classified with accuracy 0.81--0.94, real damage with 0.71--0.72, the 5\,\% target is exceeded in every rotation with
+classified with accuracy 0.81--0.94, real damage with 0.71, the 5\,\% target is exceeded in every rotation with
 an error of 0.25--0.27, and conformal coverage is 0.64--0.68.
 
 At lower radial force and lower speed, the fault-frequency features separate the classes less well even on artificial
 damage (in-domain accuracy 0.70--0.76 and 0.57--0.69). The models are then less confident, and the failure is milder
 but still present: the error at the 5\,\% target is 0.15--0.21 and 0.10--0.12, the target is exceeded in 88--99\,\% and
-68--83\,\% of rotations, and conformal coverage reaches 0.80--0.86, with intervals that include the nominal 0.90.
+68--83\,\% of the rotations that automate any case, and conformal coverage reaches 0.80--0.86, with intervals that include the nominal 0.90.
 
-KA15 and KA22 are misclassified at every condition (mean accuracy over the three models at most 0.41), and KI16 and
-KI17 at the two 1{,}500\,rpm conditions with 1{,}000\,N radial force and at 900\,rpm. The nature of the errors,
-however, depends on the condition. Where the features are strong, most errors are missed faults (62--80\,\% of
+KA15 and KA22 are misclassified at every condition (mean accuracy over the three models at most 0.41). KI17 is
+misclassified at the main condition, at low torque and at 900\,rpm, and KI16 at the main condition and at 900\,rpm;
+at low torque KI16 is recognised in 56\,\% of windows. The nature of the errors,
+however, depends on the condition. Where the features are strong, most errors are missed faults (62--77\,\% of
 errors at the main and low-torque conditions). At lower radial force and lower speed, false alarms on healthy bearings
 also occur---healthy bearing K006, for example, is classified as damaged in 92\,\% of its windows at 400\,N---and missed
 faults account for 20--27\,\% and 45--50\,\% of errors.
@@ -175,12 +196,14 @@ faults account for 20--27\,\% and 45--50\,\% of errors.
 \subsection{Adaptive demodulation band}
 \label{sec:adaptive}
 
-Selecting the demodulation band by spectral kurtosis (Section~\ref{sec:features}) did not recover the silent bearings;
-it made every result worse. The spectral-kurtosis maximum lies at 18--23\,kHz (median over windows) for 27 of the 29
-bearings, healthy bearings included, so it reflects impulsive content of the test rig rather than bearing damage. In
-that band the fault peaks of most damaged bearings disappear---the outer-race peak of artificial bearing KA01, for
-example, falls from 41.9 to 1.4 times the noise floor---and only the two bearings whose band lies near 11\,kHz (KI01
-and KI18) keep a clear peak. Accuracy drops to 0.32--0.38 on unseen artificial bearings and to 0.37--0.39 on real
-damage (main condition, temperature scaling). The fixed 2--10\,kHz band is therefore the better choice for these
-signals. The simplified selection cannot rule out that a band chosen in another way would reveal the silent bearings,
-but it gives no evidence for it.
+Selecting the demodulation band with the fast kurtogram (Section~\ref{sec:features}) did not recover the silent
+bearings; it lowered accuracy considerably. The kurtogram chose the band from 10.7 to 21.3\,kHz in 70\,\% of windows,
+and this was the most frequent choice for 22 of the 29 bearings, all six healthy bearings included, so it reflects
+impulsive content of the test rig rather than bearing damage. In the selected bands the fault peaks of most damaged
+bearings weaken or disappear---the outer-race peak of artificial bearing KA07, for example, falls from 16.2 to 1.3
+times the noise floor (medians over windows)---and a clear peak remains only for KA01 and for the two bearings whose
+band lies near 10\,kHz (KI01 and KI18). The four silent bearings gain no peak (1.8--2.2 times the noise floor at
+their fault frequency). Accuracy drops to 0.32--0.36 on unseen artificial bearings and to 0.41--0.43 on real damage
+(main condition, temperature scaling). An earlier, simpler selection by spectral kurtosis with a fixed 4\,kHz band
+width gave the same picture. The fixed 2--10\,kHz band is therefore the better choice for these signals. A band chosen
+by another criterion might still reveal the silent bearings, but neither selection gives evidence for it.

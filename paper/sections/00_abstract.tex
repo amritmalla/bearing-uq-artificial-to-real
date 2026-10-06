@@ -1,22 +1,22 @@
 \begin{abstract}
-Automated bearing fault diagnosis is only safe if a model's confidence tells it when to defer to a human. Classifiers
-are usually developed on artificially made faults but must diagnose damage that develops naturally in service. We
-test whether calibrated confidence survives this shift on the Paderborn bearing dataset. Random Forest, support
-vector machine and XGBoost classifiers are trained on envelope-spectrum features of artificially damaged bearings,
-calibrated on held-out artificial bearings and tested on bearings with real damage from accelerated lifetime tests.
-Every bearing belongs to one split, the experiment is repeated for all 105 choices of calibration bearings, and
-uncertainty is estimated by a bootstrap over bearings. At the main operating condition, the models are close to
-calibrated on unseen artificial bearings (expected calibration error 0.01--0.09). On real damage, accuracy falls from 0.88--0.91 to about 0.69,
-and a confidence threshold chosen for 5\,\% error yields 24--27\,\% error, exceeding the target in every rotation.
-Temperature scaling and isotonic regression do not correct this, and split conformal prediction covers 0.65--0.68 of
-cases against a nominal 0.90. The failures concentrate on real-damage bearings whose envelope spectra show no fault
-signature: the models confidently call them healthy, so most errors are missed faults. The same pattern holds at
-lower load torque; at lower radial force and lower speed, where the features are weaker even on artificial damage,
-the models are less confident and the failure is milder but still present in most rotations. Calibrating on two labelled
-real bearings per class lowers the error at the 5\,\% target to 0.10--0.11 but meets it in only about half of the
-draws, while automating fewer cases. A one-dimensional convolutional network trained on the raw vibration signal does not
-solve the problem: it fails already on unseen artificial bearings (accuracy 0.46, against 0.98 when windows are split at random),
-with confident errors, and
-exceeds the error target on real damage in most rotations. Automation thresholds for bearing diagnosis should therefore be set on real
-damage, and results reported per bearing.
+Automated bearing fault diagnosis relies on trustworthy predictive confidence to determine when the system should
+defer to a human operator. Machine-learning classifiers are usually trained and calibrated on artificial defects but
+must ultimately diagnose naturally developing damage, such as fatigue pitting. Whether their confidence can still be
+trusted after this shift has received little attention. This study evaluates whether confidence thresholds, post-hoc
+calibration and conformal prediction guarantees transfer from artificial to real damage. Random Forest, support vector
+machine and XGBoost classifiers on envelope-spectrum features and a one-dimensional convolutional neural network
+(1D-CNN) on raw vibration are trained and calibrated on artificially damaged Paderborn bearings and tested on real
+damage, with bearing-level splits, 105 choices of calibration bearings and four operating conditions. At the main
+operating condition, the feature-based models are close to calibrated on unseen artificial bearings (expected
+calibration error 0.01--0.09), but on real damage accuracy drops from 0.88--0.91 to about 0.69, and thresholds tuned
+for a 5\,\% target error give 24--27\,\% error, exceeding the target for every calibration choice. Neither temperature
+scaling nor isotonic regression corrects this overconfidence, and conformal coverage falls to 0.65--0.68 against a
+nominal 0.90. The failures stem largely from ``silent'' real-damage bearings lacking distinct fault-frequency peaks in
+their envelope spectra, which the models confidently call healthy; they recur at the other operating conditions, more
+mildly where the features are weaker. Calibrating on two labelled real bearings per class reduces the error to
+0.10--0.11 but meets the target in only about half of the trials and automates far fewer cases. The 1D-CNN fails even
+on unseen artificial bearings (0.46 accuracy vs.\ 0.98 under random window splits), and adaptive batch normalisation
+(AdaBN) on unlabelled real-damage data raises its real-damage accuracy from 0.43 to 0.51 but not the reliability of
+its confidence. Consequently, safety-critical automation thresholds must be evaluated on real-damage data with strict
+bearing-level validation, and results reported per bearing.
 \end{abstract}

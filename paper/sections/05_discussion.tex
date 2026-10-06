@@ -1,6 +1,14 @@
 \section{Discussion}
 \label{sec:discussion}
 
+For the feature-based models, confidence that was close to calibrated on unseen artificial bearings did not carry over
+to real damage: confidence thresholds, post-hoc calibration and conformal prediction all failed in the same direction,
+towards overconfidence. Because every bearing belongs to exactly one split, the 5\,\% target is exceeded in all 105
+rotations at the main condition, and even the lower ends of the bootstrap intervals over test bearings lie above it,
+this is a property of the shift rather than of a particular choice of bearings. The 1D-CNN failed earlier, already on
+unseen artificial bearings. The following subsections explain why confidence fails, what this means for calibration,
+conformal prediction and practice, and where the study is limited.
+
 \subsection{Why confidence fails on real damage}
 
 The failures are not spread evenly over the real-damage bearings; they concentrate on four of them
@@ -16,19 +24,28 @@ fault classes.
 This has two consequences. First, where the features separate the classes well, the dominant error is the most
 dangerous one, a missed fault: at the main condition 62--68\,\% of all errors on real damage declare a damaged
 bearing healthy, and 72--74\,\% of the errors made automatically at the 5\,\% target do; at low torque the share is
-69--77\,\%. At lower radial force and lower speed, false alarms on healthy bearings are also common and missed faults
-are a minority or about half of the errors (Section~\ref{sec:conditions}). Second, the models' confidence is not unreasonable given their inputs---a
+69--77\,\%. At lower radial force and lower speed, false alarms on healthy bearings are also common, and missed faults
+account for only 20--27\,\% and 45--50\,\% of the errors (Section~\ref{sec:conditions}). Second, the models' confidence is not unreasonable given their inputs---a
 spectrum without a fault peak \emph{is} typical of a healthy bearing in the training data. No post-hoc calibration
 fitted on artificial damage can detect this, because artificial damage always produces a clear peak, and the
 calibration set therefore never contains a damaged bearing that looks healthy. The shift is not a gradual drift of
 the feature distribution that calibration could absorb; it introduces a type of case the source domain lacks.
 
 The silence is not an artefact of one operating condition: KA15 and KA22 are misclassified at all four conditions,
-and KI16 and KI17 at three. Why the real damage is silent is a separate question that our data cannot settle. One
+KI17 at three and KI16 at two. Why the real damage is silent is a separate question that our data cannot settle. The documented
+damage does not explain it: the silent bearings include fatigue pitting and an indentation (KA15), and KI16 has the
+largest documented extent of all real bearings (level 3), whereas KA04, with the same damage mode and extent as KA22,
+shows a clear peak (16.8 times the noise floor). One
 explanation is that the damage produces weaker or less regular impacts than a sharp artificial defect; another is
-that its impacts excite resonances outside the fixed 2--10\,kHz band. Our spectral-kurtosis band selection did not
+that its impacts excite resonances outside the fixed 2--10\,kHz band. Selecting the band with the fast kurtogram did not
 support the second explanation (Section~\ref{sec:adaptive}): the band it selected was dominated by impulsive content
 present in healthy bearings as well, and the silent bearings stayed indistinguishable from healthy ones.
+
+Our accuracy on real damage agrees with the dataset authors' own test: trained on artificially damaged bearings, their
+classifiers reached 62--75\,\% on real damage with vibration features \citep{lessmeier2016}. Trained and tested on
+different real-damage bearings, with time-, frequency- and wavelet-packet features, they reached up to 98\,\%,
+recognising KA15 and KA22. The damage is therefore present in the vibration signal; what fails is the transfer of
+features and confidence learned from artificial damage.
 
 The 1D-CNN fails in a different way (Section~\ref{sec:cnnresults}). With the raw signal as input and only 12 to 14
 training bearings, it partly recognises bearings by characteristics unrelated to their damage, so its confidence is
@@ -37,11 +54,15 @@ misses faults. Unlike the failure of the feature-based models, which appears onl
 visible in a validation by bearing. A random split of windows, which places windows of the same bearings in both
 training and test sets, hides it completely: there the CNN is as accurate and as well calibrated as the feature-based
 models (Section~\ref{sec:cnnresults}), in line with what \citet{vieira2026} found across several datasets.
+Unsupervised domain adaptation did not repair the network's confidence either. AdaBN raised its accuracy on real
+damage, but by moving its decisions rather than by telling it when they are wrong: it traded errors on outer-race and
+healthy bearings for confident errors on inner-race bearings. Like other unsupervised adaptation methods, it aligns
+the overall statistics of the two domains without any information on which target predictions are correct.
 
 \subsection{Calibration in-domain does not imply calibration after the shift}
 
 On unseen artificial bearings, the feature-based models are close to calibrated (ECE 0.01--0.09) and automate 81--91\,\% of cases
-below 5\,\% error. On real damage, the same models are overconfident (ECE 0.17--0.20 after temperature scaling) and
+at or below 5\,\% error. On real damage, the same models are overconfident (ECE 0.17--0.20 after temperature scaling) and
 can automate only 25--30\,\% of cases at that error even with a threshold chosen on the test data. A validation that
 holds out artificial bearings---even one done carefully by bearing---would thus give a misleading picture of how the
 system behaves in service.
@@ -50,8 +71,9 @@ The other operating conditions add a less intuitive observation: the better the 
 artificial damage, the more misleading the confidence on real damage. At the main and low-torque conditions, where
 in-domain accuracy is highest (0.81--0.94), the 5\,\% target is exceeded in every rotation. At lower radial force and
 lower speed, in-domain accuracy is only 0.57--0.76, the models are less confident, and the error at the 5\,\% target
-is lower (0.10--0.21), although still above the target in 68--99\,\% of rotations. A model that has learned a clear
-fault signature becomes confident in its absence, and that is exactly what the silent bearings present. This mirrors findings on dataset shift in general machine learning \citep{ovadia2019},
+is lower (0.10--0.21), although still above the target in 68--99\,\% of the rotations that automate any case. A model that relies on a clear
+fault signature confidently predicts ``healthy'' when that signature is missing, and a missing signature is exactly what
+the silent bearings present. This mirrors findings on dataset shift in general machine learning \citep{ovadia2019},
 here for a physically meaningful shift in a mechanical system.
 
 \subsection{Conformal prediction under the shift}
@@ -79,23 +101,33 @@ Our results suggest four recommendations for deploying automated bearing diagnos
   \item \textbf{Report results per bearing.} Averages over windows hid that the failures came from four bearings, and
         the wide bootstrap intervals show that a different set of test bearings could change the averages
         considerably.
-  \item \textbf{Prefer self-normalised fault-frequency features to absolute vibration statistics and to networks
-        trained on few bearings.} Amplitude-based features reflected individual bearings, including healthy ones,
-        and lowered accuracy on unseen artificial bearings from 0.88--0.91 to 0.49--0.77; the 1D-CNN reached only
-        0.46.
+  \item \textbf{Check features and models on unseen bearings.} Amplitude-based features reflected individual
+        bearings, including healthy ones, and lowered accuracy on unseen artificial bearings from 0.88--0.91 to
+        0.49--0.77; the 1D-CNN reached only 0.46. On real damage, however, no feature set or model we tested gave
+        trustworthy confidence, including the network adapted to unlabelled real-damage data.
 \end{enumerate}
 
 \subsection{Limitations}
 \label{sec:limitations}
 
-The study has several limitations. It uses one test rig and one bearing type. We repeated the main evaluation at all
-four operating conditions of the dataset, but the experiment with labelled real bearings for calibration and the
-feature ablation were run at the main condition only, and the size of the effects may differ on other machines. The number of bearings is small---11 with real
-damage and 6 healthy---which is why we report bootstrap intervals over bearings; these intervals are wide, and the
-conclusions rest on effects that are consistent across all rotations rather than on precise values. The real damage
-was produced in accelerated lifetime tests on a test rig and may differ from damage that develops in the field.
-Bearings with combined inner- and outer-race damage were excluded. The features use a fixed demodulation band and
-window length; our adaptive alternative selected a band of fixed width by spectral kurtosis and did not search over
-widths as the kurtogram does. The deep-learning baseline is a single architecture trained from scratch with fixed settings; pre-training on
-other data, stronger data augmentation or domain adaptation might generalise better across bearings. Finally, conformal calibration is performed on windows, and windows from the same bearing are
-correlated, so even the in-domain exchangeability assumption holds only approximately.
+The most important limitation is generality. All bearings come from one test rig and are of one type, the real
+damage was produced in accelerated lifetime tests and may differ from damage that develops in the field, and bearings
+with combined inner- and outer-race damage were excluded; the size of the effects may therefore differ on other
+machines. Repeating the evaluation at all four operating conditions of the dataset shows that the failure is not tied
+to one condition, but the experiment with labelled real bearings for calibration, the feature ablation, the adaptive
+band and the 1D-CNN were run at the main condition only.
+
+The number of bearings is small---11 with real damage and 6 healthy---so the bootstrap intervals over bearings are
+wide. The main conclusions therefore rest on effects that hold in every rotation at the main condition, such as the
+5\,\% target being exceeded in all of them, rather than on precise values. Each model was trained with a single random
+seed; the rotations and the bootstrap capture variation over bearings, not over training randomness, which matters
+most for the 1D-CNN. Conformal calibration is performed on windows, and windows from the same bearing are correlated,
+so even the in-domain exchangeability assumption holds only approximately.
+
+Several alternatives remain untested. The features use a fixed demodulation band and window length; the kurtogram
+band we tested favoured impulsive content of the test rig, and other criteria for choosing the band were not
+explored. The deep-learning baseline is a single architecture trained from scratch with fixed settings, and AdaBN was
+the only domain adaptation tested. Pre-training on other data, stronger data augmentation, or adversarial and
+discrepancy-based adaptation such as DANN \citep{ganin2016} or Deep CORAL \citep{sun2016} might generalise better
+across bearings, although, like AdaBN, they use no labels from the target domain. Whether such methods make the
+confidence trustworthy, and not only the accuracy, remains to be tested.

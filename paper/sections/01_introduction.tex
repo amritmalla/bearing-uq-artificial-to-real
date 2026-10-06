@@ -1,22 +1,25 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Rolling-element bearings are among the most common components of rotating machinery and a frequent cause of its
-failure. Vibration-based condition monitoring detects bearing damage from the periodic impacts it produces, and
+Rolling-element bearings are among the most common components of rotating machinery and among the most frequent
+causes of its failure. Vibration-based condition monitoring detects bearing damage from the periodic impacts it produces
+\citep{randall2011}, and
 machine-learning classifiers are increasingly used to automate the diagnosis. In practice, automation rarely means
 replacing the maintenance engineer. A realistic system decides on its own when it is confident and refers the
 remaining cases to a person. Such a system is only as safe as its confidence: a model that is confidently wrong will
 act on its mistakes without asking anyone.
 
-Confidence is therefore a quantity that has to be trustworthy in its own right. A model is \emph{calibrated} when its
-stated confidence matches how often it is correct; a threshold on calibrated confidence can then be chosen to keep
-the error among automated decisions below a target. Conformal prediction offers a stronger, distribution-free
+Confidence is therefore a quantity that has to be trustworthy in its own right. A model is \emph{calibrated}
+\citep{guo2017} when its stated confidence matches how often it is correct; a threshold on calibrated confidence can
+then be chosen to keep the error among automated decisions below a target \citep{geifman2017}. Conformal prediction
+\citep{vovk2005,angelopoulos2023} offers a stronger, distribution-free
 guarantee: prediction sets that contain the true class with a chosen probability. Both rest on an assumption that is
 easy to overlook---that the data used to set thresholds resemble the data the system will meet in operation.
 
 For bearing diagnosis this assumption is under particular strain. Classifiers are typically developed on faults that
 were made artificially, by drilling, electric discharge machining or engraving, because natural damage takes a long
-time to develop. In service, they must diagnose damage that grew through fatigue and wear. The Paderborn bearing
+time to develop. In service, they must diagnose damage that develops on its own, such as fatigue pitting or
+indentations from debris particles. The Paderborn bearing
 dataset \citep{lessmeier2016} contains both kinds and shows that the difference matters for accuracy. Much less is
 known about what it does to confidence. If a model's calibration, its automation thresholds and its conformal
 guarantees are all established on artificial damage, do they still hold on real damage? And if not, how much labelled
@@ -26,9 +29,11 @@ We study these questions with three standard classifiers---Random Forest, suppor
 envelope-spectrum features of the Paderborn vibration signals. Models are trained and calibrated on artificially
 damaged bearings and tested on bearings with real damage, with every bearing assigned to exactly one split. Because
 results depend strongly on which bearings are held out for calibration, we repeat the experiment for all 105
-possible choices and estimate uncertainty with a bootstrap over bearings. The main analysis uses one operating
-condition; we repeat it at the dataset's three other conditions and with an adaptive demodulation band, and we add a
-one-dimensional convolutional neural network trained on the raw signal as a deep-learning baseline. We ask:
+possible choices of calibration bearings (one per class; we call each choice a rotation) and estimate uncertainty with
+a bootstrap over bearings. The main analysis uses one operating condition; we repeat it at the dataset's three other
+conditions and with an adaptive demodulation band. As a deep-learning baseline, we add a one-dimensional
+convolutional neural network (1D-CNN) trained on the raw signal, also with unsupervised domain adaptation to real
+damage by adaptive batch normalisation (AdaBN). We ask:
 \begin{enumerate}[nosep,label=\textbf{RQ\arabic*}]
   \item How much do accuracy and calibration degrade from artificial to real damage?
   \item Do confidence thresholds, post-hoc calibration and conformal prediction fitted on artificial damage still
@@ -41,20 +46,22 @@ Our contributions are:
   \item An evaluation of calibration and selective automation under the artificial-to-real damage shift, with
         bearing-level splits, 105 calibration-bearing rotations and bootstrap intervals over bearings.
   \item Evidence that confidence thresholds chosen on artificial damage for a 5\,\% error target produce 24--27\,\%
-        error on real damage, exceeding the target in every rotation, and that split conformal coverage falls to
-        0.65--0.68 against a nominal 0.90---although the same models are close to calibrated on unseen artificial
+        error on real damage, exceeding the target in every rotation, and that the coverage of split conformal
+        prediction falls to 0.65--0.68 against a nominal 0.90---although the same models are close to calibrated on unseen artificial
         bearings.
-  \item The identification of ``silent'' real-damage bearings, whose fault signature is indistinguishable from a
-        healthy bearing's in the envelope spectrum and which are therefore confidently diagnosed as healthy or as
-        the wrong fault; two of them are misclassified at every operating condition of the dataset.
+  \item The identification of ``silent'' real-damage bearings, whose envelope spectra show the fault signature only
+        weakly or not at all, so that they are confidently diagnosed as healthy or as the wrong fault; two of them
+        are misclassified at every operating condition of the dataset.
   \item A repetition at four operating conditions, showing that the failure is strongest where the features
         separate artificial damage best, and that missed faults dominate the errors only at those conditions.
   \item A test of calibrating on one or two labelled real bearings per class, which lowers the error at the 5\,\%
-        target to 0.10--0.11 but does not reliably meet it, and makes the system automate fewer cases.
+        target to 0.16--0.19 with one and 0.10--0.11 with two, but does not reliably meet the target and makes the
+        system automate fewer cases.
   \item A feature ablation showing that amplitude-based time-domain features describe individual bearings rather
-        than their damage, and hide the artificial-to-real gap behind a poor in-domain reference.
-  \item A 1D-CNN baseline on raw vibration, which fails already on unseen artificial bearings with confident errors,
-        showing that an end-to-end network trained on few bearings is no remedy.
+        than their damage, and make the in-domain reference itself poor.
+  \item A 1D-CNN baseline on raw vibration, which already fails on unseen artificial bearings with confident errors,
+        showing that an end-to-end network trained on few bearings is no remedy; adapting it to unlabelled
+        real-damage data (AdaBN) raises its accuracy but not the reliability of its confidence.
 \end{itemize}
 
 Section~\ref{sec:related} reviews related work, Section~\ref{sec:methods} describes the data and methods,

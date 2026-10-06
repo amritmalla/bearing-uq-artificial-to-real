@@ -21,6 +21,6 @@ Condition & Model & \makecell{In-domain\\accuracy} & \makecell{Real\\accuracy} &
 900 rpm, 0.7 Nm, 1000 N & XGBoost & 0.68 & 0.61 [0.45, 0.77] & 0.12 [0.01, 0.33] & 83\% & 0.85 [0.66, 0.97] & 0.48 \\
 \bottomrule
 \end{tabular}}
-\caption{All four Paderborn operating conditions (shaft speed, load torque, radial force), with the same bearing splits. Fault-frequency features, temperature scaling. Real damage: mean [95\,\% interval] from 2,000 bootstrap draws. Missed faults: share of real-damage errors that call a damaged bearing healthy.}
+\caption{All four Paderborn operating conditions (shaft speed, load torque, radial force), with the same bearing splits. Fault-frequency features, temperature scaling. Real damage: mean [95\,\% interval] from 2,000 bootstrap draws. Runs exceeding the target (share of the rotations that automated at least one case) and missed faults (share of real-damage errors that call a damaged bearing healthy): means over 105 rotations.}
 \label{tab:conditions}
 \end{table*}

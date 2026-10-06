@@ -16,6 +16,7 @@
 \usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
 
 \graphicspath{{figures/}}
+\providecommand{\doiprefix}{}\renewcommand{\doiprefix}{https://doi.org/}  % APA 7: DOIs as https://doi.org/... (apacite default is "doi:")
 
 % Visible placeholder for text still to be written; remove before submission.
 \newcommand{\todo}[1]{\textcolor{red!70!black}{\textbf{[TODO:} #1\textbf{]}}}
@@ -29,7 +30,7 @@
 
 \address{%
   \affiliation{1}{Independent Researcher}{%
-    \email{yammalla09@gmail.com} (corresponding author)\\
+    \email{yammalla09@gmail.com}\\
     \email{bhuwan.karki7@gmail.com}}%
 }
 
@@ -39,7 +40,7 @@
 
 \input{sections/00_abstract}   % collected by the abstract environment, printed by \maketitle
 \maketitle
-\licenseFootnote{Yam Malla et al.}
+\licenseFootnote{Yam Malla et al}  % the class adds the full stop
 
 \input{sections/01_introduction}
 \input{sections/02_related_work}
