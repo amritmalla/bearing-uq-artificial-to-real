@@ -1,0 +1,48 @@
+"""In-domain reference: leave one source bearing out at a time.
+
+Each source bearing is predicted by models trained on all other source bearings,
+so the score reflects generalisation to an unseen bearing of the same damage origin.
+"""
+
+import numpy as np
+import pandas as pd
+
+from bearing_uq import dataset as D
+from bearing_uq import metrics as M
+from bearing_uq.models import fit, make_models
+
+
+def lobo_probabilities(df: pd.DataFrame, codes: list[str], seed: int = 0,
+                       features: list[str] = D.FEATURES):
+    """Leave-one-bearing-out probabilities: (data rows, labels, {model: probs})."""
+    data = df[df["bearing"].isin(codes)].reset_index(drop=True)
+    X, y = D.design_matrix(data, features), D.targets(data)
+    probs = {}
+    for name in make_models(seed):
+        p = np.zeros((len(data), len(D.LABELS)))
+        for code in codes:
+            test = (data["bearing"] == code).to_numpy()
+            model = fit(make_models(seed)[name], X[~test], y[~test])
+            p[test] = model.predict_proba(X[test])
+        probs[name] = p
+    return data, y, probs
+
+
+def leave_one_bearing_out(df: pd.DataFrame, codes: list[str], seed: int = 0,
+                          features: list[str] = D.FEATURES):
+    """Return (summary per model, per-bearing accuracy) on raw probabilities."""
+    return summarise(*lobo_probabilities(df, codes, seed, features))
+
+
+def summarise(data: pd.DataFrame, y: np.ndarray, all_probs: dict):
+    """Summary per model and per-bearing accuracy from leave-one-bearing-out probabilities."""
+    summary, per_bearing = [], []
+    for name, probs in all_probs.items():
+        correct = probs.argmax(1) == y
+        summary.append({"model": name, "accuracy": M.accuracy(probs, y), "macro_f1": M.macro_f1(probs, y),
+                        "ece": M.ece(probs, y), "brier": M.brier(probs, y),
+                        "aurc": M.aurc(probs.max(1), correct)})
+        for code, g in data.assign(correct=correct, conf=probs.max(1)).groupby("bearing"):
+            per_bearing.append({"model": name, "bearing": code, "label": g["label"].iloc[0],
+                                "accuracy": g["correct"].mean(), "mean_confidence": g["conf"].mean()})
+    return pd.DataFrame(summary), pd.DataFrame(per_bearing)
