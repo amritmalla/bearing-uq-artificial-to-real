@@ -22,10 +22,14 @@ CONFORMAL_METHODS = ("marginal", "class_conditional")
 
 
 def predict_rotation(df: pd.DataFrame, split: dict[str, str], features, seed: int = 0,
-                     models: dict | None = None) -> dict:
+                     models: dict | None = None, test_transform=None) -> dict:
+    """test_transform(x_train, x_test, test_bearings) -> x_test, if given, changes only the test features
+    (e.g. CORAL alignment); training, calibration, thresholds and conformal quantiles are unaffected."""
     parts = {n: D.subset(df, split, n) for n in (S.TRAIN, S.CALIB, S.TEST)}
     X = {n: D.design_matrix(p, features) for n, p in parts.items()}
     y = {n: D.targets(p) for n, p in parts.items()}
+    if test_transform is not None:
+        X[S.TEST] = test_transform(X[S.TRAIN], X[S.TEST], parts[S.TEST]["bearing"].to_numpy(dtype=str))
 
     models = models or make_models(seed)
     n_test, k = len(y[S.TEST]), len(D.LABELS)

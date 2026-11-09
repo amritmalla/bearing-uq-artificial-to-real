@@ -12,8 +12,11 @@ Then run:  summarise_rotations.py --features cnn,  run_bootstrap.py --features c
 --variant adabn does the same for the CNN with AdaBN (data/cnn/adabn/rotations/), with the suffix _cnn_adabn and
 without the in-domain reference (AdaBN adapts to the target bearings only).
 
+--variant seed1 / seed2 handles the extra training seeds (data/cnn_seed{1,2}/rotations/, step 17 of the notebook):
+only the 105 rotations, written to data/predictions/cnn_seed{1,2}/ for scripts/run_cnn_seeds.py.
+
 Usage (from the project root):
-    python scripts/run_cnn_analysis.py [--variant base|adabn] [--draws 50] [--max-seconds N]
+    python scripts/run_cnn_analysis.py [--variant base|adabn|seed1|seed2] [--draws 50] [--max-seconds N]
 Resumable: finished rotations and draws are skipped.
 """
 
@@ -35,7 +38,8 @@ from bearing_uq.predictions import predict_rotation, save  # noqa: E402
 from bearing_uq.target_calibration import draw_rotation, draw_seeds, run_draw, summarise  # noqa: E402
 
 RES = Path("results")
-VARIANTS = {"base": (Path("data/cnn"), "cnn"), "adabn": (Path("data/cnn/adabn"), "cnn_adabn")}
+VARIANTS = {"base": (Path("data/cnn"), "cnn"), "adabn": (Path("data/cnn/adabn"), "cnn_adabn"),
+            "seed1": (Path("data/cnn_seed1"), "cnn_seed1"), "seed2": (Path("data/cnn_seed2"), "cnn_seed2")}
 CNN, NAME = VARIANTS["base"]
 PRED = Path("data/predictions") / NAME
 
@@ -122,7 +126,7 @@ def main() -> None:
     df = with_row_key(D.load_features(config.features_path()))
     if args.variant == "base":
         in_domain(df)
-    if rotations(df, budget):
+    if rotations(df, budget) and not args.variant.startswith("seed"):
         real_calibration(df, args.draws, budget)
 
 
